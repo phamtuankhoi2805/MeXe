@@ -10,4 +10,9 @@ public class HomeController {
     public String home() {
         return "index";
     }
+
+    @GetMapping("/san-pham/vero-x")
+    public String veroX() {
+        return "product-detail";
+    }
 }

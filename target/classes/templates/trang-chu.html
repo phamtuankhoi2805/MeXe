@@ -1,432 +1,1140 @@
 <!DOCTYPE html>
+
+
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+
 <head>
+
+
     <meta charset="UTF-8">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <title>VinFast Feliz 02 Pin</title>
+
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+
+
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+
+
 </head>
+
+
 <body>
-<header class="vf-header">
-    <div class="vf-container vf-header-inner">
-        <a href="#" class="vf-logo">
-            <img src="/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
-        </a>
-        <nav class="vf-nav">
-            <a href="#" class="active">Sản phẩm</a>
-            <a href="#">Phụ kiện xe</a>
-            <a href="#">Dịch vụ hậu mãi</a>
-            <a href="#">Tin tức</a>
-        </nav>
-        <div class="vf-actions">
-            <a href="#">Tài khoản</a>
-            <button class="vf-btn vf-btn--primary">Mua ngay</button>
-        </div>
-    </div>
-</header>
+
+
+<div th:replace="fragments/dieu-huong :: thanhDieuHuong"></div>
+
+
+
+
 
 <main>
+
+
     <section class="vf-container hero" data-animate>
+
+
         <div class="hero-slider" id="heroSlider">
+
+
             <div class="hero-slide is-active" data-index="0">
+
+
                 <div class="hero-copy">
+
+
                     <span>Ra mắt Feliz</span>
+
+
                     <h1>Phiên bản 02 pin với quãng đường 262 km</h1>
+
+
                     <p>Trải nghiệm hành trình không giới hạn cùng động cơ mạnh mẽ, công nghệ pin mới và thiết kế tinh giản đặc trưng của VinFast.</p>
+
+
                     <div class="hero-price">
+
+
                         <div>
+
+
                             <small>Giá ưu đãi từ</small><br>
+
+
                             <strong>25.900.000 VNĐ</strong>
+
+
                         </div>
+
+
                         <span>(Đã bao gồm VAT, 01 pin và 01 sạc)</span>
+
+
                     </div>
+
+
                     <div class="hero-cta">
+
+
                         <button class="vf-btn vf-btn--primary">Đặt cọc ngay</button>
+
+
                         <a href="#" class="vf-btn vf-btn--ghost" style="color:#0048ff;font-weight:600;">Xem chi tiết</a>
+
+
                     </div>
+
+
                 </div>
+
+
                 <div class="hero-media">
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz 02 pin">
+
+
                     <div class="hero-badge">
+
+
                         <div>262 km/lần sạc</div>
+
+
                         <small>Pin LFP thế hệ mới</small>
+
+
                     </div>
+
+
                 </div>
+
+
             </div>
+
+
+
+
 
             <div class="hero-slide" data-index="1">
+
+
                 <div class="hero-copy">
+
+
                     <span>Đổi pin linh hoạt</span>
+
+
                     <h1>Tiện lợi với hệ sinh thái trạm sạc toàn quốc</h1>
+
+
                     <p>Hơn 150.000 điểm sạc và đổi pin phủ rộng 63 tỉnh thành giúp bạn sẵn sàng lên đường mọi lúc mọi nơi.</p>
+
+
                     <div class="hero-price">
+
+
                         <div>
+
+
                             <small>Gói thuê pin chỉ</small><br>
+
+
                             <strong>189.000 VNĐ/tháng</strong>
+
+
                         </div>
+
+
                         <span>Không lo chi phí đầu tư ban đầu</span>
+
+
                     </div>
+
+
                     <div class="hero-cta">
+
+
                         <button class="vf-btn vf-btn--primary">Đăng ký trải nghiệm</button>
+
+
                         <a href="#" class="vf-btn vf-btn--ghost" style="color:#0048ff;font-weight:600;">Tìm trạm gần nhất</a>
+
+
                     </div>
+
+
                 </div>
+
+
                 <div class="hero-media">
+
+
                     <img src="https://storage.googleapis.com/vinfast-data-01/styles/product_carousel_image/public/2024_06/tram-doi-pin.png" alt="Trạm đổi pin VinFast">
+
+
                     <div class="hero-badge">
+
+
                         <div>150.000+</div>
+
+
                         <small>Điểm sạc & đổi pin</small>
+
+
                     </div>
+
+
                 </div>
+
+
             </div>
+
+
+
+
 
             <div class="hero-slide" data-index="2">
+
+
                 <div class="hero-copy">
+
+
                     <span>Ưu đãi đặc biệt</span>
+
+
                     <h1>Tặng thêm 12 tháng bảo hành khi đặt cọc online</h1>
+
+
                     <p>VinFast Feliz mang lại sự yên tâm tuyệt đối với chính sách hậu mãi hấp dẫn, đặt cọc ngay để nhận thêm quà tặng độc quyền.</p>
+
+
                     <div class="hero-price">
+
+
                         <div>
+
+
                             <small>Tặng kèm</small><br>
+
+
                             <strong>Bảo hành 5 năm</strong>
+
+
                         </div>
+
+
                         <span>Miễn phí kiểm tra định kỳ</span>
+
+
                     </div>
+
+
                     <div class="hero-cta">
+
+
                         <button class="vf-btn vf-btn--primary">Nhận tư vấn</button>
+
+
                         <a href="#" class="vf-btn vf-btn--ghost" style="color:#0048ff;font-weight:600;">Tải bảng giá</a>
+
+
                     </div>
+
+
                 </div>
+
+
                 <div class="hero-media">
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="Showroom VinFast Feliz">
+
+
                     <div class="hero-badge">
+
+
                         <div>+12 tháng</div>
+
+
                         <small>Bảo hành mở rộng</small>
+
+
                     </div>
+
+
                 </div>
+
+
             </div>
+
+
         </div>
+
+
         <div class="hero-pagination" id="heroDots">
+
+
             <button class="hero-dot is-active" data-index="0" aria-label="Slide 1"></button>
+
+
             <button class="hero-dot" data-index="1" aria-label="Slide 2"></button>
+
+
             <button class="hero-dot" data-index="2" aria-label="Slide 3"></button>
+
+
         </div>
+
+
     </section>
 
+
+
+
+
     <section class="vf-container product-section" data-animate>
+
+
         <div class="section-header">
+
+
             <small>Sản phẩm bán chạy</small>
+
+
             <h2>Xe máy điện học sinh</h2>
+
+
             <p>Lựa chọn hoàn hảo cho các bạn học sinh với thiết kế trẻ trung, tốc độ vừa phải và chi phí vận hành tiết kiệm.</p>
+
+
         </div>
+
+
         <div class="product-carousel-wrapper">
+
+
             <button class="carousel-control prev" data-target="studentCarousel" aria-label="prev">&#8592;</button>
+
+
             <div class="product-carousel" id="studentCarousel">
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Mới</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz Lite">
+
+
                     <div class="product-meta">
+
+
                         <span>Học sinh</span>
+
+
                         <span>262 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast Feliz Lite</h3>
+
+
                     <p>Động cơ 500W, pin LFP 14Ah, tích hợp hệ thống chống nước IP67 cho thời tiết mưa gió.</p>
+
+
                     <strong class="product-price">25.900.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Ưu đãi</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Evo200 Lite">
+
+
                     <div class="product-meta">
+
+
                         <span>Học sinh</span>
+
+
                         <span>203 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast Evo200 Lite</h3>
+
+
                     <p>Trọng lượng nhẹ, vận tốc giới hạn 49 km/h phù hợp với lứa tuổi học sinh, thiết kế năng động.</p>
+
+
                     <strong class="product-price">18.800.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Hot</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Evo200 Neo">
+
+
                     <div class="product-meta">
+
+
                         <span>Học sinh</span>
+
+
                         <span>198 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast Evo200 Neo</h3>
+
+
                     <p>Đèn LED tròn cá tính, kết nối ứng dụng VinFast E-Scooter và chế độ định vị thông minh.</p>
+
+
                     <strong class="product-price">14.400.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Mới</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz 2025">
+
+
                     <div class="product-meta">
+
+
                         <span>Học sinh</span>
+
+
                         <span>205 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast Feliz 2025</h3>
+
+
                     <p>Bản nâng cấp 02 pin, tích hợp phanh CBS và khóa thông minh chống trộm toàn diện.</p>
+
+
                     <strong class="product-price">29.000.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
             </div>
+
+
             <button class="carousel-control next" data-target="studentCarousel" aria-label="next">&#8594;</button>
+
+
         </div>
+
+
     </section>
 
+
+
+
+
     <section class="vf-container product-section" data-animate>
+
+
         <div class="section-header">
+
+
             <small>Khám phá</small>
+
+
             <h2>Xe máy điện cá tính</h2>
+
+
             <p>Phong cách hiện đại, hiệu năng vượt trội, phù hợp cho những hành trình dài và nhu cầu di chuyển hàng ngày.</p>
+
+
         </div>
+
+
         <div class="product-carousel-wrapper">
+
+
             <button class="carousel-control prev" data-target="lifestyleCarousel" aria-label="prev">&#8592;</button>
+
+
             <div class="product-carousel" id="lifestyleCarousel">
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Best seller</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Vero X">
+
+
                     <div class="product-meta">
+
+
                         <span>Cao cấp</span>
+
+
                         <span>30 km/h Eco</span>
+
+
                     </div>
+
+
                     <h3>VinFast Vero X 2025</h3>
+
+
                     <p>Thiết kế thời trang, bảng màu trẻ trung, hệ thống phanh ABS hai kênh đảm bảo an toàn.</p>
+
+
                     <strong class="product-price">34.900.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Mới</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz 2025">
+
+
                     <div class="product-meta">
+
+
                         <span>Phổ thông</span>
+
+
                         <span>262 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast Feliz 2025</h3>
+
+
                     <p>Sở hữu động cơ công suất 3.500W, tăng tốc mượt mà và vận hành êm ái trên mọi cung đường.</p>
+
+
                     <strong class="product-price">25.900.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Ưu đãi</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast EvoGrand">
+
+
                     <div class="product-meta">
+
+
                         <span>Phổ thông</span>
+
+
                         <span>210 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast EvoGrand</h3>
+
+
                     <p>Khoang để chân rộng, yên dài cho 2 người, tích hợp cổng sạc USB tiện lợi cho điện thoại.</p>
+
+
                     <strong class="product-price">21.000.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
                 <article class="product-card">
+
+
                     <span class="tag">Hot</span>
+
+
                     <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Evo Neo">
+
+
                     <div class="product-meta">
+
+
                         <span>Phổ thông</span>
+
+
                         <span>200 km/lần sạc</span>
+
+
                     </div>
+
+
                     <h3>VinFast Evo Neo</h3>
+
+
                     <p>Phong cách thể thao, công nghệ chìa khóa thông minh SmartKey và chống trộm toàn diện.</p>
+
+
                     <strong class="product-price">17.800.000 ₫</strong>
+
+
                     <button class="vf-btn--ghost">Mua ngay →</button>
+
+
                 </article>
+
+
             </div>
+
+
             <button class="carousel-control next" data-target="lifestyleCarousel" aria-label="next">&#8594;</button>
+
+
         </div>
+
+
     </section>
+
+
+
+
 
     <section class="vf-container consult-section" data-animate>
+
+
         <div>
+
+
             <h2>Đăng ký tư vấn</h2>
+
+
             <p>Đăng ký ngay hôm nay để nhận thông tin chính thức từ tư vấn viên VinFast và cập nhật ưu đãi mới nhất.</p>
+
+
             <ul style="margin:0;padding-left:18px;color:#58637a;display:grid;gap:8px;">
+
+
                 <li>Hỗ trợ trả góp linh hoạt tại hệ thống showroom toàn quốc.</li>
+
+
                 <li>Ưu đãi thuê pin, bảo hành mở rộng và chăm sóc định kỳ.</li>
+
+
                 <li>Trải nghiệm lái thử miễn phí tại các đại lý VinFast.</li>
+
+
             </ul>
+
+
         </div>
+
+
         <form>
+
+
             <div class="form-group">
+
+
                 <label for="name">Họ và tên *</label>
+
+
                 <input type="text" id="name" name="name" placeholder="Nguyễn Văn A">
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label for="phone">Số điện thoại *</label>
+
+
                 <input type="tel" id="phone" name="phone" placeholder="0987 654 321">
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label for="email">Email *</label>
+
+
                 <input type="email" id="email" name="email" placeholder="email@vinfast.vn">
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label for="city">Tỉnh/Thành phố *</label>
+
+
                 <select id="city" name="city">
+
+
                     <option value="">Chọn tỉnh/thành</option>
+
+
                     <option>Hà Nội</option>
+
+
                     <option>Hải Phòng</option>
+
+
                     <option>Đà Nẵng</option>
+
+
                     <option>TP. Hồ Chí Minh</option>
+
+
                     <option>Cần Thơ</option>
+
+
                 </select>
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label for="district">Quận/Huyện *</label>
+
+
                 <select id="district" name="district">
+
+
                     <option value="">Chọn quận/huyện</option>
+
+
                     <option>Ba Đình</option>
+
+
                     <option>Cầu Giấy</option>
+
+
                     <option>Hai Bà Trưng</option>
+
+
                     <option>Thủ Đức</option>
+
+
                     <option>Quận 7</option>
+
+
                 </select>
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label>Dòng xe quan tâm *</label>
+
+
                 <div class="consult-radio-group">
+
+
                     <input type="radio" id="option1" name="segment" checked>
+
+
                     <label for="option1">Feliz</label>
+
+
                     <input type="radio" id="option2" name="segment">
+
+
                     <label for="option2">Evo Lite Neo</label>
+
+
                     <input type="radio" id="option3" name="segment">
+
+
                     <label for="option3">Evo Grand Lite</label>
+
+
                     <input type="radio" id="option4" name="segment">
+
+
                     <label for="option4">Evo Neo</label>
+
+
                 </div>
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label for="time">Thời gian dự kiến mua *</label>
+
+
                 <select id="time" name="time">
+
+
                     <option value="">Chọn thời gian</option>
+
+
                     <option>Trong 1 tháng</option>
+
+
                     <option>1 - 3 tháng</option>
+
+
                     <option>3 - 6 tháng</option>
+
+
                     <option>6 - 12 tháng</option>
+
+
                 </select>
+
+
             </div>
+
+
             <div class="form-group">
+
+
                 <label for="budget">Ngân sách dự kiến *</label>
+
+
                 <select id="budget" name="budget">
+
+
                     <option value="">Chọn mức ngân sách</option>
+
+
                     <option>Dưới 20 triệu</option>
+
+
                     <option>20 - 30 triệu</option>
+
+
                     <option>30 - 40 triệu</option>
+
+
                     <option>Trên 40 triệu</option>
+
+
                 </select>
+
+
             </div>
+
+
             <p style="font-size:0.78rem;color:#7a859b;line-height:1.4;">
+
+
                 Tôi đồng ý cho Công Ty TNHH Kinh Doanh Thương Mại Và Dịch Vụ VinFast liên hệ để cung cấp thông tin tư vấn
+
+
                 và đồng ý rằng VinFast có thể sử dụng dữ liệu của tôi theo Chính sách Bảo vệ Dữ liệu cá nhân.
+
+
             </p>
+
+
             <button type="submit" class="vf-btn vf-btn--primary" style="width:100%;">Đăng ký</button>
+
+
         </form>
+
+
     </section>
+
+
 </main>
 
-<footer class="vf-footer">
-    <div class="vf-container">
-        <div class="vf-footer-top">
-            <div>
-                <img src="/VinFast-logo.svg" alt="VinFast" width="120" height="32" style="margin-bottom:16px;">
-                <p style="margin:0;font-size:0.9rem;color:rgba(255,255,255,0.65);">
-                    Công Ty TNHH Kinh Doanh Thương Mại Và Dịch Vụ VinFast<br>
-                    Giấy CNĐKDN: 0108672765 do Sở KHĐT Hà Nội cấp lần đầu ngày 07/03/2019.
-                </p>
-            </div>
-            <div>
-                <h5>Về VinFast</h5>
-                <ul>
-                    <li><a href="#">Giới thiệu</a></li>
-                    <li><a href="#">Tin tức</a></li>
-                    <li><a href="#">Tuyển dụng</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5>Hỗ trợ</h5>
-                <ul>
-                    <li><a href="#">Chính sách bảo hành</a></li>
-                    <li><a href="#">Trung tâm dịch vụ</a></li>
-                    <li><a href="#">Hướng dẫn thanh toán</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5>Liên hệ</h5>
-                <ul>
-                    <li>Hotline: 1900 23 23 89</li>
-                    <li>Email: support@vinfastauto.com</li>
-                    <li><a href="#">Kết nối với VinFast</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="vf-footer-bottom">
-            <span>© VinFast. All rights reserved. Copyright 2025</span>
-            <span>Điều khoản sử dụng | Chính sách bảo mật | Sơ đồ trang</span>
-        </div>
-    </div>
-</footer>
+
+
+
+
+<div th:replace="fragments/chan-trang :: chanTrang"></div>
+
+
+
+
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+
 
 <script>
+
+
     (function () {
+
+
         const slides = document.querySelectorAll('.hero-slide');
+
+
         const dots = document.querySelectorAll('.hero-dot');
+
+
         let activeIndex = 0;
+
+
         let heroTimer;
 
+
+
+
+
         function goToSlide(index) {
+
+
             slides[activeIndex].classList.remove('is-active');
+
+
             dots[activeIndex].classList.remove('is-active');
+
+
             activeIndex = index;
+
+
             slides[activeIndex].classList.add('is-active');
+
+
             dots[activeIndex].classList.add('is-active');
+
+
         }
+
+
+
+
 
         function startHeroTimer() {
+
+
             heroTimer = setInterval(() => {
+
+
                 const nextIndex = (activeIndex + 1) % slides.length;
+
+
                 goToSlide(nextIndex);
+
+
             }, 5500);
+
+
         }
+
+
+
+
 
         function resetHeroTimer() {
+
+
             clearInterval(heroTimer);
+
+
             startHeroTimer();
+
+
         }
 
+
+
+
+
         dots.forEach(dot => {
+
+
             dot.addEventListener('click', () => {
+
+
                 const index = Number(dot.dataset.index);
+
+
                 goToSlide(index);
+
+
                 resetHeroTimer();
+
+
             });
+
+
         });
+
+
+
+
 
         startHeroTimer();
 
+
+
+
+
         document.querySelectorAll('.carousel-control').forEach(button => {
+
+
             const carousel = document.getElementById(button.dataset.target);
+
+
             const scrollAmount = carousel.firstElementChild.offsetWidth + 22;
 
+
+
+
+
             button.addEventListener('click', () => {
+
+
                 const direction = button.classList.contains('next') ? 1 : -1;
+
+
                 carousel.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+
+
             });
+
+
         });
 
+
+
+
+
         const observer = new IntersectionObserver(entries => {
+
+
             entries.forEach(entry => {
+
+
                 if (entry.isIntersecting) {
+
+
                     entry.target.classList.add('is-visible');
+
+
                 }
+
+
             });
+
+
         }, { threshold: 0.25 });
 
+
+
+
+
         document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+
+
     })();
+
+
 </script>
+
+
 </body>
+
+
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 

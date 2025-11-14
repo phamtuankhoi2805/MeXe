@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<body>
+<header class="vf-header" th:fragment="thanhDieuHuong">
+    <div class="vf-container vf-header-inner">
+        <a th:href="@{/}" class="vf-logo" aria-label="Trang chủ VinFast">
+            <img src="/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
+        </a>
+
+        <button class="vf-menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="vfMainNav">
+            <span></span>
+        </button>
+
+        <nav class="vf-nav" id="vfMainNav" aria-label="Điều hướng chính">
+            <ul class="vf-nav__list">
+                <li class="vf-nav__item has-submenu" th:classappend="${trangDangChon == 'san-pham'} ? ' is-active'">
+                    <button class="vf-nav__toggle" type="button" aria-expanded="false">Sản phẩm</button>
+                    <div class="vf-submenu" role="menu">
+                        <div class="vf-submenu__column">
+                            <span class="vf-submenu__title">Cao cấp</span>
+                            <a href="#" class="vf-submenu__link">VF DrgnFly eBike</a>
+                            <a th:href="@{/san-pham/vero-x}" class="vf-submenu__link">Vero X 2025</a>
+                            <a href="#" class="vf-submenu__link">Vento S</a>
+                        </div>
+                        <div class="vf-submenu__column">
+                            <span class="vf-submenu__title">Trung cấp</span>
+                            <a href="#" class="vf-submenu__link">Feliz 2025</a>
+                            <a href="#" class="vf-submenu__link">Feliz S</a>
+                            <a href="#" class="vf-submenu__link">Feliz Lite</a>
+                        </div>
+                        <div class="vf-submenu__column">
+                            <span class="vf-submenu__title">Phổ thông</span>
+                            <a href="#" class="vf-submenu__link">Feliz Neo</a>
+                            <a href="#" class="vf-submenu__link">Klara S2</a>
+                            <a href="#" class="vf-submenu__link">Klara Neo</a>
+                        </div>
+                        <div class="vf-submenu__cta">
+                            <h4>Ưu đãi tháng 11</h4>
+                            <p>Giảm thêm 2 triệu khi đặt cọc online, tặng 12 tháng bảo hành mở rộng.</p>
+                            <a href="#" class="vf-btn vf-btn--primary">Đặt cọc ngay</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="vf-nav__item" th:classappend="${trangDangChon == 'phu-kien'} ? ' is-active'">
+                    <a th:href="@{/phu-kien}" class="vf-nav__link">Phụ kiện xe</a>
+                </li>
+                <li class="vf-nav__item" th:classappend="${trangDangChon == 'hau-mai'} ? ' is-active'">
+                    <a href="#" class="vf-nav__link">Dịch vụ hậu mãi</a>
+                </li>
+                <li class="vf-nav__item" th:classappend="${trangDangChon == 'tin-tuc'} ? ' is-active'">
+                    <a href="#" class="vf-nav__link">Tin tức</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="vf-actions">
+            <a href="#">Tài khoản</a>
+            <a href="#" class="vf-btn vf-btn--ghost">Đăng ký lái thử</a>
+            <button class="vf-btn vf-btn--primary">Mua ngay</button>
+        </div>
+    </div>
+</header>
+</body>
+</html>
+
+

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phụ kiện VinFast chính hãng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <link rel="stylesheet" th:href="@{/css/phu-kien.css}" href="/css/phu-kien.css">
+</head>
+<body>
+
+<div th:replace="fragments/dieu-huong :: thanhDieuHuong"></div>
+
+<main class="trang-phu-kien">
+
+    <section class="vf-container hero-phu-kien" data-animate>
+        <div class="hero-phu-kien__text">
+            <p class="nhan-phu">Mua sắm phụ kiện</p>
+            <h1>Kho phụ kiện chính hãng VinFast</h1>
+            <p>Hệ sinh thái phụ kiện chuẩn nhà máy, tương thích hoàn hảo với từng dòng xe VF, được kiểm định chất lượng và bảo hành toàn quốc.</p>
+            <div class="hero-cta">
+                <button class="vf-btn vf-btn--primary">Đăng ký tư vấn</button>
+                <a class="vf-btn vf-btn--ghost" href="#danh-muc">Xem danh mục</a>
+            </div>
+            <ul class="hero-stats">
+                <li>
+                    <strong>150+</strong>
+                    <span>Danh mục phụ kiện</span>
+                </li>
+                <li>
+                    <strong>63</strong>
+                    <span>Tỉnh thành giao nhanh</span>
+                </li>
+                <li>
+                    <strong>7 ngày</strong>
+                    <span>Đổi trả dễ dàng</span>
+                </li>
+            </ul>
+        </div>
+        <div class="hero-phu-kien__gallery">
+            <article class="hero-card">
+                <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Vero X card">
+                <div>
+                    <span>Vero X</span>
+                    <p>Gói phụ kiện Premium</p>
+                </div>
+                <strong>25.9 triệu</strong>
+            </article>
+            <article class="hero-card">
+                <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VF 8 card">
+                <div>
+                    <span>VF 8</span>
+                    <p>Tấm che pin cao áp</p>
+                </div>
+                <strong>8.14 triệu</strong>
+            </article>
+            <article class="hero-card hero-card--highlight">
+                <header>
+                    <span class="chip">Bộ sưu tập 2025</span>
+                    <h2>Ready to Go</h2>
+                    <p>Trọn bộ phụ kiện dành cho các mẫu xe VF mới.</p>
+                </header>
+                <footer>
+                    <button class="vf-btn vf-btn--primary">Khám phá ngay</button>
+                </footer>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container tab-danh-muc" id="danh-muc" data-animate>
+        <div class="tab-danh-muc__header">
+            <div>
+                <p class="nhan-phu">Danh mục nổi bật</p>
+                <h2>Chọn nhanh theo dòng xe</h2>
+            </div>
+            <span>Giá đã gồm thuế VAT • Bảo hành chính hãng</span>
+        </div>
+        <div class="tab-danh-muc__chips" role="tablist">
+            <button class="chip-tab is-active" data-target="oto-dien">Phụ kiện ô tô điện</button>
+            <button class="chip-tab" data-target="oto-xang">Phụ kiện ô tô xăng</button>
+            <button class="chip-tab" data-target="xe-may">Phụ kiện xe máy điện</button>
+            <button class="chip-tab" data-target="sac-luu-tru">Pin & trạm sạc</button>
+        </div>
+    </section>
+
+    <section class="vf-container khoi-san-pham" id="oto-dien" data-animate>
+        <div class="khoi-san-pham__header">
+            <div>
+                <p class="nhan-phu">Phụ kiện ô tô điện</p>
+                <h2>Bảo vệ pin cao áp & khí động học</h2>
+                <p>Tối ưu hiệu năng vận hành với bộ tấm che pin chuyên dụng cho từng dòng VF.</p>
+            </div>
+            <div class="khoi-san-pham__meta">
+                <span class="chip">New Arrival</span>
+                <a href="#" class="xem-them">Xem tất cả</a>
+            </div>
+        </div>
+        <div class="day-the">
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VF 9 tấm che pin cao áp">
+                    <span class="badge dong-xe">VF 9</span>
+                </div>
+                <div class="card-body">
+                    <h3>Tấm che pin cao áp VF 9</h3>
+                    <p>Hợp kim nhôm chịu lực, chuẩn chống ăn mòn và tối ưu luồng gió.</p>
+                    <div class="card-price">
+                        <div>
+                            <strong>8.998.000&nbsp;VNĐ</strong>
+                            <small>Thanh toán một lần</small>
+                        </div>
+                        <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </article>
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VF 8 tấm che pin cao áp">
+                    <span class="badge dong-xe">VF 8</span>
+                </div>
+                <div class="card-body">
+                    <h3>Tấm che pin cao áp VF 8</h3>
+                    <p>Bảo vệ pin khỏi đá dăm, đạt tiêu chuẩn IP67 khi lội nước.</p>
+                    <div class="card-price">
+                        <div>
+                            <strong>8.140.000&nbsp;VNĐ</strong>
+                            <small>Giao hàng trong 5 ngày</small>
+                        </div>
+                        <button class="vf-btn vf-btn--ghost">Đặt mua</button>
+                    </div>
+                </div>
+            </article>
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VF 7 tấm che pin cao áp">
+                    <span class="badge dong-xe">VF 7</span>
+                </div>
+                <div class="card-body">
+                    <h3>Tấm che pin cao áp VF 7</h3>
+                    <p>Thiết kế liền khối, giảm ồn và giúp tản nhiệt tốt hơn 12%.</p>
+                    <div class="card-price">
+                        <div>
+                            <strong>6.881.000&nbsp;VNĐ</strong>
+                            <small>Có sẵn tại showroom</small>
+                        </div>
+                        <button class="vf-btn vf-btn--ghost">Đặt trước</button>
+                    </div>
+                </div>
+            </article>
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VF 5 tấm che pin cao áp">
+                    <span class="badge dong-xe">VF 5</span>
+                </div>
+                <div class="card-body">
+                    <h3>Tấm che pin cao áp VF 5</h3>
+                    <p>Bản nhẹ dành cho đô thị, hạn chế ảnh hưởng khoảng sáng gầm.</p>
+                    <div class="card-price">
+                        <div>
+                            <strong>4.948.000&nbsp;VNĐ</strong>
+                            <small>Tặng công lắp đặt</small>
+                        </div>
+                        <button class="vf-btn vf-btn--ghost">Đặt ngay</button>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container khoi-san-pham" id="oto-xang" data-animate>
+        <div class="khoi-san-pham__header">
+            <div>
+                <p class="nhan-phu">Phụ kiện ô tô xăng</p>
+                <h2>Phong cách sống VinFast</h2>
+                <p>Bộ film cách nhiệt và thanh giá nóc đồng bộ theo chuẩn thiết kế nguyên bản.</p>
+            </div>
+            <div class="khoi-san-pham__meta">
+                <span class="chip chip--ghost">Ưu đãi tháng 11</span>
+                <a href="#" class="xem-them">Xem tất cả</a>
+            </div>
+        </div>
+        <div class="day-the">
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Film VF7">
+                    <span class="badge dong-xe">VF 7</span>
+                </div>
+                <div class="card-body">
+                    <h3>Gói film cách nhiệt dán trần</h3>
+                    <p>Chống tia UV 99%, vật liệu Ceramic giữ cabin luôn mát.</p>
+                    <div class="card-price">
+                        <strong>5.625.000&nbsp;VNĐ</strong>
+                        <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </article>
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Film VF3">
+                    <span class="badge dong-xe">VF 3</span>
+                </div>
+                <div class="card-body">
+                    <h3>Gói film cách nhiệt VF 3</h3>
+                    <p>Giải pháp toàn xe, bảo hành bong tróc 03 năm.</p>
+                    <div class="card-price">
+                        <strong>5.000.000&nbsp;VNĐ</strong>
+                        <button class="vf-btn vf-btn--ghost">Đặt mua</button>
+                    </div>
+                </div>
+            </article>
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Thanh ngang VF3">
+                    <span class="badge dong-xe">VF 3</span>
+                </div>
+                <div class="card-body">
+                    <h3>Bộ thanh ngang giá nóc</h3>
+                    <p>Gia tăng sức chứa lên 40 kg, khóa chống trộm kèm theo.</p>
+                    <div class="card-price">
+                        <strong>1.437.000&nbsp;VNĐ</strong>
+                        <button class="vf-btn vf-btn--ghost">Đặt ngay</button>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container khoi-san-pham" id="xe-may" data-animate>
+        <div class="khoi-san-pham__header">
+            <div>
+                <p class="nhan-phu">Phụ kiện xe máy điện</p>
+                <h2>Nerio Green & VF 6</h2>
+                <p>Giải pháp bảo vệ pin và nâng cấp phong cách cho xe máy điện.</p>
+            </div>
+            <div class="khoi-san-pham__meta">
+                <span class="chip">Best seller</span>
+            </div>
+        </div>
+        <div class="day-the">
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Nerio Green">
+                    <span class="badge dong-xe">Nerio</span>
+                </div>
+                <div class="card-body">
+                    <h3>Tấm che pin cao áp Nerio Green</h3>
+                    <p>Thiết kế 3 lớp giảm rung, phù hợp khí hậu nhiệt đới ẩm.</p>
+                    <div class="card-price">
+                        <strong>5.458.000&nbsp;VNĐ</strong>
+                        <button class="vf-btn vf-btn--ghost">Đặt mua</button>
+                    </div>
+                </div>
+            </article>
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VF 6">
+                    <span class="badge dong-xe">VF 6</span>
+                </div>
+                <div class="card-body">
+                    <h3>Tấm che pin cao áp VF 6</h3>
+                    <p>Vật liệu composite tối ưu, giảm trọng lượng 12%.</p>
+                    <div class="card-price">
+                        <strong>6.879.000&nbsp;VNĐ</strong>
+                        <button class="vf-btn vf-btn--ghost">Đặt trước</button>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container khoi-san-pham" id="sac-luu-tru" data-animate>
+        <div class="khoi-san-pham__header">
+            <div>
+                <p class="nhan-phu">Pin & lưu trữ</p>
+                <h2>Sạc tại nhà & trạm công cộng</h2>
+                <p>Kết hợp pin LFP với bộ sạc 3 kW, tiện lợi cho căn hộ và showroom.</p>
+            </div>
+        </div>
+        <div class="day-the day-the--single">
+            <article class="phu-kien-card">
+                <div class="card-media">
+                    <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Sạc tại nhà 3kW">
+                    <span class="badge dong-xe">Gia đình</span>
+                </div>
+                <div class="card-body">
+                    <h3>Bộ sạc tại nhà 3 kW</h3>
+                    <p>Chuẩn chống nước IP55, kết nối VinFast App theo dõi trạng thái.</p>
+                    <div class="card-price">
+                        <strong>8.836.365&nbsp;VNĐ</strong>
+                        <button class="vf-btn vf-btn--ghost">Đăng ký lắp đặt</button>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container tien-ich" data-animate>
+        <article>
+            <h3>Tiện ích mua sắm</h3>
+            <p>Đặt lịch dịch vụ, nhận phụ kiện tại showroom hoặc giao tận nhà.</p>
+            <ul>
+                <li>So sánh giá giữa các dòng VF ngay trên trang.</li>
+                <li>Ước tính chi phí lăn bánh, gói vay trả góp.</li>
+                <li>Đổi trả dễ dàng trong 07 ngày.</li>
+            </ul>
+        </article>
+        <article>
+            <h3>Hỗ trợ hậu mãi</h3>
+            <p>Bảo hành chính hãng, hướng dẫn lắp đặt và sử dụng chi tiết.</p>
+            <ul>
+                <li>Tư vấn chọn trạm sạc, chính sách pin linh hoạt.</li>
+                <li>Hotline 1900 23 23 89 hỗ trợ 24/7.</li>
+                <li>Dịch vụ lưu động tại 30 tỉnh thành.</li>
+            </ul>
+        </article>
+        <article>
+            <h3>Đăng ký nhận tin</h3>
+            <p>Nhận thông báo sớm nhất về bộ sưu tập phụ kiện mới.</p>
+            <form class="form-dang-ky">
+                <input type="email" placeholder="Email của bạn">
+                <label>
+                    <input type="checkbox" checked>
+                    Tôi đồng ý nhận thông tin từ VinFast.
+                </label>
+                <button type="submit" class="vf-btn vf-btn--primary">Đăng ký</button>
+            </form>
+        </article>
+    </section>
+</main>
+
+<div th:replace="fragments/chan-trang :: chanTrang"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+<script>
+    (function () {
+        const tabButtons = document.querySelectorAll('.chip-tab');
+        const tabContainer = document.querySelector('.tab-danh-muc__chips');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(item => item.classList.remove('is-active'));
+                button.classList.add('is-active');
+                const target = document.getElementById(button.dataset.target);
+                if (target) {
+                    const offset = (tabContainer?.offsetHeight || 80) + 120;
+                    window.scrollTo({
+                        top: target.offsetTop - offset,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    })();
+</script>
+<script>
+    (function () {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.25 });
+
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+    })();
+</script>
+
+</body>
+</html>
+

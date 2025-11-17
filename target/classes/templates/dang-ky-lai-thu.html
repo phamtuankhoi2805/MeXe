@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng ký lái thử VinFast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <link rel="stylesheet" th:href="@{/css/dang-ky.css}" href="/css/dang-ky.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+
+<main class="test-drive-page">
+    <section class="vf-container test-drive-hero" data-animate>
+        <div>
+            <p class="eyebrow">Trải nghiệm thực tế</p>
+            <h1>Đăng ký lái thử xe điện VinFast</h1>
+            <p>Chọn mẫu xe yêu thích, thời gian phù hợp và showroom gần bạn nhất. Chúng tôi sẽ liên hệ xác nhận trong 30 phút.</p>
+            <div class="hero-highlights">
+                <article>
+                    <strong>30+</strong>
+                    <span>Mẫu xe sẵn sàng lái thử</span>
+                </article>
+                <article>
+                    <strong>63 tỉnh</strong>
+                    <span>Showroom & đại lý</span>
+                </article>
+                <article>
+                    <strong>Miễn phí</strong>
+                    <span>Bảo hiểm hành trình</span>
+                </article>
+            </div>
+        </div>
+        <form class="test-drive-form">
+            <h2>Đặt lịch ngay</h2>
+            <label>
+                Họ và tên
+                <input type="text" placeholder="Trần Thanh Huyền" required>
+            </label>
+            <label>
+                Số điện thoại
+                <input type="tel" placeholder="0987 654 321" required>
+            </label>
+            <label>
+                Email
+                <input type="email" placeholder="email@vinfast.vn" required>
+            </label>
+            <label>
+                Chọn mẫu xe
+                <select required>
+                    <option value="">-- Chọn mẫu xe --</option>
+                    <option>VF 3</option>
+                    <option>VF 6</option>
+                    <option>VF 7</option>
+                    <option>VF 8</option>
+                    <option>VF 9</option>
+                </select>
+            </label>
+            <label class="field-inline">
+                <span>Ngày mong muốn</span>
+                <input type="date" required>
+            </label>
+            <label class="field-inline">
+                <span>Khung giờ</span>
+                <select required>
+                    <option>Sáng (8h - 11h)</option>
+                    <option>Chiều (13h - 16h)</option>
+                    <option>Tối (17h - 20h)</option>
+                </select>
+            </label>
+            <label>
+                Showroom gần bạn
+                <select required>
+                    <option value="">-- Chọn tỉnh/thành --</option>
+                    <option>Hà Nội</option>
+                    <option>TP. Hồ Chí Minh</option>
+                    <option>Đà Nẵng</option>
+                    <option>Cần Thơ</option>
+                    <option>Hải Phòng</option>
+                </select>
+            </label>
+            <label>
+                Ghi chú
+                <textarea rows="3" placeholder="Yêu cầu đặc biệt..."></textarea>
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" checked>
+                Tôi đồng ý để VinFast liên hệ tư vấn và xác nhận lịch hẹn.
+            </label>
+            <button type="submit" class="vf-btn vf-btn--primary">Gửi yêu cầu</button>
+        </form>
+    </section>
+</main>
+
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+<script>
+    (function () {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+    })();
+</script>
+</body>
+</html>
+

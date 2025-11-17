@@ -1,0 +1,230 @@
+:root {
+    --cart-blue: #0048ff;
+    --cart-dark: #07142d;
+    --cart-gray: #5a647f;
+    --cart-border: rgba(7, 20, 45, 0.12);
+}
+
+.cart-page {
+    background: linear-gradient(180deg, #f7f9ff 0%, #ffffff 60%, #f1f4fb 100%);
+    padding-bottom: 100px;
+}
+
+.cart-hero {
+    margin-top: 60px;
+    padding: clamp(30px, 4vw, 52px);
+    border-radius: 32px;
+    background: radial-gradient(circle at top right, rgba(0, 72, 255, 0.16), rgba(255, 255, 255, 0.95));
+    box-shadow: 0 30px 66px rgba(3, 16, 44, 0.12);
+}
+
+.cart-hero h1 {
+    margin: 10px 0 16px;
+    font-size: clamp(2.1rem, 2.4vw + 1rem, 3rem);
+    color: var(--cart-dark);
+}
+
+.cart-layout {
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.cart-items,
+.cart-summary {
+    background: #ffffff;
+    border-radius: 24px;
+    border: 1px solid var(--cart-border);
+    box-shadow: 0 20px 50px rgba(2, 12, 36, 0.08);
+}
+
+.cart-items {
+    padding: 26px;
+}
+
+.cart-items header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.cart-items h2,
+.cart-summary h2 {
+    margin: 0;
+    color: var(--cart-dark);
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(7, 20, 45, 0.08);
+}
+
+.cart-item img {
+    width: 96px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(4, 12, 34, 0.1);
+}
+
+.cart-item__info {
+    display: grid;
+    gap: 6px;
+}
+
+.cart-item:last-of-type {
+    border-bottom: none;
+}
+
+.cart-item h3 {
+    margin: 0 0 6px;
+    color: var(--cart-dark);
+}
+
+.cart-item p {
+    margin: 0 0 8px;
+    color: var(--cart-gray);
+}
+
+.cart-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--cart-gray);
+}
+
+.cart-item input {
+    width: 64px;
+    border-radius: 12px;
+    border: 1px solid var(--cart-border);
+    padding: 6px;
+    text-align: center;
+}
+
+.cart-note {
+    margin-top: 18px;
+    padding: 12px;
+    border-radius: 14px;
+    background: #f4f7ff;
+    color: var(--cart-gray);
+}
+
+.cart-summary {
+    padding: 24px;
+    display: grid;
+    gap: 20px;
+    align-self: start;
+}
+
+.guest-form {
+    display: grid;
+    gap: 12px;
+}
+
+.guest-form label {
+    display: grid;
+    gap: 4px;
+    color: var(--cart-dark);
+    font-weight: 600;
+}
+
+.guest-form input,
+.guest-form textarea {
+    border-radius: 14px;
+    border: 1px solid var(--cart-border);
+    padding: 12px;
+    font-family: inherit;
+}
+
+.summary-total {
+    border-top: 1px solid rgba(7, 20, 45, 0.08);
+    padding-top: 16px;
+    display: grid;
+    gap: 10px;
+}
+
+.summary-total div {
+    display: flex;
+    justify-content: space-between;
+    color: var(--cart-dark);
+}
+
+.summary-grand {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.payment-options {
+    border-top: 1px solid rgba(7, 20, 45, 0.08);
+    padding-top: 16px;
+    display: grid;
+    gap: 8px;
+    color: var(--cart-dark);
+}
+
+.payment-options label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.secure-note {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--cart-gray);
+    text-align: center;
+}
+
+.faq {
+    margin-top: 80px;
+}
+
+.faq-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.faq-grid article {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--cart-border);
+    box-shadow: 0 16px 36px rgba(4, 12, 34, 0.08);
+}
+
+.faq-grid h3 {
+    margin: 0 0 8px;
+    color: var(--cart-dark);
+}
+
+.faq-grid p {
+    margin: 0;
+    color: var(--cart-gray);
+}
+
+[data-animate] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+[data-animate].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 992px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+}
+

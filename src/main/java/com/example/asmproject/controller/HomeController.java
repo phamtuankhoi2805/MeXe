@@ -32,4 +32,46 @@ public class HomeController {
         moHinh.addAttribute(TRANG_DANG_CHON, "dich-vu");
         return "dich-vu-pin";
     }
+
+    @GetMapping("/dich-vu-hau-mai")
+    public String hienThiDichVuHauMai(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "dich-vu");
+        return "dich-vu-hau-mai";
+    }
+
+    @GetMapping("/ve-chung-toi")
+    public String hienThiVeChungToi(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "gioi-thieu");
+        return "ve-chung-toi";
+    }
+
+    @GetMapping("/tin-tuc")
+    public String hienThiTinTuc(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "tin-tuc");
+        return "tin-tuc";
+    }
+
+    @GetMapping("/dang-ky/tai-khoan")
+    public String hienThiDangKyTaiKhoan(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "dang-ky");
+        return "dang-ky-tai-khoan";
+    }
+
+    @GetMapping("/dang-ky/lai-thu")
+    public String hienThiDangKyLaiThu(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "dang-ky");
+        return "dang-ky-lai-thu";
+    }
+
+    @GetMapping("/dat-mua/xe-may-dien")
+    public String hienThiTrangDatMuaXeMay(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "san-pham");
+        return "dat-mua-xe-may";
+    }
+
+    @GetMapping("/gio-hang")
+    public String hienThiGioHang(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "gio-hang");
+        return "gio-hang";
+    }
 }

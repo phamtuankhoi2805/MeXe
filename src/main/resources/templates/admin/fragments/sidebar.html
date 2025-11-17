@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="admin-sidebar" th:fragment="sidebar(activePage)">
+    <div class="admin-sidebar__logo">
+        <img src="/image/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
+        <span>Admin Center</span>
+    </div>
+    <nav class="admin-sidebar__nav">
+        <a th:href="@{/admin}" th:classappend="${activePage} == 'dashboard' ? ' is-active'">
+            <span>Dashboard</span>
+            <small>Tổng quan</small>
+        </a>
+        <a th:href="@{/admin/san-pham}" th:classappend="${activePage} == 'san-pham' ? ' is-active'">
+            <span>Sản phẩm</span>
+            <small>Xe & phụ kiện</small>
+        </a>
+        <a th:href="@{/admin/don-hang}" th:classappend="${activePage} == 'don-hang' ? ' is-active'">
+            <span>Đơn hàng</span>
+            <small>Trạng thái xử lý</small>
+        </a>
+        <a href="#">
+            <span>Báo cáo</span>
+            <small>Doanh thu, pin</small>
+        </a>
+        <a href="#">
+            <span>Cấu hình</span>
+            <small>Người dùng & phân quyền</small>
+        </a>
+    </nav>
+    <div class="admin-sidebar__footer">
+        <p>Hotline hỗ trợ</p>
+        <strong>1900 23 23 89</strong>
+    </div>
+</aside>
+</body>
+</html>
+

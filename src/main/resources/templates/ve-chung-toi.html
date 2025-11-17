@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Về VinFast | Kiến tạo tương lai di chuyển xanh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <link rel="stylesheet" th:href="@{/css/ve-chung-toi.css}" href="/css/ve-chung-toi.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+
+<main class="about-page">
+    <section class="vf-container about-hero" data-animate>
+        <div class="about-hero__content">
+            <p class="eyebrow">VinFast toàn cầu</p>
+            <h1>Kiến tạo tương lai di chuyển bền vững cho mọi người</h1>
+            <p>
+                VinFast thuộc Tập đoàn Vingroup, mang trong mình sứ mệnh thúc đẩy cuộc cách mạng xe điện toàn cầu bằng những sản
+                phẩm thông minh, chính sách hậu mãi vượt trội và tinh thần đặt khách hàng làm trọng tâm.
+            </p>
+            <div class="about-hero__actions">
+                <button class="vf-btn vf-btn--primary">Tải hồ sơ doanh nghiệp</button>
+                <a class="vf-btn vf-btn--ghost" href="#hanh-trinh">Xem hành trình</a>
+            </div>
+            <dl class="about-hero__stats">
+                <div>
+                    <dt>2017</dt>
+                    <dd>Năm thành lập tại Hải Phòng</dd>
+                </div>
+                <div>
+                    <dt>3</dt>
+                    <dd>Trung tâm R&amp;D tại Việt Nam, Mỹ, Úc</dd>
+                </div>
+                <div>
+                    <dt>122+</dt>
+                    <dd>Showroom &amp; xưởng dịch vụ toàn cầu</dd>
+                </div>
+                <div>
+                    <dt>Nasdaq: VFS</dt>
+                    <dd>Niêm yết 08.2023</dd>
+                </div>
+            </dl>
+        </div>
+        <div class="about-hero__media">
+            <figure class="hero-visual">
+                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=80" alt="Nhà máy thông minh VinFast">
+                <figcaption>Nhà máy thông minh tại Hải Phòng - hoạt động theo chuẩn công nghiệp 4.0</figcaption>
+            </figure>
+            <div class="media-highlight">
+                <span class="chip">Trái tim VinFast</span>
+                <h3>Tổ hợp sản xuất 335 ha</h3>
+                <p>Tích hợp khu R&amp;D, xưởng thân xe, sơn, lắp ráp và hệ thống kiểm định tự động.</p>
+                <ul>
+                    <li>90% quy trình tự động hóa</li>
+                    <li>Hệ sinh thái pin - trạm sạc phủ 63 tỉnh thành</li>
+                    <li>Chuỗi cung ứng xanh, truy xuất nguồn gốc</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="vf-container about-pillars" data-animate>
+        <header class="section-header">
+            <small>Tầm nhìn &amp; sứ mệnh</small>
+            <h2>Nỗ lực cho một tương lai xanh</h2>
+            <p>Từ khâu thiết kế, sản xuất đến trải nghiệm khách hàng, VinFast tiên phong đặt tiêu chuẩn cho ngành xe điện Việt Nam và thế giới.</p>
+        </header>
+        <div class="pillar-grid">
+            <article class="pillar-card">
+                <h3>Tầm nhìn</h3>
+                <p>Trở thành thương hiệu xe điện thông minh dẫn dắt chuyển dịch bền vững toàn cầu.</p>
+                <span>Đổi mới không ngừng</span>
+            </article>
+            <article class="pillar-card">
+                <h3>Sứ mệnh</h3>
+                <p>Vì một tương lai xanh cho mọi người thông qua giải pháp di chuyển an toàn, thông minh và dễ tiếp cận.</p>
+                <span>Lấy con người làm trung tâm</span>
+            </article>
+            <article class="pillar-card">
+                <h3>Giá trị cốt lõi</h3>
+                <ul>
+                    <li>Sản phẩm đẳng cấp</li>
+                    <li>Giá hợp lý</li>
+                    <li>Chính sách hậu mãi vượt trội</li>
+                </ul>
+                <span>Khách hàng là trọng tâm</span>
+            </article>
+            <article class="pillar-card">
+                <h3>Hệ sinh thái</h3>
+                <p>Kết hợp showroom, trạm sạc, ứng dụng kết nối và dịch vụ tận nơi, tạo nên trải nghiệm liền mạch.</p>
+                <span>Đồng bộ từ online đến offline</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container about-trajectory" id="hanh-trinh" data-animate>
+        <header class="section-header">
+            <small>Cột mốc nổi bật</small>
+            <h2>Hành trình bứt tốc</h2>
+            <p>Từ ngày ra mắt đến khi niêm yết trên Nasdaq, VinFast liên tục lập nên các dấu mốc mới cho ngành xe điện Việt Nam.</p>
+        </header>
+        <ol class="timeline">
+            <li>
+                <time datetime="2023-08-15">15.08.2023</time>
+                <h3>Niêm yết trên Nasdaq Global Select Market</h3>
+                <p>VinFast trở thành doanh nghiệp Việt tiên phong lên sàn chứng khoán Mỹ với mã cổ phiếu VFS.</p>
+            </li>
+            <li>
+                <time datetime="2023-04-21">21.04.2023</time>
+                <h3>Bàn giao VF 5 Plus cho khách hàng</h3>
+                <p>Mở rộng danh mục xe điện phổ thông, đáp ứng nhu cầu di chuyển đô thị linh hoạt.</p>
+            </li>
+            <li>
+                <time datetime="2023-03-27">27.03.2023</time>
+                <h3>VF 9 đến tay những chủ nhân đầu tiên</h3>
+                <p>Đánh dấu bước tiến trong phân khúc SUV điện cao cấp với công nghệ ADAS mới nhất.</p>
+            </li>
+            <li>
+                <time datetime="2022-04-26">26.04.2022</time>
+                <h3>Ra mắt 5 mẫu xe máy điện LFP</h3>
+                <p>VinFast tiên phong sử dụng pin LFP cho xe máy điện, tối ưu độ bền và an toàn.</p>
+            </li>
+            <li>
+                <time datetime="2022-03-29">29.03.2022</time>
+                <h3>Ký kết xây dựng nhà máy đầu tiên tại Bắc Carolina</h3>
+                <p>Củng cố chiến lược sản xuất tại thị trường trọng điểm Bắc Mỹ.</p>
+            </li>
+        </ol>
+    </section>
+
+    <section class="about-global" data-animate>
+        <div class="vf-container about-global__inner">
+            <header>
+                <small>Dấu chân toàn cầu</small>
+                <h2>Mạng lưới từ Việt Nam đến Mỹ, châu Âu</h2>
+                <p>VinFast thu hút nhân tài quốc tế, hợp tác với các thương hiệu biểu tượng và xây dựng chuỗi cung ứng bền vững.</p>
+            </header>
+            <div class="about-global__grid">
+                <article class="global-card">
+                    <span class="chip">Việt Nam</span>
+                    <h3>Hải Phòng</h3>
+                    <p>Trung tâm sản xuất &amp; R&amp;D, phòng thí nghiệm pin, hệ thống kiểm định chuẩn quốc tế.</p>
+                </article>
+                <article class="global-card">
+                    <span class="chip">Hoa Kỳ</span>
+                    <h3>California &amp; Bắc Carolina</h3>
+                    <p>Studio thiết kế, trung tâm trải nghiệm khách hàng và nhà máy mới tại Chatham County.</p>
+                </article>
+                <article class="global-card">
+                    <span class="chip">Châu Âu</span>
+                    <h3>Paris, Frankfurt</h3>
+                    <p>Mạng lưới showroom cùng đội ngũ chuyên gia EU, đáp ứng tiêu chuẩn khắt khe về an toàn.</p>
+                </article>
+                <article class="global-card">
+                    <span class="chip">Châu Á - Thái Bình Dương</span>
+                    <h3>Sydney &amp; Jakarta</h3>
+                    <p>Trung tâm R&amp;D và đối tác phân phối chiến lược phục vụ thị trường khu vực.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="vf-container innovation" data-animate>
+        <header class="section-header">
+            <small>Đổi mới sáng tạo</small>
+            <h2>Công nghệ làm nên sự khác biệt</h2>
+            <p>Từ phần mềm đến phần cứng, VinFast phát triển hệ thống thông minh giúp trải nghiệm lái xe điện an toàn, cá nhân hóa.</p>
+        </header>
+        <div class="innovation-grid">
+            <article>
+                <h3>Nền tảng xe điện thông minh</h3>
+                <p>Hỗ trợ cập nhật phần mềm OTA, trợ lý giọng nói tiếng Việt, hệ sinh thái ứng dụng kết nối VinFast App.</p>
+                <ul>
+                    <li>ADAS cấp độ 2+</li>
+                    <li>Điều khiển từ xa qua ứng dụng</li>
+                    <li>Giám sát pin theo thời gian thực</li>
+                </ul>
+            </article>
+            <article>
+                <h3>Chuỗi pin - sạc linh hoạt</h3>
+                <p>Kết hợp thuê pin, đổi pin và sạc nhanh DC, tối ưu tổng chi phí sở hữu cho khách hàng.</p>
+                <ul>
+                    <li>Pin LFP an toàn, bền bỉ</li>
+                    <li>Hơn 150.000 điểm sạc &amp; đổi pin</li>
+                    <li>Cam kết tái chế, tái sử dụng</li>
+                </ul>
+            </article>
+            <article>
+                <h3>Dịch vụ hậu mãi vượt trội</h3>
+                <p>Chính sách bảo hành tới 10 năm cho ô tô điện, đội ngũ hỗ trợ lưu động 24/7 trên toàn quốc.</p>
+                <ul>
+                    <li>Ứng cứu pin tận nơi</li>
+                    <li>Giao xe &amp; bảo dưỡng tại nhà</li>
+                    <li>Hệ thống đặt lịch online</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container sustainability" data-animate>
+        <header class="section-header">
+            <small>Phát triển bền vững</small>
+            <h2>Cam kết trách nhiệm với cộng đồng</h2>
+            <p>VinFast triển khai nhiều chương trình bảo vệ môi trường, nâng cao đời sống người Việt và đóng góp cho các thị trường quốc tế.</p>
+        </header>
+        <div class="sustainability-grid">
+            <article>
+                <h3>Trung hòa carbon</h3>
+                <p>Tối ưu tiêu thụ năng lượng tại nhà máy, đầu tư năng lượng tái tạo và chương trình trồng rừng tại Việt Nam.</p>
+                <span>Net-zero 2040</span>
+            </article>
+            <article>
+                <h3>Kinh tế tuần hoàn</h3>
+                <p>Tái sử dụng pin sau vòng đời xe, thu hồi linh kiện và hợp tác với đối tác tái chế quốc tế.</p>
+                <span>100% pin được truy xuất</span>
+            </article>
+            <article>
+                <h3>Trao quyền cộng đồng</h3>
+                <p>Đào tạo kỹ năng xanh cho lao động địa phương, hỗ trợ giáo dục STEM và học bổng cho thế hệ trẻ.</p>
+                <span>10.000+ giờ đào tạo/năm</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container awards" data-animate>
+        <header class="section-header">
+            <small>Thành tựu</small>
+            <h2>Dấu ấn được ghi nhận</h2>
+            <p>Những giải thưởng và kỷ lục quốc gia là lời khẳng định cho nỗ lực sáng tạo không ngừng của VinFast.</p>
+        </header>
+        <div class="awards-grid">
+            <article>
+                <h3>Xe được yêu thích nhất</h3>
+                <p>Fadil, Lux A2.0, Lux SA2.0, VF e34 đồng loạt được cộng đồng OTOFUN &amp; OTOSAIGON bình chọn năm 2022.</p>
+            </article>
+            <article>
+                <h3>Kỷ lục caravan xe điện</h3>
+                <p>111 xe VF e34 chinh phục cực Đông Bắc, xác lập kỷ lục Việt Nam tháng 04.2022.</p>
+            </article>
+            <article>
+                <h3>Giải thưởng Tinh tế 2021</h3>
+                <p>VF e34 được bình chọn là &#34;Xe điện đáng mong chờ nhất&#34; bởi cộng đồng công nghệ.</p>
+            </article>
+            <article>
+                <h3>Gian hàng ấn tượng CES</h3>
+                <p>VinFast gây chú ý tại CES 2022 với dải sản phẩm VF 8, VF 9, VF 5, VF 6, VF 7.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container leadership" data-animate>
+        <header class="section-header">
+            <small>Đội ngũ lãnh đạo</small>
+            <h2>Tập hợp chuyên gia hàng đầu</h2>
+            <p>VinFast quy tụ nhân sự nhiều năm kinh nghiệm tại các hãng xe, công nghệ và năng lượng toàn cầu.</p>
+        </header>
+        <div class="leadership-grid">
+            <article>
+                <h3>Tư duy toàn cầu</h3>
+                <p>Kết hợp chuyên gia Việt Nam và quốc tế trong lĩnh vực sản xuất, công nghệ pin, thiết kế và vận hành.</p>
+            </article>
+            <article>
+                <h3>Văn hóa tốc độ</h3>
+                <p>Lấy tinh thần &#34;Tốc độ - Hiệu quả - Sáng tạo&#34; làm kim chỉ nam trong mọi quyết định kinh doanh.</p>
+            </article>
+            <article>
+                <h3>Đặt khách hàng làm trọng tâm</h3>
+                <p>Mọi sản phẩm và dịch vụ đều bắt đầu từ nhu cầu người dùng, liên tục được cải tiến qua dữ liệu thực tế.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container about-cta" data-animate>
+        <div>
+            <p class="eyebrow">Hợp tác cùng VinFast</p>
+            <h2>Đồng hành trên hành trình chuyển đổi xanh</h2>
+            <p>Liên hệ để trở thành đối tác phân phối, nhà cung ứng, hoặc tham gia đội ngũ VinFast toàn cầu.</p>
+        </div>
+        <div class="cta-actions">
+            <button class="vf-btn vf-btn--primary">Liên hệ doanh nghiệp</button>
+            <a class="vf-btn vf-btn--ghost" href="https://vinfastauto.com/vn_vi/ve-chung-toi" target="_blank" rel="noreferrer">Tìm hiểu thêm</a>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+<script>
+    (function () {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+    })();
+</script>
+</body>
+</html>
+

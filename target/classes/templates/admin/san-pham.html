@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VinFast Admin | Quản lý sản phẩm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <p class="eyebrow">Sản phẩm</p>
+                <h1>Danh mục xe máy điện & phụ kiện</h1>
+            </div>
+            <div class="admin-topbar__actions">
+                <button class="adm-btn adm-btn--ghost">Nhập từ Excel</button>
+                <button class="adm-btn adm-btn--primary">Thêm sản phẩm</button>
+            </div>
+        </header>
+
+        <section class="admin-content">
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span>Trạng thái:</span>
+                    <button class="chip is-active">Đang bán</button>
+                    <button class="chip">Sắp ra mắt</button>
+                    <button class="chip">Tạm ngưng</button>
+                </div>
+                <input type="search" placeholder="Tìm theo tên sản phẩm, SKU...">
+            </div>
+
+            <div class="admin-grid">
+                <article class="admin-card product-card">
+                    <div class="product-card__header">
+                        <div>
+                            <h2>Feliz 2025</h2>
+                            <p>Phiên bản 02 pin, màu sắc tùy chọn</p>
+                        </div>
+                        <span class="tag tag--success">Đang bán</span>
+                    </div>
+                    <figure class="product-card__media">
+                        <img src="/image/evo200.jpg" alt="Feliz 2025">
+                    </figure>
+                    <ul>
+                        <li>SKU: VF-FZ-2025</li>
+                        <li>Giá: 29.000.000 ₫</li>
+                        <li>Tồn kho: 240 xe</li>
+                    </ul>
+                    <div class="product-card__actions">
+                        <button class="adm-btn adm-btn--ghost">Chỉnh sửa</button>
+                        <button class="adm-btn">Nhân bản</button>
+                    </div>
+                </article>
+
+                <article class="admin-card product-card">
+                    <div class="product-card__header">
+                        <div>
+                            <h2>Vero X</h2>
+                            <p>Phân khúc cao cấp, phanh ABS 2 kênh</p>
+                        </div>
+                        <span class="tag tag--warning">Sắp ra mắt</span>
+                    </div>
+                    <figure class="product-card__media">
+                        <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Vero X">
+                    </figure>
+                    <ul>
+                        <li>SKU: VF-VX-2025</li>
+                        <li>Giá dự kiến: 49.000.000 ₫</li>
+                        <li>Pre-order: 1.200</li>
+                    </ul>
+                    <div class="product-card__actions">
+                        <button class="adm-btn adm-btn--ghost">Chỉnh sửa</button>
+                        <button class="adm-btn">Tạo khuyến mại</button>
+                    </div>
+                </article>
+
+                <article class="admin-card product-card">
+                    <div class="product-card__header">
+                        <div>
+                            <h2>Evo Grand Lite</h2>
+                            <p>Mẫu học sinh, trọng lượng nhẹ</p>
+                        </div>
+                        <span class="tag tag--success">Đang bán</span>
+                    </div>
+                    <figure class="product-card__media">
+                        <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Evo Grand Lite">
+                    </figure>
+                    <ul>
+                        <li>SKU: VF-EGL-2024</li>
+                        <li>Giá: 18.900.000 ₫</li>
+                        <li>Tồn kho: 410 xe</li>
+                    </ul>
+                    <div class="product-card__actions">
+                        <button class="adm-btn adm-btn--ghost">Chỉnh sửa</button>
+                        <button class="adm-btn">Cập nhật tồn kho</button>
+                    </div>
+                </article>
+            </div>
+
+            <div class="admin-card">
+                <header>
+                    <h2>Bảng sản phẩm chi tiết</h2>
+                </header>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>SKU</th>
+                            <th>Giá</th>
+                            <th>Tồn kho</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Klara Neo</td>
+                            <td>VF-KN-2024</td>
+                            <td>33.000.000 ₫</td>
+                            <td>178</td>
+                            <td><span class="tag tag--success">Hiển thị</span></td>
+                            <td><a href="#">Chi tiết</a></td>
+                        </tr>
+                        <tr>
+                            <td>Feliz Lite</td>
+                            <td>VF-FL-2023</td>
+                            <td>21.000.000 ₫</td>
+                            <td>92</td>
+                            <td><span class="tag tag--success">Hiển thị</span></td>
+                            <td><a href="#">Chi tiết</a></td>
+                        </tr>
+                        <tr>
+                            <td>Gói phụ kiện Premium</td>
+                            <td>ACC-PRM-01</td>
+                            <td>3.500.000 ₫</td>
+                            <td>540</td>
+                            <td><span class="tag tag--warning">Ẩn tạm</span></td>
+                            <td><a href="#">Chi tiết</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
+

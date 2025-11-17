@@ -1,0 +1,209 @@
+:root {
+    --purchase-blue: #0050ff;
+    --purchase-dark: #06122c;
+    --purchase-gray: #5c6785;
+    --purchase-border: rgba(6, 18, 44, 0.12);
+}
+
+.purchase-page {
+    background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 60%, #f2f5fb 100%);
+    padding-bottom: 100px;
+}
+
+.purchase-hero {
+    margin-top: 60px;
+    padding: clamp(32px, 4vw, 58px);
+    border-radius: 36px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(24px, 3vw, 48px);
+    background: radial-gradient(circle at top left, rgba(0, 80, 255, 0.16), rgba(255, 255, 255, 0.92));
+    box-shadow: 0 34px 70px rgba(3, 18, 54, 0.12);
+}
+
+.purchase-hero h1 {
+    margin: 12px 0 18px;
+    font-size: clamp(2.2rem, 2.4vw + 1rem, 3.1rem);
+    color: var(--purchase-dark);
+}
+
+.purchase-hero p {
+    color: var(--purchase-gray);
+}
+
+.purchase-hero ul {
+    margin: 20px 0 0;
+    padding-left: 18px;
+    color: var(--purchase-gray);
+    display: grid;
+    gap: 6px;
+}
+
+.hero-actions {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.purchase-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 24px;
+    border: 1px solid rgba(0, 80, 255, 0.2);
+    box-shadow: 0 24px 50px rgba(2, 14, 46, 0.12);
+    display: grid;
+    gap: 12px;
+}
+
+.purchase-card a {
+    color: var(--purchase-blue);
+    font-weight: 600;
+}
+
+.model-showcase {
+    margin-top: 80px;
+}
+
+.model-grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.model-grid article {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 22px;
+    border: 1px solid var(--purchase-border);
+    box-shadow: 0 18px 44px rgba(4, 16, 46, 0.08);
+    display: grid;
+    gap: 12px;
+}
+
+.model-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.model-head h3 {
+    margin: 0;
+    color: var(--purchase-dark);
+}
+
+.tag {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 80, 255, 0.3);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--purchase-blue);
+}
+
+.model-grid ul {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--purchase-gray);
+    display: grid;
+    gap: 4px;
+}
+
+.model-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.model-actions strong {
+    color: var(--purchase-dark);
+}
+
+.pin-plan {
+    margin-top: 80px;
+}
+
+.plan-table-wrapper {
+    margin-top: 28px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 22px;
+    border: 1px solid var(--purchase-border);
+    box-shadow: 0 18px 44px rgba(4, 18, 52, 0.08);
+}
+
+.plan-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.plan-table-wrapper th,
+.plan-table-wrapper td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(6, 18, 44, 0.08);
+    text-align: left;
+}
+
+.plan-table-wrapper th {
+    font-weight: 600;
+    color: var(--purchase-dark);
+}
+
+.table-note {
+    margin: 16px 0 0;
+    font-size: 0.9rem;
+    color: var(--purchase-gray);
+}
+
+.utilities {
+    margin-top: 80px;
+}
+
+.utility-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.utility-grid article {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--purchase-border);
+    box-shadow: 0 14px 36px rgba(5, 16, 44, 0.08);
+}
+
+.utility-grid h3 {
+    margin: 0 0 8px;
+    color: var(--purchase-dark);
+}
+
+.utility-grid p {
+    margin: 0;
+    color: var(--purchase-gray);
+}
+
+[data-animate] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+[data-animate].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .purchase-hero {
+        padding: 24px;
+    }
+}
+

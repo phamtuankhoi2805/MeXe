@@ -49,20 +49,31 @@
                     <div class="vf-submenu" role="menu">
                         <div class="vf-submenu__column">
                             <a th:href="@{/dich-vu-pin}" class="vf-submenu__link">Dịch vụ pin</a>
-                            <a href="#" class="vf-submenu__link">Dịch vụ hậu mãi</a>
+                            <a th:href="@{/dich-vu-hau-mai}" class="vf-submenu__link">Dịch vụ hậu mãi</a>
                         </div>
                     </div>
                 </li>
+                <li class="vf-nav__item" th:classappend="${trangDangChon == 'gioi-thieu'} ? ' is-active'">
+                    <a th:href="@{/ve-chung-toi}" class="vf-nav__link">Về VinFast</a>
+                </li>
                 <li class="vf-nav__item" th:classappend="${trangDangChon == 'tin-tuc'} ? ' is-active'">
-                    <a href="#" class="vf-nav__link">Tin tức</a>
+                    <a th:href="@{/tin-tuc}" class="vf-nav__link">Tin tức</a>
                 </li>
             </ul>
         </nav>
 
         <div class="vf-actions">
-            <a href="#">Tài khoản</a>
-            <a href="#" class="vf-btn vf-btn--ghost">Đăng ký lái thử</a>
-            <button class="vf-btn vf-btn--primary">Mua ngay</button>
+            <a th:href="@{/dang-ky/tai-khoan}">Tài khoản</a>
+            <a th:href="@{/gio-hang}" class="vf-icon-button" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7.5 6h-3l-1 2v1h2l2.5 8.5h10.5l2.5-9.5h-13z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                    <circle cx="10.5" cy="19.5" r="1.2" fill="currentColor"/>
+                    <circle cx="16.5" cy="19.5" r="1.2" fill="currentColor"/>
+                </svg>
+                <span>Giỏ hàng</span>
+            </a>
+            <a th:href="@{/dang-ky/lai-thu}" class="vf-btn vf-btn--ghost">Đăng ký lái thử</a>
+            <a th:href="@{/dat-mua/xe-may-dien}" class="vf-btn vf-btn--primary">Mua ngay</a>
         </div>
     </div>
 </header>

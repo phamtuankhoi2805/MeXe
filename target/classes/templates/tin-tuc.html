@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tin tức VinFast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <link rel="stylesheet" th:href="@{/css/tin-tuc.css}" href="/css/tin-tuc.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+
+<main class="news-page">
+    <section class="vf-container news-hero" data-animate>
+        <div>
+            <p class="eyebrow">Tin tức VinFast</p>
+            <h1>Hành trình chuyển đổi xanh mỗi ngày</h1>
+            <p>Cập nhật nhanh nhất các cột mốc sản phẩm, sự kiện, đối tác chiến lược và câu chuyện khách hàng từ hệ sinh thái VinFast.</p>
+            <div class="hero-actions">
+                <button class="vf-btn vf-btn--primary">Nhận bản tin</button>
+                <a class="vf-btn vf-btn--ghost" href="#bai-viet">Khám phá bài viết</a>
+            </div>
+        </div>
+        <div class="hero-panel">
+            <span class="chip">Tiêu điểm</span>
+            <h3>VinFast mở rộng mạng lưới showroom tại châu Âu</h3>
+            <p>Paris, Frankfurt, Amsterdam và Copenhagen sẵn sàng tiếp đón khách hàng trải nghiệm VF 6 & VF 7.</p>
+            <div class="meta">
+                <span>Ngày đăng: 10.11.2025</span>
+                <a href="#">Đọc chi tiết →</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="vf-container featured-news" data-animate>
+        <header class="section-header">
+            <small>Góc nhìn chuyên sâu</small>
+            <h2>Bài viết nổi bật</h2>
+        </header>
+        <div class="featured-grid">
+            <article>
+                <img src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1200&q=80" alt="Bàn giao VF 6">
+                <div>
+                    <span class="tag">Sự kiện</span>
+                    <h3>Hơn 500 xe VF 6 được bàn giao trong tháng 10</h3>
+                    <p>Khách hàng tại Hà Nội và TP. HCM đồng loạt nhận xe cùng ưu đãi thuê pin mới.</p>
+                    <div class="card-meta">
+                        <span>06.11.2025</span>
+                        <a href="#">Xem thêm</a>
+                    </div>
+                </div>
+            </article>
+            <article>
+                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80" alt="Nhà máy VinFast">
+                <div>
+                    <span class="tag">Công nghệ</span>
+                    <h3>Trung tâm pin LFP thế hệ 2 chính thức vận hành</h3>
+                    <p>Công suất 500.000 pack/năm, tích hợp hệ thống tái chế và giám sát AI.</p>
+                    <div class="card-meta">
+                        <span>28.10.2025</span>
+                        <a href="#">Xem thêm</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container news-list" id="bai-viet" data-animate>
+        <div class="news-sidebar">
+            <h3>Chủ đề</h3>
+            <ul>
+                <li><a href="#" class="is-active">Tất cả</a></li>
+                <li><a href="#">Sản phẩm</a></li>
+                <li><a href="#">Công nghệ</a></li>
+                <li><a href="#">Dịch vụ</a></li>
+                <li><a href="#">Cộng đồng</a></li>
+            </ul>
+        </div>
+        <div class="news-articles">
+            <article>
+                <span class="tag">Sản phẩm</span>
+                <h3>VF 3 mở đặt cọc tại Mỹ vào tháng 12</h3>
+                <p>VinFast công bố giá bán cạnh tranh và gói hậu mãi riêng cho thị trường Bắc Mỹ.</p>
+                <div class="card-meta">
+                    <span>05.11.2025</span>
+                    <a href="#">Đọc thêm</a>
+                </div>
+            </article>
+            <article>
+                <span class="tag">Dịch vụ</span>
+                <h3>Ứng dụng VinFast App bổ sung tính năng đặt lịch Mobile Service</h3>
+                <p>Khách hàng có thể theo dõi thời gian di chuyển của kỹ thuật viên trực tiếp trên bản đồ.</p>
+                <div class="card-meta">
+                    <span>02.11.2025</span>
+                    <a href="#">Đọc thêm</a>
+                </div>
+            </article>
+            <article>
+                <span class="tag">Cộng đồng</span>
+                <h3>Caravan xe điện chinh phục cung đường Tây Bắc</h3>
+                <p>30 chiếc VF e34 và VF 8 tham gia hành trình 800 km, thiết lập kỷ lục mới về tiết kiệm năng lượng.</p>
+                <div class="card-meta">
+                    <span>28.10.2025</span>
+                    <a href="#">Đọc thêm</a>
+                </div>
+            </article>
+            <article>
+                <span class="tag">Công nghệ</span>
+                <h3>VinFast hợp tác NVIDIA triển khai hệ thống ADAS thế hệ mới</h3>
+                <p>Trợ lý ảo tiếng Việt, đỗ xe tự động và giám sát người lái sẽ có mặt từ 2026.</p>
+                <div class="card-meta">
+                    <span>25.10.2025</span>
+                    <a href="#">Đọc thêm</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container newsletter" data-animate>
+        <div>
+            <h2>Đăng ký nhận bản tin</h2>
+            <p>Nhận thông báo sớm nhất về sản phẩm, ưu đãi và câu chuyện truyền cảm hứng từ cộng đồng người dùng VinFast.</p>
+        </div>
+        <form class="newsletter-form">
+            <input type="email" placeholder="Nhập email của bạn">
+            <button type="submit" class="vf-btn vf-btn--primary">Đăng ký</button>
+        </form>
+    </section>
+</main>
+
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+<script>
+    (function () {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+    })();
+</script>
+</body>
+</html>
+

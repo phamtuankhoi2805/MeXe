@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đặt mua xe máy điện VinFast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <link rel="stylesheet" th:href="@{/css/dat-mua.css}" href="/css/dat-mua.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+
+<main class="purchase-page">
+    <section class="vf-container purchase-hero" data-animate>
+        <div>
+            <p class="eyebrow">Mua xe máy điện VinFast</p>
+            <h1>Chọn xe, đặt cọc online và nhận xe nhanh chóng</h1>
+            <p>Chúng tôi tối giản quy trình để bạn có thể hoàn tất đơn hàng trong vài phút, bao gồm lựa chọn gói pin, phương thức thanh toán và địa điểm giao xe.</p>
+            <ul>
+                <li>Thanh toán nhanh qua thẻ, chuyển khoản hoặc tại showroom</li>
+                <li>Hỗ trợ trả góp và dự toán chi phí minh bạch</li>
+                <li>Dịch vụ hậu mãi, bảo hành chính hãng trên toàn quốc</li>
+            </ul>
+            <div class="hero-actions">
+                <a class="vf-btn vf-btn--primary" th:href="@{/gio-hang}">Xem giỏ hàng</a>
+                <button class="vf-btn vf-btn--ghost">Tư vấn ngay</button>
+            </div>
+        </div>
+        <div class="purchase-card">
+            <h3>Nhắc lịch bảo dưỡng</h3>
+            <p>Bạn sẽ được VinFast nhắc lịch bảo dưỡng định kỳ và hỗ trợ đặt lịch trực tuyến ngay sau khi xe được kích hoạt.</p>
+            <div class="card-meta">
+                <span>Ngày gần nhất: 08/10/2021</span>
+                <a href="http://shop.vinfastauto.com/vn_vi/dat-mua-xe-may-dien-vinfast" target="_blank" rel="noreferrer">Xem chi tiết</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="vf-container model-showcase" data-animate>
+        <header class="section-header">
+            <small>Danh mục nổi bật</small>
+            <h2>Lựa chọn xe phù hợp</h2>
+            <p>Dữ liệu tham khảo từ trang đặt mua chính thức của VinFast đảm bảo thông số mới nhất cho các dòng xe Vero X, Klara Neo, Feliz 2025, Feliz Lite và Evo Grand, cùng các gói tiện ích như đăng ký lái thử, so sánh xe, dự toán chi phí lăn bánh và đặt lịch dịch vụ trực tuyến.<sup><a href="http://shop.vinfastauto.com/vn_vi/dat-mua-xe-may-dien-vinfast" target="_blank" rel="noreferrer">[1]</a></sup></p>
+        </header>
+        <div class="model-grid">
+            <article>
+                <div class="model-head">
+                    <h3>Vero X</h3>
+                    <span class="tag">Cao cấp</span>
+                </div>
+                <p>Phong cách thể thao, trang bị pin LFP và các tiện ích kết nối VinFast App.</p>
+                <ul>
+                    <li>Tốc độ tối đa 90 km/h</li>
+                    <li>Quãng đường 150 km/lần sạc</li>
+                    <li>Động cơ 5.000 W</li>
+                </ul>
+                <div class="model-actions">
+                    <strong>Giá từ 49.000.000 ₫</strong>
+                    <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                </div>
+            </article>
+            <article>
+                <div class="model-head">
+                    <h3>Klara Neo</h3>
+                    <span class="tag">Phổ thông</span>
+                </div>
+                <p>Thiết kế thanh lịch, phù hợp đô thị với hệ thống phanh CBS an toàn.</p>
+                <ul>
+                    <li>Tốc độ 78 km/h</li>
+                    <li>120 km/lần sạc</li>
+                    <li>Cốp 22 lít</li>
+                </ul>
+                <div class="model-actions">
+                    <strong>Giá từ 33.000.000 ₫</strong>
+                    <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                </div>
+            </article>
+            <article>
+                <div class="model-head">
+                    <h3>Feliz 2025</h3>
+                    <span class="tag">Mới</span>
+                </div>
+                <p>Phiên bản 02 pin, hỗ trợ gói thuê linh hoạt và bảo hành toàn quốc.</p>
+                <ul>
+                    <li>262 km/2 pin</li>
+                    <li>Chống nước IP67</li>
+                    <li>Đăng ký lái thử miễn phí</li>
+                </ul>
+                <div class="model-actions">
+                    <strong>Giá từ 29.000.000 ₫</strong>
+                    <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                </div>
+            </article>
+            <article>
+                <div class="model-head">
+                    <h3>Feliz Lite</h3>
+                    <span class="tag">Tiết kiệm</span>
+                </div>
+                <p>Mẫu xe học sinh, nhẹ nhàng, chi phí vận hành thấp.</p>
+                <ul>
+                    <li>150 km/lần sạc</li>
+                    <li>Vận tốc an toàn 60 km/h</li>
+                    <li>Tùy chọn màu trẻ trung</li>
+                </ul>
+                <div class="model-actions">
+                    <strong>Giá từ 21.000.000 ₫</strong>
+                    <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                </div>
+            </article>
+            <article>
+                <div class="model-head">
+                    <h3>Evo Grand</h3>
+                    <span class="tag">Gia đình</span>
+                </div>
+                <p>Khoang để chân rộng, pin bền bỉ và khả năng vận hành ổn định.</p>
+                <ul>
+                    <li>210 km/lần sạc</li>
+                    <li>Hỗ trợ trả góp</li>
+                    <li>Dịch vụ hậu mãi ưu tiên</li>
+                </ul>
+                <div class="model-actions">
+                    <strong>Giá từ 27.000.000 ₫</strong>
+                    <button class="vf-btn vf-btn--ghost">Thêm vào giỏ</button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="vf-container pin-plan" data-animate>
+        <header class="section-header">
+            <small>Thuê pin linh hoạt</small>
+            <h2>Bảng gói pin LFP</h2>
+            <p>Thông tin tham khảo theo bảng công bố của VinFast ngày 10/04/2024.<sup><a href="http://shop.vinfastauto.com/vn_vi/dat-mua-xe-may-dien-vinfast" target="_blank" rel="noreferrer">[1]</a></sup></p>
+        </header>
+        <div class="plan-table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Gói</th>
+                    <th>Quãng đường / tháng</th>
+                    <th>Phí dịch vụ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Gói 1</td>
+                    <td>≤ 500 km</td>
+                    <td>150.000 ₫</td>
+                </tr>
+                <tr>
+                    <td>Gói 2</td>
+                    <td>500 – 1.000 km</td>
+                    <td>250.000 ₫</td>
+                </tr>
+                <tr>
+                    <td>Gói 3</td>
+                    <td>1.000 – 2.000 km</td>
+                    <td>350.000 ₫</td>
+                </tr>
+                <tr>
+                    <td>Gói 4</td>
+                    <td>≥ 2.000 km</td>
+                    <td>990.000 ₫</td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="table-note">Phí đặt cọc thuê pin 2.000.000 ₫. Khách hàng có thể chuyển gói tối đa 2 lần/năm và hệ thống tự động đề xuất gói phù hợp khi vượt km.<sup><a href="http://shop.vinfastauto.com/vn_vi/dat-mua-xe-may-dien-vinfast" target="_blank" rel="noreferrer">[1]</a></sup></p>
+        </div>
+    </section>
+
+    <section class="vf-container utilities" data-animate>
+        <header class="section-header">
+            <small>Tiện ích trực tuyến</small>
+            <h2>Tất cả trong một</h2>
+        </header>
+        <div class="utility-grid">
+            <article>
+                <h3>Đăng ký lái thử</h3>
+                <p>Nhận lịch trải nghiệm xe tại showroom hoặc tại nhà.</p>
+            </article>
+            <article>
+                <h3>So sánh xe</h3>
+                <p>Đặt các mẫu xe cạnh nhau để xem thông số, giá và ưu đãi.</p>
+            </article>
+            <article>
+                <h3>Dự toán chi phí lăn bánh</h3>
+                <p>Tính phí đăng ký, biển số, bảo hiểm theo từng tỉnh thành.</p>
+            </article>
+            <article>
+                <h3>Dự toán vay trả góp</h3>
+                <p>Chọn ngân hàng đối tác, lãi suất và thời gian vay phù hợp.</p>
+            </article>
+            <article>
+                <h3>Đặt lịch dịch vụ</h3>
+                <p>Theo dõi tình trạng xe, đặt lịch bảo dưỡng chỉ với vài thao tác.</p>
+            </article>
+        </div>
+    </section>
+
+    </section>
+</main>
+
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+<script>
+    (function () {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+    })();
+</script>
+</body>
+</html>
+

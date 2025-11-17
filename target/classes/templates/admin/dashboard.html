@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VinFast Admin | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <p class="eyebrow">Dashboard</p>
+                <h1>Vận hành hệ thống xe máy điện</h1>
+            </div>
+            <div class="admin-topbar__actions">
+                <button class="adm-btn adm-btn--ghost">Tải báo cáo</button>
+                <button class="adm-btn adm-btn--primary">Tạo chiến dịch</button>
+            </div>
+        </header>
+
+        <section class="admin-content">
+            <div class="admin-grid admin-grid--stats">
+                <article>
+                    <small>Tổng đơn hàng</small>
+                    <strong>1.248</strong>
+                    <span>+18% so với tuần trước</span>
+                </article>
+                <article>
+                    <small>Xe bàn giao</small>
+                    <strong>942</strong>
+                    <span>85% hoàn thành đúng hẹn</span>
+                </article>
+                <article>
+                    <small>Khách đăng ký lái thử</small>
+                    <strong>312</strong>
+                    <span>42 showrooms đã xác nhận</span>
+                </article>
+                <article>
+                    <small>Tỷ lệ thuê pin</small>
+                    <strong>67%</strong>
+                    <span>Gói linh hoạt chiếm 54%</span>
+                </article>
+            </div>
+
+            <div class="admin-grid">
+                <article class="admin-card chart-card">
+                    <header>
+                        <h2>Doanh số theo dòng xe</h2>
+                        <select>
+                            <option>7 ngày gần nhất</option>
+                            <option>30 ngày</option>
+                            <option>Quý hiện tại</option>
+                        </select>
+                    </header>
+                    <div class="chart-placeholder">Biểu đồ cột / đường</div>
+                </article>
+                <article class="admin-card chart-card">
+                    <header>
+                        <h2>Mạng lưới pin & trạm sạc</h2>
+                    </header>
+                    <ul class="status-list">
+                        <li>
+                            <strong>6.248</strong>
+                            <span>Trạm đổi pin đang hoạt động</span>
+                        </li>
+                        <li>
+                            <strong>152</strong>
+                            <span>Trạm bảo trì</span>
+                        </li>
+                        <li>
+                            <strong>98.4%</strong>
+                            <span>Pin sẵn sàng</span>
+                        </li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="admin-card">
+                <header>
+                    <h2>Đơn hàng gần nhất</h2>
+                    <a href="#">Xem tất cả</a>
+                </header>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Sản phẩm</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>VF-21084</td>
+                            <td>Phan Minh An</td>
+                            <td>Feliz 2025 (2 pin)</td>
+                            <td><span class="tag tag--success">Đang giao</span></td>
+                            <td>15/11</td>
+                        </tr>
+                        <tr>
+                            <td>VF-21063</td>
+                            <td>Nguyễn Hải Đăng</td>
+                            <td>Vero X</td>
+                            <td><span class="tag tag--warning">Chờ thanh toán</span></td>
+                            <td>14/11</td>
+                        </tr>
+                        <tr>
+                            <td>VF-21055</td>
+                            <td>Trần Thị Ý</td>
+                            <td>Evo Grand Lite</td>
+                            <td><span class="tag tag--success">Hoàn tất</span></td>
+                            <td>14/11</td>
+                        </tr>
+                        <tr>
+                            <td>VF-21047</td>
+                            <td>Huỳnh Gia Bảo</td>
+                            <td>Gói phụ kiện Premium</td>
+                            <td><span class="tag">Đang xử lý</span></td>
+                            <td>13/11</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
+

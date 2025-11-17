@@ -4,7 +4,7 @@
 <header class="vf-header" th:fragment="thanhDieuHuong">
     <div class="vf-container vf-header-inner">
         <a th:href="@{/}" class="vf-logo" aria-label="Trang chủ VinFast">
-            <img src="/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
+            <img src="/image/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
         </a>
 
         <button class="vf-menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="vfMainNav">
@@ -44,8 +44,14 @@
                 <li class="vf-nav__item" th:classappend="${trangDangChon == 'phu-kien'} ? ' is-active'">
                     <a th:href="@{/phu-kien}" class="vf-nav__link">Phụ kiện xe</a>
                 </li>
-                <li class="vf-nav__item" th:classappend="${trangDangChon == 'hau-mai'} ? ' is-active'">
-                    <a href="#" class="vf-nav__link">Dịch vụ hậu mãi</a>
+                <li class="vf-nav__item has-submenu" th:classappend="${trangDangChon == 'dich-vu'} ? ' is-active'">
+                    <button class="vf-nav__toggle" type="button" aria-expanded="false">Dịch vụ</button>
+                    <div class="vf-submenu" role="menu">
+                        <div class="vf-submenu__column">
+                            <a th:href="@{/dich-vu-pin}" class="vf-submenu__link">Dịch vụ pin</a>
+                            <a href="#" class="vf-submenu__link">Dịch vụ hậu mãi</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="vf-nav__item" th:classappend="${trangDangChon == 'tin-tuc'} ? ' is-active'">
                     <a href="#" class="vf-nav__link">Tin tức</a>

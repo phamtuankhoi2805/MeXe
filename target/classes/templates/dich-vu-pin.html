@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dịch vụ pin xe máy điện VinFast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <link rel="stylesheet" th:href="@{/css/dich-vu-pin.css}" href="/css/dich-vu-pin.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+
+<main class="battery-service-page">
+    <section class="vf-container page-hero" data-animate>
+        <h1>Dịch vụ pin xe máy điện</h1>
+        <p>Lựa chọn gói thuê pin linh hoạt, tiết kiệm chi phí và an tâm di chuyển cùng hệ sinh thái trạm sạc VinFast toàn quốc.</p>
+    </section>
+
+    <section class="vf-container" data-animate>
+        <header class="section-header">
+            <small>Bảng giá thuê pin</small>
+            <h2>Gói thuê pin linh hoạt</h2>
+            <p>VinFast cung cấp nhiều gói thuê pin khác nhau, đáp ứng đa dạng nhu cầu di chuyển của khách hàng.</p>
+        </header>
+        <div class="pricing-grid">
+            <article class="pricing-card">
+                <h3>Gói 1</h3>
+                <p class="price">199.000 VNĐ/tháng</p>
+                <ul>
+                    <li>Quãng đường di chuyển dưới 1.500 km/tháng</li>
+                    <li>Phù hợp cho nhu cầu đi lại hàng ngày</li>
+                    <li>Đổi pin không giới hạn tại các trạm sạc</li>
+                </ul>
+                <button class="vf-btn vf-btn--primary">Đăng ký ngay</button>
+            </article>
+            <article class="pricing-card pricing-card--highlight">
+                <div class="card-ribbon">Phổ biến</div>
+                <h3>Gói 2</h3>
+                <p class="price">350.000 VNĐ/tháng</p>
+                <ul>
+                    <li>Quãng đường di chuyển không giới hạn</li>
+                    <li>Lựa chọn tối ưu cho người di chuyển nhiều</li>
+                    <li>Bảo hành và thay thế pin miễn phí</li>
+                </ul>
+                <button class="vf-btn vf-btn--primary">Đăng ký ngay</button>
+            </article>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+</body>
+</html>

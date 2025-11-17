@@ -26,4 +26,10 @@ public class HomeController {
         moHinh.addAttribute(TRANG_DANG_CHON, "phu-kien");
         return "phu-kien";
     }
+
+    @GetMapping("/dich-vu-pin")
+    public String hienThiDichVuPin(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "dich-vu");
+        return "dich-vu-pin";
+    }
 }

@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/dieu-huong :: thanhDieuHuong"></div>
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
 
 <main class="trang-phu-kien">
 
@@ -331,7 +331,7 @@
     </section>
 </main>
 
-<div th:replace="fragments/chan-trang :: chanTrang"></div>
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
 
 <script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
 <script>

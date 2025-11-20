@@ -256,3 +256,124 @@ INSERT INTO [dbo].[vouchers] ([code], [description], [discount_type], [discount_
 (N'FREE50K', N'Giảm 50.000đ cho đơn hàng từ 10 triệu', 'FIXED', 50000, 10000000, 500, GETDATE(), DATEADD(month, 6, GETDATE()));
 
 GO
+-- =============================================
+-- BẮT ĐẦU DỮ LIỆU MẪU (SEED DATA) - FIXED
+-- =============================================
+
+-- 1. THÊM NHÃN HIỆU (BRANDS) MỚI
+INSERT INTO [dbo].[brands] ([name], [description]) VALUES
+(N'Dat Bike', N'Xe máy điện startup Việt Nam, hiệu năng cao'),
+(N'Yadea', N'Thương hiệu xe máy điện quốc tế bán chạy');
+
+-- 2. THÊM DANH MỤC (CATEGORIES) MỚI
+INSERT INTO [dbo].[categories] ([name], [description]) VALUES
+(N'Pin & Sạc', N'Pin LFP và bộ sạc chính hãng');
+
+-- 3. LẤY ID ĐỂ DÙNG CHO CÁC BẢNG SAU (Biến tạm)
+DECLARE @BrandVinFast BIGINT = (SELECT id FROM brands WHERE name = N'VinFast');
+DECLARE @BrandPega BIGINT = (SELECT id FROM brands WHERE name = N'Pega');
+DECLARE @BrandDatBike BIGINT = (SELECT id FROM brands WHERE name = N'Dat Bike');
+DECLARE @BrandYadea BIGINT = (SELECT id FROM brands WHERE name = N'Yadea');
+
+DECLARE @CatMoto BIGINT = (SELECT id FROM categories WHERE name = N'Xe máy điện');
+DECLARE @CatAcc BIGINT = (SELECT id FROM categories WHERE name = N'Phụ kiện');
+DECLARE @CatBat BIGINT = (SELECT id FROM categories WHERE name = N'Pin & Sạc');
+
+DECLARE @ColorBlack BIGINT = (SELECT id FROM colors WHERE hex_code = '#000000');
+DECLARE @ColorWhite BIGINT = (SELECT id FROM colors WHERE hex_code = '#FFFFFF');
+DECLARE @ColorRed BIGINT = (SELECT id FROM colors WHERE hex_code = '#FF0000');
+DECLARE @ColorBlue BIGINT = (SELECT id FROM colors WHERE hex_code = '#0066FF');
+DECLARE @ColorGreen BIGINT = (SELECT id FROM colors WHERE hex_code = '#00CC00');
+
+-- 4. THÊM SẢN PHẨM (PRODUCTS)
+INSERT INTO [dbo].[products] ([name], [slug], [description], [price], [discount_price], [quantity], [brand_id], [category_id], [image], [specifications], [status]) VALUES
+-- VinFast Bikes
+(N'VinFast Feliz S', 'vinfast-feliz-s', N'Mẫu xe máy điện quốc dân, pin LFP đi được 198km/lần sạc.', 27000000, 26500000, 50, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Feliz+S', N'{"range":"198km", "max_speed":"78km/h", "battery":"LFP 3.5kWh"}', 'ACTIVE'),
+(N'VinFast Klara S (2022)', 'vinfast-klara-s-2022', N'Thiết kế Ý thanh lịch, vận hành êm ái, cốp rộng.', 35000000, NULL, 30, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Klara+S', N'{"range":"194km", "max_speed":"78km/h", "trunk":"23L"}', 'ACTIVE'),
+(N'VinFast Evo200', 'vinfast-evo200', N'Xe máy điện thời trang, nhỏ gọn, di chuyển linh hoạt trong phố.', 22000000, 18000000, 100, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Evo200', N'{"range":"203km", "max_speed":"70km/h"}', 'ACTIVE'),
+(N'VinFast Vento S', 'vinfast-vento-s', N'Công nghệ hiện đại, động cơ IPM đặt bên (Side Motor).', 50000000, 48000000, 15, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Vento+S', N'{"range":"160km", "max_speed":"89km/h", "tech":"ABS"}', 'ACTIVE'),
+(N'VinFast Theon S', 'vinfast-theon-s', N'Đỉnh cao công nghệ, tốc độ vượt trội tương đương xe xăng 300cc.', 63000000, NULL, 5, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Theon+S', N'{"range":"150km", "max_speed":"99km/h", "tech":"ABS 2 kenh"}', 'ACTIVE'),
+
+-- Dat Bike & Yadea
+(N'Dat Bike Weaver++', 'dat-bike-weaver-plus', N'Xe máy điện mạnh nhất Việt Nam, sạc siêu nhanh.', 65900000, NULL, 20, @BrandDatBike, @CatMoto, N'https://placehold.co/500x500?text=Weaver++', N'{"range":"200km", "max_speed":"90km/h", "charge":"20min-100km"}', 'ACTIVE'),
+(N'Yadea Odora', 'yadea-odora', N'Thiết kế sành điệu, công nghệ TTFAR.', 18990000, 17500000, 40, @BrandYadea, @CatMoto, N'https://placehold.co/500x500?text=Odora', N'{"range":"100km", "max_speed":"50km/h"}', 'ACTIVE'),
+
+-- Phụ kiện
+(N'Mũ bảo hiểm 3/4 VinFast', 'mu-bao-hiem-3-4', N'Mũ bảo hiểm cao cấp, an toàn chuẩn DOT.', 850000, 600000, 200, @BrandVinFast, @CatAcc, N'https://placehold.co/500x500?text=Helmet', NULL, 'ACTIVE'),
+(N'Bộ sạc di động 1.2kW', 'bo-sac-di-dong', N'Sạc cầm tay tiện lợi cho xe VinFast LFP.', 3500000, NULL, 50, @BrandVinFast, @CatBat, N'https://placehold.co/500x500?text=Charger', NULL, 'ACTIVE');
+
+-- 5. THIẾT LẬP KHO MÀU SẮC (PRODUCT_COLORS)
+DECLARE @P_FelizS BIGINT = (SELECT id FROM products WHERE slug = 'vinfast-feliz-s');
+DECLARE @P_KlaraS BIGINT = (SELECT id FROM products WHERE slug = 'vinfast-klara-s-2022');
+DECLARE @P_Weaver BIGINT = (SELECT id FROM products WHERE slug = 'dat-bike-weaver-plus');
+DECLARE @P_Helmet BIGINT = (SELECT id FROM products WHERE slug = 'mu-bao-hiem-3-4');
+
+INSERT INTO [dbo].[product_colors] ([product_id], [color_id], [quantity]) VALUES
+(@P_FelizS, @ColorWhite, 20),
+(@P_FelizS, @ColorBlack, 15),
+(@P_FelizS, @ColorGreen, 15),
+(@P_KlaraS, @ColorRed, 10),
+(@P_KlaraS, @ColorBlue, 20),
+(@P_Weaver, @ColorRed, 10),
+(@P_Weaver, @ColorBlack, 10),
+(@P_Helmet, @ColorBlack, 100),
+(@P_Helmet, @ColorWhite, 100);
+
+-- 6. THÊM NGƯỜI DÙNG (USERS)
+DECLARE @DefPass NVARCHAR(255) = '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt5eKl/K';
+
+INSERT INTO [dbo].[users] ([email], [password], [full_name], [phone], [role], [enabled], [email_verified]) VALUES
+('khachhang1@gmail.com', @DefPass, N'Nguyễn Văn An', '0901234567', 'USER', 1, 1),
+('khachhang2@gmail.com', @DefPass, N'Trần Thị Bích', '0909876543', 'USER', 1, 1),
+('khachhang3@gmail.com', @DefPass, N'Lê Hoàng Cường', '0912345678', 'USER', 1, 0),
+('pro_rider@gmail.com', @DefPass, N'Phạm Minh Tuấn', '0988888888', 'USER', 1, 1);
+
+-- 7. THÊM ĐỊA CHỈ (ADDRESSES)
+DECLARE @U1 BIGINT = (SELECT id FROM users WHERE email = 'khachhang1@gmail.com');
+DECLARE @U2 BIGINT = (SELECT id FROM users WHERE email = 'khachhang2@gmail.com');
+DECLARE @U3 BIGINT = (SELECT id FROM users WHERE email = 'pro_rider@gmail.com');
+
+INSERT INTO [dbo].[addresses] ([user_id], [full_name], [phone], [province], [district], [ward], [street], [is_default]) VALUES
+(@U1, N'Nguyễn Văn An', '0901234567', N'Hà Nội', N'Quận Cầu Giấy', N'Phường Dịch Vọng', N'123 Xuân Thủy', 1),
+(@U2, N'Trần Thị Bích', '0909876543', N'TP. Hồ Chí Minh', N'Quận 1', N'Phường Bến Nghé', N'45 Lê Thánh Tôn', 1),
+(@U3, N'Phạm Minh Tuấn', '0988888888', N'Đà Nẵng', N'Quận Hải Châu', N'Phường Thạch Thang', N'88 Bạch Đằng', 1);
+
+-- 8. TẠO ĐƠN HÀNG (ORDERS) & CHI TIẾT (ORDER_ITEMS)
+-- Đơn hàng 1
+DECLARE @Addr1 BIGINT = (SELECT TOP 1 id FROM addresses WHERE user_id = @U1);
+INSERT INTO [dbo].[orders] ([order_code], [user_id], [address_id], [voucher_id], [subtotal], [discount], [shipping_fee], [total], [payment_method], [payment_status], [order_status], [created_at]) 
+VALUES ('ORD-2025-001', @U1, @Addr1, NULL, 26500000, 0, 0, 26500000, 'COD', 'PAID', 'DELIVERED', DATEADD(day, -10, GETDATE()));
+
+DECLARE @O1 BIGINT = (SELECT id FROM orders WHERE order_code = 'ORD-2025-001');
+INSERT INTO [dbo].[order_items] ([order_id], [product_id], [color_id], [product_name], [product_image], [color_name], [price], [quantity], [subtotal])
+VALUES (@O1, @P_FelizS, @ColorWhite, N'VinFast Feliz S', N'https://placehold.co/500x500?text=Feliz+S', N'Trắng', 26500000, 1, 26500000);
+
+-- Đơn hàng 2
+DECLARE @Addr2 BIGINT = (SELECT TOP 1 id FROM addresses WHERE user_id = @U2);
+INSERT INTO [dbo].[orders] ([order_code], [user_id], [address_id], [voucher_id], [subtotal], [discount], [shipping_fee], [total], [payment_method], [payment_status], [order_status], [created_at]) 
+VALUES ('ORD-2025-002', @U2, @Addr2, NULL, 1200000, 0, 30000, 1230000, 'VNPAY', 'PAID', 'SHIPPING', DATEADD(day, -2, GETDATE()));
+
+DECLARE @O2 BIGINT = (SELECT id FROM orders WHERE order_code = 'ORD-2025-002');
+INSERT INTO [dbo].[order_items] ([order_id], [product_id], [color_id], [product_name], [product_image], [color_name], [price], [quantity], [subtotal])
+VALUES (@O2, @P_Helmet, @ColorBlack, N'Mũ bảo hiểm 3/4 VinFast', N'https://placehold.co/500x500?text=Helmet', N'Đen', 600000, 2, 1200000);
+
+-- Đơn hàng 3
+DECLARE @Addr3 BIGINT = (SELECT TOP 1 id FROM addresses WHERE user_id = @U3);
+DECLARE @VoucherID BIGINT = (SELECT id FROM vouchers WHERE code = 'FREE50K');
+
+INSERT INTO [dbo].[orders] ([order_code], [user_id], [address_id], [voucher_id], [subtotal], [discount], [shipping_fee], [total], [payment_method], [payment_status], [order_status], [created_at]) 
+VALUES ('ORD-2025-003', @U3, @Addr3, @VoucherID, 65900000, 50000, 0, 65850000, 'BANK_TRANSFER', 'PENDING', 'PENDING', GETDATE());
+
+DECLARE @O3 BIGINT = (SELECT id FROM orders WHERE order_code = 'ORD-2025-003');
+INSERT INTO [dbo].[order_items] ([order_id], [product_id], [color_id], [product_name], [product_image], [color_name], [price], [quantity], [subtotal])
+VALUES (@O3, @P_Weaver, @ColorBlack, N'Dat Bike Weaver++', N'https://placehold.co/500x500?text=Weaver++', N'Đen', 65900000, 1, 65900000);
+
+-- 9. THÊM ĐÁNH GIÁ (REVIEWS) - ĐÃ SỬA LỖI
+INSERT INTO [dbo].[reviews] ([user_id], [order_id], [product_id], [rating], [comment], [created_at])
+VALUES (@U1, @O1, @P_FelizS, 5, N'Xe đi rất êm, màu trắng sang trọng, giao hàng nhanh.', DATEADD(day, -5, GETDATE()));
+
+-- Sửa lỗi: Thêm cột [created_at] vào danh sách cột
+INSERT INTO [dbo].[reviews] ([user_id], [order_id], [product_id], [rating], [comment], [created_at])
+VALUES (@U2, @O2, @P_Helmet, 4, N'Mũ đẹp nhưng hơi chật so với size mô tả.', GETDATE());
+
+GO

@@ -27,90 +27,128 @@
         <div class="cart-items">
             <header>
                 <h2>Danh sách sản phẩm</h2>
-                <span>3 sản phẩm</span>
+                <span th:text="${cartItems != null and !cartItems.empty} ? ${cartItems.size()} + ' sản phẩm' : '0 sản phẩm'">0 sản phẩm</span>
             </header>
-            <article class="cart-item">
-                <img src="/image/evo200.jpg" alt="VinFast Feliz 2025">
+            
+            <!-- Hiển thị cart items từ database nếu user đã đăng nhập -->
+            <article th:each="item : ${cartItems}" class="cart-item">
+                <img th:src="${item.product.image != null and !item.product.image.isEmpty()} ? @{/image/{img}(img=${item.product.image})} : @{/image/evo200.jpg}" 
+                     src="/image/evo200.jpg" 
+                     th:alt="${item.product.name}">
                 <div class="cart-item__info">
-                    <h3>VinFast Feliz 2025</h3>
-                    <p>Màu: Xanh dương • Gói pin: Linh hoạt</p>
+                    <h3 th:text="${item.product.name}">Tên sản phẩm</h3>
+                    <p th:if="${item.color != null}" th:text="'Màu: ' + ${item.color.name}">Màu</p>
                     <label>Số lượng
-                        <input type="number" min="1" value="1">
+                        <input type="number" min="1" th:value="${item.quantity}" 
+                               th:onchange="'updateCartQuantity(' + ${item.id} + ', this.value)'">
                     </label>
                 </div>
-                <strong>29.000.000 ₫</strong>
-            </article>
-            <article class="cart-item">
-                <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="VinFast Vero X">
-                <div class="cart-item__info">
-                    <h3>VinFast Vero X</h3>
-                    <p>Màu: Đen • Gói pin: Không giới hạn</p>
-                    <label>Số lượng
-                        <input type="number" min="1" value="1">
-                    </label>
+                <div>
+                    <strong th:text="${#numbers.formatDecimal(item.product.finalPrice * item.quantity, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</strong>
+                    <button th:onclick="'removeFromCart(' + ${item.id} + ')'" style="margin-top: 8px; padding: 4px 8px; background: #e53e3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Xóa</button>
                 </div>
-                <strong>49.000.000 ₫</strong>
             </article>
-            <article class="cart-item">
-                <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Gói phụ kiện cao cấp">
-                <div class="cart-item__info">
-                    <h3>Gói phụ kiện cao cấp</h3>
-                    <p>Bao gồm mũ bảo hiểm, áo khoác phản quang, sạc dự phòng.</p>
-                    <label>Số lượng
-                        <input type="number" min="1" value="1">
-                    </label>
-                </div>
-                <strong>3.500.000 ₫</strong>
-            </article>
-            <div class="cart-note">
+            
+            <!-- Thông báo nếu giỏ hàng trống -->
+            <div th:if="${cartItems == null or cartItems.empty}" class="cart-empty" style="text-align: center; padding: 40px; color: #888;">
+                <p>Giỏ hàng của bạn đang trống.</p>
+                <a href="/" class="vf-btn vf-btn--primary" style="margin-top: 16px; display: inline-block;">Tiếp tục mua sắm</a>
+            </div>
+            
+            <div class="cart-note" th:if="${cartItems != null and !cartItems.empty}">
                 <p>Giá đã bao gồm VAT. Bạn có thể chọn thanh toán trả góp ở bước tiếp theo.</p>
             </div>
         </div>
 
         <aside class="cart-summary">
-            <h2>Thông tin khách hàng</h2>
-            <form class="guest-form">
+            <h2>Thông tin đơn hàng</h2>
+            
+            <!-- Hiển thị địa chỉ đã lưu nếu user đã đăng nhập -->
+            <div th:if="${userAddresses != null and !userAddresses.empty}" class="saved-addresses" style="margin-bottom: 20px;">
+                <h3>Địa chỉ nhận hàng</h3>
+                <select id="addressId" name="addressId" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px;">
+                    <option th:each="addr : ${userAddresses}" 
+                            th:value="${addr.id}" 
+                            th:text="${addr.fullAddress}"
+                            th:selected="${addr.isDefault}">
+                    </option>
+                </select>
+                <small><a href="/tai-khoan/dia-chi">Quản lý sổ địa chỉ</a></small>
+            </div>
+            
+            <!-- Form nhập địa chỉ nếu chưa đăng nhập hoặc chưa có địa chỉ -->
+            <form th:unless="${userAddresses != null and !userAddresses.empty}" class="guest-form" style="margin-bottom: 20px;">
                 <label>Họ và tên
                     <input type="text" placeholder="Nguyễn Thị Minh" required>
                 </label>
                 <label>Số điện thoại
                     <input type="tel" placeholder="0901 234 567" required>
                 </label>
-                <label>Email
-                    <input type="email" placeholder="email@vinfast.vn" required>
-                </label>
                 <label>Địa chỉ giao xe
                     <input type="text" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành" required>
                 </label>
-                <label>Ghi chú
-                    <textarea rows="3" placeholder="Ví dụ: Giao xe vào buổi sáng, cần hỗ trợ đăng ký biển số."></textarea>
-                </label>
             </form>
-
+            
+            <hr class="divider" style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
+            
+            <!-- Phương thức vận chuyển -->
+            <div class="shipping-method" style="margin-bottom: 20px;">
+                <h3>Vận chuyển</h3>
+                <label class="radio-card" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;">
+                    <input type="radio" name="deliveryMethod" value="STANDARD" checked onchange="updateShipping(0)">
+                    <div class="card-content" style="display: flex; justify-content: space-between; width: 100%; font-size: 0.95rem;">
+                        <span>Tiêu chuẩn (3-5 ngày)</span>
+                        <strong>Miễn phí</strong>
+                    </div>
+                </label>
+                <label class="radio-card" style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;">
+                    <input type="radio" name="deliveryMethod" value="FAST" onchange="updateShipping(50000)">
+                    <div class="card-content" style="display: flex; justify-content: space-between; width: 100%; font-size: 0.95rem;">
+                        <span>Giao nhanh hỏa tốc (24h)</span>
+                        <strong>50.000 ₫</strong>
+                    </div>
+                </label>
+            </div>
+            
+            <!-- Mã giảm giá (Voucher) -->
+            <div class="voucher-section" style="margin-bottom: 20px;">
+                <h3>Mã ưu đãi</h3>
+                <div class="voucher-input-group" style="display: flex; gap: 8px;">
+                    <input type="text" id="voucherCode" placeholder="Nhập mã giảm giá" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <button type="button" class="vf-btn vf-btn--ghost" onclick="applyVoucher()">Áp dụng</button>
+                </div>
+                <p id="voucherMessage" class="text-success" style="margin-top: 8px; color: #00a86b; font-size: 0.9rem;"></p>
+            </div>
+            
+            <!-- Tóm tắt đơn hàng -->
             <div class="summary-total">
                 <div>
                     <span>Tạm tính</span>
-                    <strong>81.500.000 ₫</strong>
+                    <strong id="subtotal" th:text="${subtotal != null} ? ${#numbers.formatDecimal(subtotal, 0, 'COMMA', 0, 'POINT')} + ' ₫' : '0 ₫'">0 ₫</strong>
                 </div>
                 <div>
-                    <span>Ưu đãi / Voucher</span>
-                    <strong>- 2.000.000 ₫</strong>
+                    <span>Phí vận chuyển</span>
+                    <strong id="shippingFee">0 ₫</strong>
+                </div>
+                <div>
+                    <span>Giảm giá</span>
+                    <strong id="discountAmount">- 0 ₫</strong>
                 </div>
                 <div class="summary-grand">
-                    <span>Thành tiền</span>
-                    <strong>79.500.000 ₫</strong>
+                    <span>Tổng cộng</span>
+                    <strong id="totalAmount" class="text-primary" th:text="${subtotal != null} ? ${#numbers.formatDecimal(subtotal, 0, 'COMMA', 0, 'POINT')} + ' ₫' : '0 ₫'" style="color: #0048ff;">0 ₫</strong>
                 </div>
             </div>
-
-            <div class="payment-options">
+            
+            <div class="payment-options" style="margin-top: 20px;">
                 <h3>Phương thức thanh toán</h3>
                 <label><input type="radio" name="pay" checked> Chuyển khoản ngân hàng</label>
                 <label><input type="radio" name="pay"> Thẻ tín dụng / Ghi nợ</label>
                 <label><input type="radio" name="pay"> Thanh toán tại showroom</label>
             </div>
 
-            <button class="vf-btn vf-btn--primary">Đặt mua ngay</button>
-            <p class="secure-note">Hợp đồng sẽ được gửi tới email để xác nhận bằng OTP.</p>
+            <button class="vf-btn vf-btn--primary" style="width: 100%; margin-top: 16px;" onclick="submitOrder()">Đặt mua ngay</button>
+            <p class="secure-note" style="margin-top: 12px; font-size: 0.85rem; color: #888; text-align: center;">Hợp đồng sẽ được gửi tới email để xác nhận bằng OTP.</p>
         </aside>
     </section>
 
@@ -140,6 +178,173 @@
 
 <script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
 <script>
+    // Khởi tạo các giá trị ban đầu
+    let currentSubtotal = parseFloat(document.getElementById('subtotal').innerText.replace(/[^\d]/g, '')) || 0;
+    let currentShipping = 0;
+    let currentDiscount = 0;
+    let appliedVoucher = null;
+    
+    // Cập nhật phí vận chuyển
+    function updateShipping(fee) {
+        currentShipping = fee;
+        updateTotal();
+        document.getElementById('shippingFee').innerText = fee.toLocaleString('vi-VN') + ' ₫';
+    }
+    
+    // Áp dụng mã giảm giá (Voucher)
+    async function applyVoucher() {
+        const code = document.getElementById('voucherCode').value.trim();
+        const messageEl = document.getElementById('voucherMessage');
+        
+        if (!code) {
+            messageEl.innerText = 'Vui lòng nhập mã giảm giá';
+            messageEl.style.color = '#e53e3e';
+            return;
+        }
+        
+        try {
+            // Gọi API kiểm tra voucher
+            const response = await fetch('/api/vouchers/code/' + code);
+            const data = await response.json();
+            
+            if (response.ok && data.valid) {
+                // Tính toán giảm giá
+                const voucher = data.voucher;
+                let discount = 0;
+                
+                if (voucher.discountType === 'PERCENTAGE') {
+                    // Giảm theo phần trăm
+                    discount = currentSubtotal * (voucher.discountValue / 100);
+                    if (voucher.maxDiscountAmount != null && discount > voucher.maxDiscountAmount) {
+                        discount = voucher.maxDiscountAmount;
+                    }
+                } else if (voucher.discountType === 'FIXED') {
+                    // Giảm cố định
+                    discount = voucher.discountValue;
+                    if (discount > currentSubtotal) {
+                        discount = currentSubtotal;
+                    }
+                }
+                
+                currentDiscount = discount;
+                appliedVoucher = voucher;
+                updateTotal();
+                
+                messageEl.innerText = 'Đã áp dụng mã giảm giá: ' + voucher.code;
+                messageEl.style.color = '#00a86b';
+                document.getElementById('discountAmount').innerText = '- ' + discount.toLocaleString('vi-VN') + ' ₫';
+            } else {
+                messageEl.innerText = data.message || 'Mã giảm giá không hợp lệ';
+                messageEl.style.color = '#e53e3e';
+                currentDiscount = 0;
+                appliedVoucher = null;
+                updateTotal();
+                document.getElementById('discountAmount').innerText = '- 0 ₫';
+            }
+        } catch (error) {
+            console.error('Error applying voucher:', error);
+            messageEl.innerText = 'Có lỗi xảy ra. Vui lòng thử lại.';
+            messageEl.style.color = '#e53e3e';
+        }
+    }
+    
+    // Cập nhật tổng tiền
+    function updateTotal() {
+        const total = currentSubtotal + currentShipping - currentDiscount;
+        document.getElementById('totalAmount').innerText = total.toLocaleString('vi-VN') + ' ₫';
+    }
+    
+    // Cập nhật số lượng trong giỏ hàng
+    async function updateCartQuantity(cartId, quantity) {
+        try {
+            const response = await fetch('/api/cart/' + cartId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: parseInt(quantity) })
+            });
+            
+            if (response.ok) {
+                // Reload trang để cập nhật giá trị
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra khi cập nhật số lượng');
+            }
+        } catch (error) {
+            console.error('Error updating cart:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+    }
+    
+    // Xóa sản phẩm khỏi giỏ hàng
+    async function removeFromCart(cartId) {
+        if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/cart/' + cartId, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra khi xóa sản phẩm');
+            }
+        } catch (error) {
+            console.error('Error removing cart item:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+    }
+    
+    // Gửi đơn hàng
+    async function submitOrder() {
+        const addressId = document.getElementById('addressId')?.value;
+        const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked')?.value || 'STANDARD';
+        const paymentMethod = document.querySelector('input[name="pay"]:checked')?.value || 'BANK_TRANSFER';
+        
+        // Validate
+        if (!addressId) {
+            alert('Vui lòng chọn địa chỉ nhận hàng');
+            return;
+        }
+        
+        try {
+            // Gọi API tạo đơn hàng
+            const orderData = {
+                addressId: parseInt(addressId),
+                deliveryMethod: deliveryMethod,
+                paymentMethod: paymentMethod,
+                voucherCode: appliedVoucher?.code || null,
+                shippingFee: currentShipping,
+                discount: currentDiscount
+            };
+            
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Đặt hàng thành công! Mã đơn hàng: ' + data.orderCode);
+                window.location.href = '/';
+            } else {
+                alert(data.message || 'Có lỗi xảy ra khi đặt hàng');
+            }
+        } catch (error) {
+            console.error('Error submitting order:', error);
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+    }
+    
+    // Animation observer
     (function () {
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
@@ -150,6 +355,12 @@
         }, { threshold: 0.2 });
 
         document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+        
+        // Cập nhật giá trị subtotal từ server nếu có
+        const subtotalEl = document.getElementById('subtotal');
+        if (subtotalEl) {
+            currentSubtotal = parseFloat(subtotalEl.innerText.replace(/[^\d]/g, '')) || 0;
+        }
     })();
 </script>
 </body>

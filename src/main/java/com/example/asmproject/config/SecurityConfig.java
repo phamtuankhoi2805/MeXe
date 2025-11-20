@@ -14,7 +14,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +25,10 @@ public class SecurityConfig {
     
     @Autowired
     private CustomUserDetailsService userDetailsService;
+    
+    @Autowired
+    @Lazy // Trì hoãn injection để tránh circular dependency
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,12 +53,44 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints - không cần đăng nhập
                 .requestMatchers("/", "/san-pham/**", "/phu-kien", "/dich-vu-pin", 
                                "/dich-vu-hau-mai", "/ve-chung-toi", "/tin-tuc",
                                "/dang-ky/**", "/login", "/oauth2/**", "/verify-email",
                                "/reset-password", "/api/public/**", "/css/**", "/js/**", 
                                "/image/**", "/static/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                
+                // API Auth - public cho đăng ký, quên mật khẩu
+                .requestMatchers("/api/auth/register", "/api/auth/google", 
+                               "/api/auth/forgot-password", "/api/auth/reset-password",
+                               "/api/auth/verify-email").permitAll()
+                
+                // API Auth - cần đăng nhập cho đổi mật khẩu
+                .requestMatchers("/api/auth/change-password").authenticated()
+                
+                // API Products - public cho GET, ADMIN cho POST/PUT/DELETE
+                .requestMatchers("/api/products", "/api/products/**").permitAll()
+                
+                // API Vouchers - public cho xem danh sách và validate
+                .requestMatchers("/api/vouchers/available", "/api/vouchers/code/**").permitAll()
+                
+                // API Reviews - public cho xem, authenticated cho tạo
+                .requestMatchers("/api/reviews/product/**").permitAll()
+                .requestMatchers("/api/reviews").authenticated()
+                
+                // API Cart - cần đăng nhập
+                .requestMatchers("/api/cart/**").authenticated()
+                
+                // API Addresses - cần đăng nhập
+                .requestMatchers("/api/addresses/**").authenticated()
+                
+                // API Orders - cần đăng nhập
+                .requestMatchers("/api/orders/**").authenticated()
+                
+                // Admin endpoints - cần ROLE_ADMIN
+                .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                
+                // Các request khác - cần đăng nhập
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -64,8 +102,8 @@ public class SecurityConfig {
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
-                .successHandler(authenticationSuccessHandler())
-                .failureUrl("/login?error=true")
+                .successHandler(oAuth2LoginSuccessHandler) // Dùng OAuth2LoginSuccessHandler để tự động đăng ký user
+                .failureUrl("/login?error=oauth_failed")
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
@@ -78,11 +116,16 @@ public class SecurityConfig {
         return http.build();
     }
     
+    /**
+     * Handler cho form login thành công (email/password)
+     * OAuth2 login dùng OAuth2LoginSuccessHandler riêng
+     */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return (request, response, authentication) -> {
-            response.sendRedirect("/");
-        };
+        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+        handler.setDefaultTargetUrl("/");
+        handler.setUseReferer(false);
+        return handler;
     }
 }
 

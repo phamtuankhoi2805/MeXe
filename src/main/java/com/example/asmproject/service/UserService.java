@@ -1,15 +1,26 @@
 package com.example.asmproject.service;
 
+import com.example.asmproject.dto.OrderResponse;
+import com.example.asmproject.dto.UserRequest;
+import com.example.asmproject.dto.UserResponse;
 import com.example.asmproject.model.User;
+import com.example.asmproject.model.enums.UserStatus;
+import com.example.asmproject.repository.OrderRepository;
 import com.example.asmproject.repository.UserRepository;
+import com.example.asmproject.service.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service xử lý các logic nghiệp vụ liên quan đến User
@@ -30,6 +41,12 @@ public class UserService {
     
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private OrderRepository orderRepository;
+    
+    @Autowired
+    private OrderMapper orderMapper;
     
     /**
      * Đăng ký tài khoản mới bằng email và mật khẩu
@@ -303,6 +320,132 @@ public class UserService {
      */
     public long getTotalUsers() {
         return userRepository.countUsers();
+    }
+    
+    /**
+     * Tìm kiếm người dùng với phân trang
+     */
+    public Page<UserResponse> searchUsers(String keyword, UserStatus status, Pageable pageable) {
+        Specification<User> spec = Specification.where(null);
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            String keywordLower = keyword.toLowerCase();
+            spec = spec.and((root, query, cb) -> 
+                cb.or(
+                    cb.like(cb.lower(root.get("email")), "%" + keywordLower + "%"),
+                    cb.like(cb.lower(root.get("fullName")), "%" + keywordLower + "%"),
+                    cb.like(cb.lower(root.get("phone")), "%" + keywordLower + "%")
+                )
+            );
+        }
+        
+        if (status != null) {
+            Boolean enabled = null;
+            if (status == UserStatus.HOAT_DONG) {
+                enabled = true;
+            } else if (status == UserStatus.TAM_KHOA || status == UserStatus.NGUNG_HOAT_DONG) {
+                enabled = false;
+            }
+            if (enabled != null) {
+                Boolean finalEnabled = enabled;
+                spec = spec.and((root, query, cb) -> cb.equal(root.get("enabled"), finalEnabled));
+            }
+        }
+        
+        return userRepository.findAll(spec, pageable).map(this::toUserResponse);
+    }
+    
+    /**
+     * Tạo người dùng mới
+     */
+    public UserResponse create(UserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email đã được sử dụng");
+        }
+        
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+        user.setRole(User.Role.USER);
+        user.setEnabled(request.getStatus() == UserStatus.HOAT_DONG);
+        user.setEmailVerified(false);
+        
+        if (request.getAddress() != null && !request.getAddress().trim().isEmpty()) {
+            // Note: Address is a separate entity, this is a simplified version
+            // In a real implementation, you'd need to handle address creation separately
+        }
+        
+        user = userRepository.save(user);
+        return toUserResponse(user);
+    }
+    
+    /**
+     * Cập nhật thông tin người dùng
+     */
+    public UserResponse update(Long id, UserRequest request) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+        
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new RuntimeException("Email đã được sử dụng");
+            }
+            user.setEmail(request.getEmail());
+        }
+        
+        if (request.getFullName() != null) {
+            user.setFullName(request.getFullName());
+        }
+        if (request.getPhone() != null) {
+            user.setPhone(request.getPhone());
+        }
+        if (request.getStatus() != null) {
+            user.setEnabled(request.getStatus() == UserStatus.HOAT_DONG);
+        }
+        
+        user = userRepository.save(user);
+        return toUserResponse(user);
+    }
+    
+    /**
+     * Hủy kích hoạt người dùng
+     */
+    public void deactivate(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+        user.setEnabled(false);
+        userRepository.save(user);
+    }
+    
+    /**
+     * Lấy lịch sử mua hàng của người dùng
+     */
+    public List<OrderResponse> getPurchaseHistory(Long id) {
+        List<com.example.asmproject.model.Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(id);
+        return orders.stream()
+            .map(orderMapper::toResponse)
+            .collect(Collectors.toList());
+    }
+    
+    /**
+     * Chuyển đổi User sang UserResponse
+     */
+    private UserResponse toUserResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setEmail(user.getEmail());
+        response.setFullName(user.getFullName());
+        response.setPhone(user.getPhone());
+        response.setStatus(user.getEnabled() ? UserStatus.HOAT_DONG : UserStatus.TAM_KHOA);
+        response.setCreatedAt(user.getCreatedAt());
+        response.setUpdatedAt(user.getUpdatedAt());
+        // Note: Address field in UserResponse is a String, but User has List<Address>
+        // This is a simplified mapping
+        if (user.getAddresses() != null && !user.getAddresses().isEmpty()) {
+            response.setAddress(user.getAddresses().get(0).toString());
+        }
+        return response;
     }
 }
 

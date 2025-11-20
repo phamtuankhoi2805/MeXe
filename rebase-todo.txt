@@ -1,0 +1,4 @@
+edit 5385df8 feat: Redesign product detail page with VinFast-style UI and animations
+pick 9ff2860 Fix: Sửa lỗi sau khi pull - thêm methods cho UserService và OrderService, fix OrderMapper
+pick 0d814f4 Remove: Xóa Google OAuth secrets khỏi application.properties
+

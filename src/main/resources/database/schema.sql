@@ -1,7 +1,40 @@
--- Create Database VinFastMotorbikeDB
+-- Create Database ASM_Java6
+IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'ASM_Java6')
+BEGIN
+    CREATE DATABASE ASM_Java6;
+END
+GO
 
+USE ASM_Java6;
+GO
+
+-- =============================================
+-- 1. DROP TABLES IF EXISTS (Clean Slate)
+-- =============================================
+-- Uncomment if you want to drop tables before creating
+/*
+DROP TABLE IF EXISTS [dbo].[reviews];
+DROP TABLE IF EXISTS [dbo].[order_items];
+DROP TABLE IF EXISTS [dbo].[orders];
+DROP TABLE IF EXISTS [dbo].[carts];
+DROP TABLE IF EXISTS [dbo].[addresses];
+DROP TABLE IF EXISTS [dbo].[vouchers];
+DROP TABLE IF EXISTS [dbo].[product_colors];
+DROP TABLE IF EXISTS [dbo].[product_images];
+DROP TABLE IF EXISTS [dbo].[products];
+DROP TABLE IF EXISTS [dbo].[colors];
+DROP TABLE IF EXISTS [dbo].[categories];
+DROP TABLE IF EXISTS [dbo].[brands];
+DROP TABLE IF EXISTS [dbo].[users];
+*/
+
+-- =============================================
+-- 2. CREATE TABLES
+-- =============================================
 
 -- Create Users Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[users]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[users] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [email] NVARCHAR(255) NOT NULL UNIQUE,
@@ -23,8 +56,12 @@ CREATE TABLE [dbo].[users] (
     CONSTRAINT [CK_users_auth_method] CHECK ([password] IS NOT NULL OR ([provider] IS NOT NULL AND [provider_id] IS NOT NULL)),
     CONSTRAINT [CK_users_role] CHECK ([role] IN ('USER', 'ADMIN'))
 );
+END
+GO
 
 -- Create Brands Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[brands]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[brands] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [name] NVARCHAR(255) NOT NULL UNIQUE,
@@ -33,8 +70,12 @@ CREATE TABLE [dbo].[brands] (
     [created_at] DATETIME NOT NULL DEFAULT GETDATE(),
     [updated_at] DATETIME NOT NULL DEFAULT GETDATE()
 );
+END
+GO
 
 -- Create Categories Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[categories]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[categories] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [name] NVARCHAR(255) NOT NULL UNIQUE,
@@ -43,8 +84,12 @@ CREATE TABLE [dbo].[categories] (
     [created_at] DATETIME NOT NULL DEFAULT GETDATE(),
     [updated_at] DATETIME NOT NULL DEFAULT GETDATE()
 );
+END
+GO
 
 -- Create Colors Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[colors]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[colors] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [name] NVARCHAR(100) NOT NULL UNIQUE,
@@ -53,8 +98,12 @@ CREATE TABLE [dbo].[colors] (
     [created_at] DATETIME NOT NULL DEFAULT GETDATE(),
     [updated_at] DATETIME NOT NULL DEFAULT GETDATE()
 );
+END
+GO
 
 -- Create Products Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[products]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[products] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [name] NVARCHAR(255) NOT NULL,
@@ -65,8 +114,8 @@ CREATE TABLE [dbo].[products] (
     [quantity] INT NOT NULL DEFAULT 0,
     [brand_id] BIGINT NULL,
     [category_id] BIGINT NULL,
-    [image] NVARCHAR(500) NULL,
-    [images] NVARCHAR(MAX) NULL,
+    [image] NVARCHAR(500) NULL, -- Ảnh đại diện chính
+    -- [images] NVARCHAR(MAX) NULL, -- Deprecated: Đã chuyển sang bảng product_images
     [specifications] NVARCHAR(MAX) NULL,
     [status] NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     [created_at] DATETIME NOT NULL DEFAULT GETDATE(),
@@ -77,8 +126,25 @@ CREATE TABLE [dbo].[products] (
     FOREIGN KEY ([category_id]) REFERENCES [dbo].[categories]([id]) ON DELETE SET NULL,
     CONSTRAINT [CK_products_status] CHECK ([status] IN ('ACTIVE', 'INACTIVE', 'OUT_OF_STOCK'))
 );
+END
+GO
+
+-- Create Product_Images Table (New)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[product_images]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[product_images] (
+    [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [product_id] BIGINT NOT NULL,
+    [image_url] NVARCHAR(500) NOT NULL,
+    [display_order] INT DEFAULT 0,
+    FOREIGN KEY ([product_id]) REFERENCES [dbo].[products]([id]) ON DELETE CASCADE
+);
+END
+GO
 
 -- Create Product_Colors Table (Many-to-Many)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[product_colors]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[product_colors] (
     [product_id] BIGINT NOT NULL,
     [color_id] BIGINT NOT NULL,
@@ -87,8 +153,12 @@ CREATE TABLE [dbo].[product_colors] (
     FOREIGN KEY ([product_id]) REFERENCES [dbo].[products]([id]) ON DELETE CASCADE,
     FOREIGN KEY ([color_id]) REFERENCES [dbo].[colors]([id]) ON DELETE CASCADE
 );
+END
+GO
 
 -- Create Vouchers Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[vouchers]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[vouchers] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [code] NVARCHAR(50) NOT NULL UNIQUE,
@@ -109,8 +179,12 @@ CREATE TABLE [dbo].[vouchers] (
     CONSTRAINT [CK_vouchers_discount_type] CHECK ([discount_type] IN ('PERCENTAGE', 'FIXED')),
     CONSTRAINT [CK_vouchers_status] CHECK ([status] IN ('ACTIVE', 'INACTIVE', 'EXPIRED'))
 );
+END
+GO
 
 -- Create Addresses Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[addresses]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[addresses] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [user_id] BIGINT NOT NULL,
@@ -125,8 +199,12 @@ CREATE TABLE [dbo].[addresses] (
     [updated_at] DATETIME NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY ([user_id]) REFERENCES [dbo].[users]([id]) ON DELETE CASCADE
 );
+END
+GO
 
 -- Create Carts Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[carts]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[carts] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [user_id] BIGINT NOT NULL,
@@ -141,8 +219,12 @@ CREATE TABLE [dbo].[carts] (
     -- Giữ ràng buộc UNIQUE ([user_id], [product_id], [color_id]) để đảm bảo mỗi item/color chỉ có 1 dòng trong giỏ hàng
     UNIQUE ([user_id], [product_id], [color_id]) 
 );
+END
+GO
 
 -- Create Orders Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[orders]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[orders] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [order_code] NVARCHAR(50) NOT NULL UNIQUE,
@@ -171,8 +253,12 @@ CREATE TABLE [dbo].[orders] (
     CONSTRAINT [CK_orders_order_status] CHECK ([order_status] IN ('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPING', 'DELIVERED', 'CANCELLED', 'RETURNED')),
     CONSTRAINT [CK_orders_delivery_method] CHECK ([delivery_method] IN ('STANDARD', 'FAST'))
 );
+END
+GO
 
 -- Create Order_Items Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[order_items]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[order_items] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [order_id] BIGINT NOT NULL,
@@ -189,8 +275,12 @@ CREATE TABLE [dbo].[order_items] (
     FOREIGN KEY ([product_id]) REFERENCES [dbo].[products]([id]) ON DELETE NO ACTION, 
     FOREIGN KEY ([color_id]) REFERENCES [dbo].[colors]([id]) ON DELETE NO ACTION 
 );
+END
+GO
 
 -- Create Reviews Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[reviews]') AND type in (N'U'))
+BEGIN
 CREATE TABLE [dbo].[reviews] (
     [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
     [user_id] BIGINT NOT NULL,
@@ -208,172 +298,162 @@ CREATE TABLE [dbo].[reviews] (
     FOREIGN KEY ([product_id]) REFERENCES [dbo].[products]([id]) ON DELETE CASCADE,
     CONSTRAINT [CK_reviews_rating] CHECK ([rating] >= 1 AND [rating] <= 5)
 );
+END
+GO
 
 -- Create Indexes for better performance
-CREATE INDEX [IX_users_email] ON [dbo].[users]([email]);
-CREATE INDEX [IX_users_provider] ON [dbo].[users]([provider], [provider_id]);
-CREATE INDEX [IX_products_brand] ON [dbo].[products]([brand_id]);
-CREATE INDEX [IX_products_category] ON [dbo].[products]([category_id]);
-CREATE INDEX [IX_products_slug] ON [dbo].[products]([slug]);
-CREATE INDEX [IX_products_status] ON [dbo].[products]([status]);
-CREATE INDEX [IX_orders_user] ON [dbo].[orders]([user_id]);
-CREATE INDEX [IX_orders_status] ON [dbo].[orders]([order_status]);
-CREATE INDEX [IX_orders_order_code] ON [dbo].[orders]([order_code]);
-CREATE INDEX [IX_carts_user] ON [dbo].[carts]([user_id]);
-CREATE INDEX [IX_addresses_user] ON [dbo].[addresses]([user_id]);
-CREATE INDEX [IX_reviews_product] ON [dbo].[reviews]([product_id]);
-CREATE INDEX [IX_reviews_user] ON [dbo].[reviews]([user_id]);
+-- Use IF NOT EXISTS for indexes as well
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_users_email' AND object_id = OBJECT_ID('dbo.users'))
+    CREATE INDEX [IX_users_email] ON [dbo].[users]([email]);
 
--- Insert Default Admin User (password: admin123 - should be hashed in BCrypt)
-INSERT INTO [dbo].[users] ([email], [password], [full_name], [phone], [role], [enabled], [email_verified])
-VALUES ('admin@vinfast.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt5eKl/K', N'Administrator', '0123456789', 'ADMIN', 1, 1);
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_users_provider' AND object_id = OBJECT_ID('dbo.users'))
+    CREATE INDEX [IX_users_provider] ON [dbo].[users]([provider], [provider_id]);
 
--- Insert Sample Brands
-INSERT INTO [dbo].[brands] ([name], [description]) VALUES
-(N'VinFast', N'Thương hiệu xe máy điện hàng đầu Việt Nam'),
-(N'Pega', N'Xe máy điện hiện đại và tiện lợi'),
-(N'Ebike', N'Xe đạp điện và xe máy điện chất lượng cao');
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_products_brand' AND object_id = OBJECT_ID('dbo.products'))
+    CREATE INDEX [IX_products_brand] ON [dbo].[products]([brand_id]);
 
--- Insert Sample Categories
-INSERT INTO [dbo].[categories] ([name], [description]) VALUES
-(N'Xe máy điện', N'Xe máy điện phục vụ di chuyển hàng ngày'),
-(N'Xe đạp điện', N'Xe đạp điện thân thiện môi trường'),
-(N'Phụ kiện', N'Phụ kiện và đồ chơi cho xe máy điện');
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_products_category' AND object_id = OBJECT_ID('dbo.products'))
+    CREATE INDEX [IX_products_category] ON [dbo].[products]([category_id]);
 
--- Insert Sample Colors
-INSERT INTO [dbo].[colors] ([name], [hex_code]) VALUES
-(N'Đen', '#000000'),
-(N'Trắng', '#FFFFFF'),
-(N'Đỏ', '#FF0000'),
-(N'Xanh dương', '#0066FF'),
-(N'Xanh lá', '#00CC00'),
-(N'Vàng', '#FFCC00'),
-(N'Xám', '#808080');
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_products_slug' AND object_id = OBJECT_ID('dbo.products'))
+    CREATE INDEX [IX_products_slug] ON [dbo].[products]([slug]);
 
--- Insert Sample Vouchers
-INSERT INTO [dbo].[vouchers] ([code], [description], [discount_type], [discount_value], [min_order_amount], [quantity], [start_date], [end_date]) VALUES
-(N'WELCOME10', N'Giảm 10% cho khách hàng mới', 'PERCENTAGE', 10, 5000000, 1000, GETDATE(), DATEADD(month, 3, GETDATE())),
-(N'FREE50K', N'Giảm 50.000đ cho đơn hàng từ 10 triệu', 'FIXED', 50000, 10000000, 500, GETDATE(), DATEADD(month, 6, GETDATE()));
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_products_status' AND object_id = OBJECT_ID('dbo.products'))
+    CREATE INDEX [IX_products_status] ON [dbo].[products]([status]);
 
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_orders_user' AND object_id = OBJECT_ID('dbo.orders'))
+    CREATE INDEX [IX_orders_user] ON [dbo].[orders]([user_id]);
+
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_orders_status' AND object_id = OBJECT_ID('dbo.orders'))
+    CREATE INDEX [IX_orders_status] ON [dbo].[orders]([order_status]);
+
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_orders_order_code' AND object_id = OBJECT_ID('dbo.orders'))
+    CREATE INDEX [IX_orders_order_code] ON [dbo].[orders]([order_code]);
+
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_carts_user' AND object_id = OBJECT_ID('dbo.carts'))
+    CREATE INDEX [IX_carts_user] ON [dbo].[carts]([user_id]);
+
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_addresses_user' AND object_id = OBJECT_ID('dbo.addresses'))
+    CREATE INDEX [IX_addresses_user] ON [dbo].[addresses]([user_id]);
+
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_reviews_product' AND object_id = OBJECT_ID('dbo.reviews'))
+    CREATE INDEX [IX_reviews_product] ON [dbo].[reviews]([product_id]);
+
+IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'IX_reviews_user' AND object_id = OBJECT_ID('dbo.reviews'))
+    CREATE INDEX [IX_reviews_user] ON [dbo].[reviews]([user_id]);
 GO
+
 -- =============================================
--- BẮT ĐẦU DỮ LIỆU MẪU (SEED DATA) - FIXED
+-- 3. SEED DATA (DATA.SQL CONTENT)
 -- =============================================
 
--- 1. THÊM NHÃN HIỆU (BRANDS) MỚI
-INSERT INTO [dbo].[brands] ([name], [description]) VALUES
-(N'Dat Bike', N'Xe máy điện startup Việt Nam, hiệu năng cao'),
-(N'Yadea', N'Thương hiệu xe máy điện quốc tế bán chạy');
+-- 3.1 Insert Default Admin User
+IF NOT EXISTS (SELECT * FROM [dbo].[users] WHERE email = 'admin@vinfast.com')
+BEGIN
+    INSERT INTO [dbo].[users] ([email], [password], [full_name], [phone], [role], [enabled], [email_verified])
+    VALUES ('admin@vinfast.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt5eKl/K', N'Administrator', '0123456789', 'ADMIN', 1, 1);
+END
+GO
 
--- 2. THÊM DANH MỤC (CATEGORIES) MỚI
-INSERT INTO [dbo].[categories] ([name], [description]) VALUES
-(N'Pin & Sạc', N'Pin LFP và bộ sạc chính hãng');
+-- 3.2 Insert Categories
+IF NOT EXISTS (SELECT * FROM [dbo].[categories] WHERE name = N'Xe máy điện phổ thông')
+BEGIN
+    INSERT INTO [dbo].[categories] ([name], [description]) VALUES 
+    (N'Xe máy điện phổ thông', N'Dòng xe phù hợp học sinh, sinh viên, nội trợ'),
+    (N'Xe máy điện trung cấp', N'Dòng xe công nghệ, quãng đường xa'),
+    (N'Xe máy điện cao cấp', N'Dòng xe hiệu suất cao, công nghệ thông minh');
+END
+GO
 
--- 3. LẤY ID ĐỂ DÙNG CHO CÁC BẢNG SAU (Biến tạm)
-DECLARE @BrandVinFast BIGINT = (SELECT id FROM brands WHERE name = N'VinFast');
-DECLARE @BrandPega BIGINT = (SELECT id FROM brands WHERE name = N'Pega');
-DECLARE @BrandDatBike BIGINT = (SELECT id FROM brands WHERE name = N'Dat Bike');
-DECLARE @BrandYadea BIGINT = (SELECT id FROM brands WHERE name = N'Yadea');
+-- 3.3 Insert Brands
+IF NOT EXISTS (SELECT * FROM [dbo].[brands] WHERE name = N'VinFast')
+BEGIN
+    INSERT INTO [dbo].[brands] ([name], [description]) VALUES 
+    (N'VinFast', N'Thương hiệu xe điện hàng đầu Việt Nam');
+END
+GO
 
-DECLARE @CatMoto BIGINT = (SELECT id FROM categories WHERE name = N'Xe máy điện');
-DECLARE @CatAcc BIGINT = (SELECT id FROM categories WHERE name = N'Phụ kiện');
-DECLARE @CatBat BIGINT = (SELECT id FROM categories WHERE name = N'Pin & Sạc');
+-- 3.4 Insert Colors
+IF NOT EXISTS (SELECT * FROM [dbo].[colors] WHERE name = N'Trắng Ngọc Trai')
+BEGIN
+    INSERT INTO [dbo].[colors] ([name], [hex_code], [image]) VALUES 
+    (N'Trắng Ngọc Trai', '#FFFFFF', '/image/25-1.jpg'),
+    (N'Đen Nhám', '#000000', '/image/evo200.jpg'),
+    (N'Xanh Oliu', '#4CAF50', '/image/27-1.jpg');
+END
+GO
 
-DECLARE @ColorBlack BIGINT = (SELECT id FROM colors WHERE hex_code = '#000000');
-DECLARE @ColorWhite BIGINT = (SELECT id FROM colors WHERE hex_code = '#FFFFFF');
-DECLARE @ColorRed BIGINT = (SELECT id FROM colors WHERE hex_code = '#FF0000');
-DECLARE @ColorBlue BIGINT = (SELECT id FROM colors WHERE hex_code = '#0066FF');
-DECLARE @ColorGreen BIGINT = (SELECT id FROM colors WHERE hex_code = '#00CC00');
+-- 3.5 Insert Vouchers
+IF NOT EXISTS (SELECT * FROM [dbo].[vouchers] WHERE code = 'WELCOME10')
+BEGIN
+    INSERT INTO [dbo].[vouchers] ([code], [description], [discount_type], [discount_value], [min_order_amount], [quantity], [start_date], [end_date]) VALUES
+    (N'WELCOME10', N'Giảm 10% cho khách hàng mới', 'PERCENTAGE', 10, 5000000, 1000, GETDATE(), DATEADD(month, 3, GETDATE())),
+    (N'FREE50K', N'Giảm 50.000đ cho đơn hàng từ 10 triệu', 'FIXED', 50000, 10000000, 500, GETDATE(), DATEADD(month, 6, GETDATE()));
+END
+GO
 
--- 4. THÊM SẢN PHẨM (PRODUCTS)
-INSERT INTO [dbo].[products] ([name], [slug], [description], [price], [discount_price], [quantity], [brand_id], [category_id], [image], [specifications], [status]) VALUES
--- VinFast Bikes
-(N'VinFast Feliz S', 'vinfast-feliz-s', N'Mẫu xe máy điện quốc dân, pin LFP đi được 198km/lần sạc.', 27000000, 26500000, 50, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Feliz+S', N'{"range":"198km", "max_speed":"78km/h", "battery":"LFP 3.5kWh"}', 'ACTIVE'),
-(N'VinFast Klara S (2022)', 'vinfast-klara-s-2022', N'Thiết kế Ý thanh lịch, vận hành êm ái, cốp rộng.', 35000000, NULL, 30, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Klara+S', N'{"range":"194km", "max_speed":"78km/h", "trunk":"23L"}', 'ACTIVE'),
-(N'VinFast Evo200', 'vinfast-evo200', N'Xe máy điện thời trang, nhỏ gọn, di chuyển linh hoạt trong phố.', 22000000, 18000000, 100, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Evo200', N'{"range":"203km", "max_speed":"70km/h"}', 'ACTIVE'),
-(N'VinFast Vento S', 'vinfast-vento-s', N'Công nghệ hiện đại, động cơ IPM đặt bên (Side Motor).', 50000000, 48000000, 15, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Vento+S', N'{"range":"160km", "max_speed":"89km/h", "tech":"ABS"}', 'ACTIVE'),
-(N'VinFast Theon S', 'vinfast-theon-s', N'Đỉnh cao công nghệ, tốc độ vượt trội tương đương xe xăng 300cc.', 63000000, NULL, 5, @BrandVinFast, @CatMoto, N'https://placehold.co/500x500?text=Theon+S', N'{"range":"150km", "max_speed":"99km/h", "tech":"ABS 2 kenh"}', 'ACTIVE'),
+-- 3.6 Insert Products (10 samples)
+-- Only insert if table is empty or specific product not exists
+IF NOT EXISTS (SELECT * FROM [dbo].[products] WHERE slug = 'vinfast-evo200')
+BEGIN
+    -- Clear old data if needed (be careful in production)
+    DELETE FROM [dbo].[products];
+    DBCC CHECKIDENT ('[dbo].[products]', RESEED, 0);
 
--- Dat Bike & Yadea
-(N'Dat Bike Weaver++', 'dat-bike-weaver-plus', N'Xe máy điện mạnh nhất Việt Nam, sạc siêu nhanh.', 65900000, NULL, 20, @BrandDatBike, @CatMoto, N'https://placehold.co/500x500?text=Weaver++', N'{"range":"200km", "max_speed":"90km/h", "charge":"20min-100km"}', 'ACTIVE'),
-(N'Yadea Odora', 'yadea-odora', N'Thiết kế sành điệu, công nghệ TTFAR.', 18990000, 17500000, 40, @BrandYadea, @CatMoto, N'https://placehold.co/500x500?text=Odora', N'{"range":"100km", "max_speed":"50km/h"}', 'ACTIVE'),
+    INSERT INTO [dbo].[products] 
+    ([name], [slug], [description], [price], [discount_price], [quantity], [brand_id], [category_id], [image], [specifications], [status]) 
+    VALUES 
+    -- 1. Evo200
+    (N'VinFast Evo200', 'vinfast-evo200', N'Mẫu xe máy điện quốc dân với thiết kế thời trang, nhỏ gọn, phù hợp di chuyển trong đô thị. Quãng đường di chuyển lên tới 203km/lần sạc.', 22000000, 18000000, 50, 1, 1, '/image/evo200.jpg', N'Động cơ: 1500W; Pin: LFP; Tốc độ tối đa: 70km/h', 'ACTIVE'),
 
--- Phụ kiện
-(N'Mũ bảo hiểm 3/4 VinFast', 'mu-bao-hiem-3-4', N'Mũ bảo hiểm cao cấp, an toàn chuẩn DOT.', 850000, 600000, 200, @BrandVinFast, @CatAcc, N'https://placehold.co/500x500?text=Helmet', NULL, 'ACTIVE'),
-(N'Bộ sạc di động 1.2kW', 'bo-sac-di-dong', N'Sạc cầm tay tiện lợi cho xe VinFast LFP.', 3500000, NULL, 50, @BrandVinFast, @CatBat, N'https://placehold.co/500x500?text=Charger', NULL, 'ACTIVE');
+    -- 2. Evo200 Lite
+    (N'VinFast Evo200 Lite', 'vinfast-evo200-lite', N'Phiên bản giới hạn tốc độ dành cho học sinh, không cần bằng lái. Vận hành êm ái, an toàn tuyệt đối.', 22000000, NULL, 100, 1, 1, '/image/25-1.jpg', N'Động cơ: 1500W; Pin: LFP; Tốc độ tối đa: 49km/h', 'ACTIVE'),
 
--- 5. THIẾT LẬP KHO MÀU SẮC (PRODUCT_COLORS)
-DECLARE @P_FelizS BIGINT = (SELECT id FROM products WHERE slug = 'vinfast-feliz-s');
-DECLARE @P_KlaraS BIGINT = (SELECT id FROM products WHERE slug = 'vinfast-klara-s-2022');
-DECLARE @P_Weaver BIGINT = (SELECT id FROM products WHERE slug = 'dat-bike-weaver-plus');
-DECLARE @P_Helmet BIGINT = (SELECT id FROM products WHERE slug = 'mu-bao-hiem-3-4');
+    -- 3. Feliz S
+    (N'VinFast Feliz S', 'vinfast-feliz-s', N'Thiết kế thanh lịch, cốp rộng 25L, phù hợp cho phái đẹp. Công nghệ pin LFP tiên tiến giúp tăng tuổi thọ và quãng đường di chuyển.', 29900000, 27000000, 30, 1, 2, '/image/27-1.jpg', N'Động cơ: 1800W; Pin: LFP; Tốc độ tối đa: 78km/h', 'ACTIVE'),
 
-INSERT INTO [dbo].[product_colors] ([product_id], [color_id], [quantity]) VALUES
-(@P_FelizS, @ColorWhite, 20),
-(@P_FelizS, @ColorBlack, 15),
-(@P_FelizS, @ColorGreen, 15),
-(@P_KlaraS, @ColorRed, 10),
-(@P_KlaraS, @ColorBlue, 20),
-(@P_Weaver, @ColorRed, 10),
-(@P_Weaver, @ColorBlack, 10),
-(@P_Helmet, @ColorBlack, 100),
-(@P_Helmet, @ColorWhite, 100);
+    -- 4. Klara S (2022)
+    (N'VinFast Klara S (2022)', 'vinfast-klara-s-2022', N'Biểu tượng của sự sang trọng và đẳng cấp. Thiết kế Ý tinh tế, công nghệ thông minh kết nối eSim.', 36900000, NULL, 20, 1, 2, '/image/25-1.jpg', N'Động cơ: 1800W; Pin: LFP; Tốc độ tối đa: 78km/h', 'ACTIVE'),
 
--- 6. THÊM NGƯỜI DÙNG (USERS)
-DECLARE @DefPass NVARCHAR(255) = '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt5eKl/K';
+    -- 5. Vento S
+    (N'VinFast Vento S', 'vinfast-vento-s', N'Mạnh mẽ và bứt phá. Sử dụng động cơ đặt bên (Side Motor) cho khả năng tăng tốc vượt trội.', 56000000, 50000000, 15, 1, 3, '/image/evo200.jpg', N'Động cơ: 3000W; Pin: LFP; Tốc độ tối đa: 89km/h', 'ACTIVE'),
 
-INSERT INTO [dbo].[users] ([email], [password], [full_name], [phone], [role], [enabled], [email_verified]) VALUES
-('khachhang1@gmail.com', @DefPass, N'Nguyễn Văn An', '0901234567', 'USER', 1, 1),
-('khachhang2@gmail.com', @DefPass, N'Trần Thị Bích', '0909876543', 'USER', 1, 1),
-('khachhang3@gmail.com', @DefPass, N'Lê Hoàng Cường', '0912345678', 'USER', 1, 0),
-('pro_rider@gmail.com', @DefPass, N'Phạm Minh Tuấn', '0988888888', 'USER', 1, 1);
+    -- 6. Theon S
+    (N'VinFast Theon S', 'vinfast-theon-s', N'Đỉnh cao công nghệ xe máy điện. Tốc độ tối đa 99km/h, phanh ABS 2 kênh an toàn tuyệt đối.', 69900000, NULL, 10, 1, 3, '/image/27-1.jpg', N'Động cơ: 3500W; Pin: LFP; Tốc độ tối đa: 99km/h', 'ACTIVE'),
 
--- 7. THÊM ĐỊA CHỈ (ADDRESSES)
-DECLARE @U1 BIGINT = (SELECT id FROM users WHERE email = 'khachhang1@gmail.com');
-DECLARE @U2 BIGINT = (SELECT id FROM users WHERE email = 'khachhang2@gmail.com');
-DECLARE @U3 BIGINT = (SELECT id FROM users WHERE email = 'pro_rider@gmail.com');
+    -- 7. Impes
+    (N'VinFast Impes', 'vinfast-impes', N'Thiết kế thể thao, cá tính dành cho giới trẻ năng động. Gầm cao, vượt địa hình tốt.', 14900000, NULL, 0, 1, 1, '/image/evo200.jpg', N'Động cơ: 1200W; Pin: Lithium-ion; Tốc độ tối đa: 49km/h', 'OUT_OF_STOCK'),
 
-INSERT INTO [dbo].[addresses] ([user_id], [full_name], [phone], [province], [district], [ward], [street], [is_default]) VALUES
-(@U1, N'Nguyễn Văn An', '0901234567', N'Hà Nội', N'Quận Cầu Giấy', N'Phường Dịch Vọng', N'123 Xuân Thủy', 1),
-(@U2, N'Trần Thị Bích', '0909876543', N'TP. Hồ Chí Minh', N'Quận 1', N'Phường Bến Nghé', N'45 Lê Thánh Tôn', 1),
-(@U3, N'Phạm Minh Tuấn', '0988888888', N'Đà Nẵng', N'Quận Hải Châu', N'Phường Thạch Thang', N'88 Bạch Đằng', 1);
+    -- 8. Ludo
+    (N'VinFast Ludo', 'vinfast-ludo', N'Nhỏ gọn, linh hoạt, giá thành hợp lý. Bạn đồng hành tin cậy trên mọi nẻo đường.', 12900000, NULL, 5, 1, 1, '/image/25-1.jpg', N'Động cơ: 500W; Pin: Lithium-ion; Tốc độ tối đa: 35km/h', 'ACTIVE'),
 
--- 8. TẠO ĐƠN HÀNG (ORDERS) & CHI TIẾT (ORDER_ITEMS)
--- Đơn hàng 1
-DECLARE @Addr1 BIGINT = (SELECT TOP 1 id FROM addresses WHERE user_id = @U1);
-INSERT INTO [dbo].[orders] ([order_code], [user_id], [address_id], [voucher_id], [subtotal], [discount], [shipping_fee], [total], [payment_method], [payment_status], [order_status], [created_at]) 
-VALUES ('ORD-2025-001', @U1, @Addr1, NULL, 26500000, 0, 0, 26500000, 'COD', 'PAID', 'DELIVERED', DATEADD(day, -10, GETDATE()));
+    -- 9. Tempest
+    (N'VinFast Tempest', 'vinfast-tempest', N'Mẫu xe ý tưởng với thiết kế hầm hố, phá cách. Đang trong giai đoạn thử nghiệm thị trường.', 19000000, NULL, 50, 1, 1, '/image/27-1.jpg', N'Động cơ: 1600W; Pin: LFP; Tốc độ tối đa: 49km/h', 'ACTIVE'),
 
-DECLARE @O1 BIGINT = (SELECT id FROM orders WHERE order_code = 'ORD-2025-001');
-INSERT INTO [dbo].[order_items] ([order_id], [product_id], [color_id], [product_name], [product_image], [color_name], [price], [quantity], [subtotal])
-VALUES (@O1, @P_FelizS, @ColorWhite, N'VinFast Feliz S', N'https://placehold.co/500x500?text=Feliz+S', N'Trắng', 26500000, 1, 26500000);
+    -- 10. Klara A2
+    (N'VinFast Klara A2', 'vinfast-klara-a2', N'Phiên bản sử dụng ắc quy chì, tiết kiệm chi phí nhưng vẫn giữ nguyên thiết kế sang trọng của dòng Klara.', 25000000, 22000000, 40, 1, 2, '/image/25-1.jpg', N'Động cơ: 1200W; Ắc quy: Chì; Tốc độ tối đa: 60km/h', 'ACTIVE');
+END
+GO
 
--- Đơn hàng 2
-DECLARE @Addr2 BIGINT = (SELECT TOP 1 id FROM addresses WHERE user_id = @U2);
-INSERT INTO [dbo].[orders] ([order_code], [user_id], [address_id], [voucher_id], [subtotal], [discount], [shipping_fee], [total], [payment_method], [payment_status], [order_status], [created_at]) 
-VALUES ('ORD-2025-002', @U2, @Addr2, NULL, 1200000, 0, 30000, 1230000, 'VNPAY', 'PAID', 'SHIPPING', DATEADD(day, -2, GETDATE()));
+-- 3.7 Insert Product Images
+-- Only if table empty to avoid duplicates
+IF NOT EXISTS (SELECT * FROM [dbo].[product_images])
+BEGIN
+    INSERT INTO [dbo].[product_images] ([product_id], [image_url], [display_order])
+    SELECT id, '/image/25-1.jpg', 1 FROM [dbo].[products]
+    UNION ALL
+    SELECT id, '/image/evo200.jpg', 2 FROM [dbo].[products]
+    UNION ALL
+    SELECT id, '/image/27-1.jpg', 3 FROM [dbo].[products];
+END
+GO
 
-DECLARE @O2 BIGINT = (SELECT id FROM orders WHERE order_code = 'ORD-2025-002');
-INSERT INTO [dbo].[order_items] ([order_id], [product_id], [color_id], [product_name], [product_image], [color_name], [price], [quantity], [subtotal])
-VALUES (@O2, @P_Helmet, @ColorBlack, N'Mũ bảo hiểm 3/4 VinFast', N'https://placehold.co/500x500?text=Helmet', N'Đen', 600000, 2, 1200000);
-
--- Đơn hàng 3
-DECLARE @Addr3 BIGINT = (SELECT TOP 1 id FROM addresses WHERE user_id = @U3);
-DECLARE @VoucherID BIGINT = (SELECT id FROM vouchers WHERE code = 'FREE50K');
-
-INSERT INTO [dbo].[orders] ([order_code], [user_id], [address_id], [voucher_id], [subtotal], [discount], [shipping_fee], [total], [payment_method], [payment_status], [order_status], [created_at]) 
-VALUES ('ORD-2025-003', @U3, @Addr3, @VoucherID, 65900000, 50000, 0, 65850000, 'BANK_TRANSFER', 'PENDING', 'PENDING', GETDATE());
-
-DECLARE @O3 BIGINT = (SELECT id FROM orders WHERE order_code = 'ORD-2025-003');
-INSERT INTO [dbo].[order_items] ([order_id], [product_id], [color_id], [product_name], [product_image], [color_name], [price], [quantity], [subtotal])
-VALUES (@O3, @P_Weaver, @ColorBlack, N'Dat Bike Weaver++', N'https://placehold.co/500x500?text=Weaver++', N'Đen', 65900000, 1, 65900000);
-
--- 9. THÊM ĐÁNH GIÁ (REVIEWS) - ĐÃ SỬA LỖI
-INSERT INTO [dbo].[reviews] ([user_id], [order_id], [product_id], [rating], [comment], [created_at])
-VALUES (@U1, @O1, @P_FelizS, 5, N'Xe đi rất êm, màu trắng sang trọng, giao hàng nhanh.', DATEADD(day, -5, GETDATE()));
-
--- Sửa lỗi: Thêm cột [created_at] vào danh sách cột
-INSERT INTO [dbo].[reviews] ([user_id], [order_id], [product_id], [rating], [comment], [created_at])
-VALUES (@U2, @O2, @P_Helmet, 4, N'Mũ đẹp nhưng hơi chật so với size mô tả.', GETDATE());
-
+-- 3.8 Insert Product Colors
+IF NOT EXISTS (SELECT * FROM [dbo].[product_colors])
+BEGIN
+    INSERT INTO [dbo].[product_colors] ([product_id], [color_id], [quantity])
+    SELECT p.id, c.id, 20 -- Mỗi màu có 20 sản phẩm
+    FROM [dbo].[products] p
+    CROSS JOIN [dbo].[colors] c;
+END
 GO

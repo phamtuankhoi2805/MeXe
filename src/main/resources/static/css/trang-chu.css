@@ -259,6 +259,10 @@ header.vf-header {
     pointer-events: none;
 }
 
+.vf-search-box .vf-search-form {
+    position: relative;
+}
+
 .vf-search-box[style*="display: block"],
 .vf-search-box.show {
     opacity: 1;

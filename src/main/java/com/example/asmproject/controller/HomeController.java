@@ -28,19 +28,19 @@ import java.util.Optional;
 public class HomeController {
 
     private static final String TRANG_DANG_CHON = "trangDangChon";
-    
+
     @Autowired
     private ProductService productService;
-    
+
     @Autowired
     private CartService cartService;
-    
+
     @Autowired
     private AddressService addressService;
-    
+
     @Autowired
     private ReviewService reviewService;
-    
+
     @Autowired
     private SecurityUtil securityUtil;
 
@@ -54,12 +54,12 @@ public class HomeController {
     @GetMapping("/")
     public String hienThiTrangChu(Model moHinh) {
         moHinh.addAttribute(TRANG_DANG_CHON, "san-pham");
-        
+
         // Lấy danh sách sản phẩm đang hoạt động từ database
         // Service sẽ query từ database với status = ACTIVE
         List<Product> products = productService.getAllActiveProducts();
         moHinh.addAttribute("products", products);
-        
+
         return "trang-chu";
     }
 
@@ -68,36 +68,37 @@ public class HomeController {
      * Hiển thị thông tin sản phẩm, màu sắc, tồn kho, và đánh giá
      * Sử dụng DTO và JOIN FETCH để tránh lazy loading exception
      * 
-     * @param slug Slug của sản phẩm (URL-friendly name)
+     * @param slug   Slug của sản phẩm (URL-friendly name)
      * @param moHinh Model để truyền dữ liệu vào view
      * @return Tên template chi tiết sản phẩm
      */
     @GetMapping("/san-pham/{slug}")
     public String hienThiChiTietSanPham(@PathVariable String slug, Model moHinh) {
         moHinh.addAttribute(TRANG_DANG_CHON, "san-pham");
-        
+
         // Lấy thông tin sản phẩm theo slug từ database với JOIN FETCH
         // Query này sẽ load brand, category, productColors và color cùng lúc
         Optional<Product> productEntityOpt = productService.getProductBySlugWithDetails(slug);
-        
+
         if (!productEntityOpt.isPresent()) {
             // Nếu không tìm thấy sản phẩm thì redirect về trang chủ
             return "redirect:/";
         }
-        
+
         Product productEntity = productEntityOpt.get();
-        
+
         // Chuyển đổi sang DTO để tránh lazy loading khi render template
         ProductDetailDTO product = new ProductDetailDTO(productEntity);
         moHinh.addAttribute("product", product);
-        
-        // Parse danh sách ảnh phụ từ string (comma-separated)
-        List<String> productImages = new ArrayList<>();
-        if (product.getImage() != null && !product.getImage().isEmpty()) {
-            productImages.add(product.getImage()); // Ảnh chính
-        }
-        if (product.getImages() != null && !product.getImages().isEmpty()) {
-            String[] images = product.getImages().split(",");
+
+        // Lấy danh sách ảnh phụ từ bảng product_images
+        List<String> productImages = productEntity.getProductImages().stream()
+                .map(com.example.asmproject.model.ProductImage::getImageUrl)
+                .collect(java.util.stream.Collectors.toList());
+
+        // Nếu không có ảnh trong bảng mới, fallback về field cũ (nếu có)
+        if (productImages.isEmpty() && productEntity.getImages() != null) {
+            String[] images = productEntity.getImages().split(",");
             for (String img : images) {
                 String trimmedImg = img.trim();
                 if (!trimmedImg.isEmpty() && !productImages.contains(trimmedImg)) {
@@ -105,29 +106,39 @@ public class HomeController {
                 }
             }
         }
+        if (productImages.isEmpty() && product.getImage() != null) {
+            productImages.add(product.getImage());
+        }
+
         moHinh.addAttribute("productImages", productImages);
-        
+
         // Lấy danh sách màu sắc và tồn kho của sản phẩm (đã được load bằng JOIN FETCH)
         List<ProductColor> productColors = productEntity.getProductColors();
         moHinh.addAttribute("productColors", productColors);
-        
+
         // Lấy danh sách đánh giá của sản phẩm
         // Hiển thị tối đa 10 đánh giá mới nhất
         Pageable pageable = PageRequest.of(0, 10);
         List<Review> reviews = reviewService.getProductReviews(product.getId(), pageable).getContent();
         moHinh.addAttribute("reviews", reviews);
-        
+
         // Tính điểm đánh giá trung bình
         Double averageRating = reviewService.getAverageRating(product.getId());
         moHinh.addAttribute("averageRating", averageRating != null ? averageRating : 0.0);
-        
+
         // Đếm tổng số đánh giá
         long reviewCount = reviewService.getReviewCount(product.getId());
         moHinh.addAttribute("reviewCount", reviewCount);
-        
+
+        // Lấy userId nếu đã đăng nhập (để JavaScript sử dụng)
+        if (securityUtil.isAuthenticated()) {
+            Long userId = securityUtil.getCurrentUserId();
+            moHinh.addAttribute("currentUserId", userId);
+        }
+
         return "chi-tiet-san-pham";
     }
-    
+
     /**
      * Trang chi tiết sản phẩm theo slug cũ (backward compatibility)
      */
@@ -182,7 +193,8 @@ public class HomeController {
 
     /**
      * Trang giỏ hàng (Checkout)
-     * Hiển thị danh sách sản phẩm trong giỏ hàng, địa chỉ, voucher, phương thức vận chuyển
+     * Hiển thị danh sách sản phẩm trong giỏ hàng, địa chỉ, voucher, phương thức vận
+     * chuyển
      * 
      * @param moHinh Model để truyền dữ liệu vào view
      * @return Tên template giỏ hàng
@@ -190,55 +202,56 @@ public class HomeController {
     @GetMapping("/gio-hang")
     public String hienThiGioHang(Model moHinh) {
         moHinh.addAttribute(TRANG_DANG_CHON, "gio-hang");
-        
+
         // Lấy cart items từ database nếu user đã đăng nhập
         // Nếu chưa đăng nhập thì hiển thị giỏ hàng trống hoặc từ local storage
         if (securityUtil.isAuthenticated()) {
             Long userId = securityUtil.getCurrentUserId();
-            
+
             if (userId != null) {
                 // Lấy danh sách sản phẩm trong giỏ hàng từ database
                 List<Cart> cartItems = cartService.getUserCart(userId);
                 moHinh.addAttribute("cartItems", cartItems);
-                
+
                 // Tính tổng tiền tạm tính
                 double subtotal = cartItems.stream()
-                    .mapToDouble(item -> item.getProduct().getFinalPrice().doubleValue() * item.getQuantity())
-                    .sum();
+                        .mapToDouble(item -> item.getProduct().getFinalPrice().doubleValue() * item.getQuantity())
+                        .sum();
                 moHinh.addAttribute("subtotal", subtotal);
-                
+
                 // Lấy danh sách địa chỉ của user (tối đa 4 địa chỉ)
                 List<Address> userAddresses = addressService.getUserAddresses(userId);
                 moHinh.addAttribute("userAddresses", userAddresses);
-                
+
                 // Lấy địa chỉ mặc định
                 Optional<Address> defaultAddress = addressService.getDefaultAddress(userId);
                 defaultAddress.ifPresent(addr -> moHinh.addAttribute("defaultAddress", addr));
             }
         }
-        
+
         // Nếu chưa đăng nhập, cartItems sẽ là null hoặc empty
         // Client có thể lấy từ local storage và đồng bộ sau khi đăng nhập
-        
+
         return "gio-hang";
     }
-    
+
     /**
      * Trang đăng nhập
      * Hiển thị form đăng nhập và nút đăng nhập bằng Google
      * 
-     * @param model Model để truyền dữ liệu vào view
-     * @param error Tham số error từ URL (nếu có)
-     * @param registered Tham số registered từ URL (nếu có) - thông báo đăng ký thành công
+     * @param model      Model để truyền dữ liệu vào view
+     * @param error      Tham số error từ URL (nếu có)
+     * @param registered Tham số registered từ URL (nếu có) - thông báo đăng ký
+     *                   thành công
      * @return Tên template đăng nhập
      */
     @GetMapping("/login")
-    public String hienThiTrangDangNhap(Model moHinh, 
-                                      @org.springframework.web.bind.annotation.RequestParam(required = false) String error,
-                                      @org.springframework.web.bind.annotation.RequestParam(required = false) String registered) {
+    public String hienThiTrangDangNhap(Model moHinh,
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String error,
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String registered) {
         moHinh.addAttribute(TRANG_DANG_CHON, "dang-nhap");
         moHinh.addAttribute("isLogin", true); // Đánh dấu đây là trang đăng nhập
-        
+
         // Kiểm tra nếu có lỗi thì hiển thị thông báo
         if (error != null) {
             if ("oauth_failed".equals(error)) {
@@ -249,15 +262,15 @@ public class HomeController {
                 moHinh.addAttribute("error", "Đăng nhập thất bại. Vui lòng thử lại.");
             }
         }
-        
+
         // Thông báo đăng ký thành công
         if (registered != null && "true".equals(registered)) {
             moHinh.addAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
         }
-        
+
         return "dang-ky-tai-khoan";
     }
-    
+
     /**
      * Trang đăng ký
      * Hiển thị form đăng ký
@@ -268,31 +281,45 @@ public class HomeController {
         moHinh.addAttribute("isLogin", false); // Đánh dấu đây là trang đăng ký
         return "dang-ky-tai-khoan";
     }
-    
+
     /**
      * Trang tìm kiếm sản phẩm
      * Hiển thị kết quả tìm kiếm dựa trên từ khóa
+     * Tìm kiếm trong: tên sản phẩm, mô tả, slug, tên thương hiệu, tên danh mục
      */
     @GetMapping("/tim-kiem")
-    public String hienThiTimKiem(@RequestParam(required = false) String keyword, Model moHinh) {
+    public String hienThiTimKiem(@RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            Model moHinh) {
         moHinh.addAttribute(TRANG_DANG_CHON, "san-pham");
-        
+
         if (keyword != null && !keyword.trim().isEmpty()) {
-            // Tìm kiếm sản phẩm theo từ khóa
-            Pageable pageable = PageRequest.of(0, 50); // Lấy tối đa 50 sản phẩm
-            var productsPage = productService.searchProducts(keyword.trim(), null, null, Product.ProductStatus.ACTIVE, pageable);
+            // Tìm kiếm sản phẩm theo từ khóa với phân trang
+            Pageable pageable = PageRequest.of(page, size);
+            var productsPage = productService.searchProducts(
+                    keyword.trim(),
+                    null,
+                    null,
+                    Product.ProductStatus.ACTIVE,
+                    pageable);
+
             moHinh.addAttribute("products", productsPage.getContent());
             moHinh.addAttribute("keyword", keyword.trim());
             moHinh.addAttribute("totalResults", productsPage.getTotalElements());
+            moHinh.addAttribute("totalPages", productsPage.getTotalPages());
+            moHinh.addAttribute("currentPage", productsPage.getNumber());
+            moHinh.addAttribute("hasNext", productsPage.hasNext());
+            moHinh.addAttribute("hasPrevious", productsPage.hasPrevious());
         } else {
-            // Nếu không có từ khóa, hiển thị tất cả sản phẩm
-            List<Product> products = productService.getAllActiveProducts();
-            moHinh.addAttribute("products", products);
+            // Nếu không có từ khóa, không hiển thị sản phẩm
+            moHinh.addAttribute("products", new ArrayList<>());
+            moHinh.addAttribute("totalResults", 0L);
         }
-        
-        return "trang-chu";
+
+        return "tim-kiem";
     }
-    
+
     /**
      * Trang thông báo không có quyền truy cập (403)
      * Hiển thị khi user không có quyền truy cập trang admin
@@ -302,5 +329,15 @@ public class HomeController {
         moHinh.addAttribute(TRANG_DANG_CHON, "khong-co-quyen");
         return "khong-co-quyen";
     }
-}
 
+    /**
+     * Trang xác thực email
+     * Hiển thị form để người dùng nhập mã xác nhận 6 số
+     */
+    @GetMapping("/verify-email")
+    public String hienThiVerifyEmail(@RequestParam(required = false) String email, Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "verify-email");
+        moHinh.addAttribute("email", email);
+        return "verify-email";
+    }
+}

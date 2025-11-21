@@ -20,10 +20,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     Page<Product> findByStatus(Product.ProductStatus status, Pageable pageable);
     
-    @Query("SELECT p FROM Product p WHERE " +
+    @Query("SELECT p FROM Product p " +
+           "LEFT JOIN p.brand b " +
+           "LEFT JOIN p.category c " +
+           "WHERE " +
            "(:keyword IS NULL OR :keyword = '' OR " +
            "LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-           "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+           "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(p.slug) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
            "(:brandId IS NULL OR p.brand.id = :brandId) AND " +
            "(:categoryId IS NULL OR p.category.id = :categoryId) AND " +
            "(:status IS NULL OR p.status = :status)")

@@ -304,19 +304,20 @@
 
 
 
-    <section class="vf-container product-section" data-animate>
+    <!-- Danh sách sản phẩm từ database -->
+    <section class="vf-container product-section" data-animate th:if="${products != null and !products.isEmpty()}">
 
 
         <div class="section-header">
 
 
-            <small>Sản phẩm bán chạy</small>
+            <small>Sản phẩm nổi bật</small>
 
 
-            <h2>Xe máy điện học sinh</h2>
+            <h2>Danh sách sản phẩm</h2>
 
 
-            <p>Lựa chọn hoàn hảo cho các bạn học sinh với thiết kế trẻ trung, tốc độ vừa phải và chi phí vận hành tiết kiệm.</p>
+            <p>Khám phá các sản phẩm xe máy điện VinFast với công nghệ hiện đại và thiết kế tinh tế.</p>
 
 
         </div>
@@ -325,151 +326,53 @@
         <div class="product-carousel-wrapper">
 
 
-            <button class="carousel-control prev" data-target="studentCarousel" aria-label="prev">&#8592;</button>
+            <button class="carousel-control prev" data-target="productCarousel" aria-label="prev">&#8592;</button>
 
 
-            <div class="product-carousel" id="studentCarousel">
+            <div class="product-carousel" id="productCarousel">
 
 
-                <article class="product-card">
+                <article class="product-card" th:each="product : ${products}">
 
 
-                    <span class="tag">Mới</span>
+                    <span class="tag" th:if="${product.discountPrice != null}">Ưu đãi</span>
+                    <span class="tag" th:unless="${product.discountPrice != null}">Mới</span>
 
 
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz Lite">
+                    <img th:src="${product.image != null ? product.image : '/image/evo200.jpg'}" 
+                         th:alt="${product.name}"
+                         onerror="this.src='/image/evo200.jpg'"
+                         alt="Sản phẩm VinFast">
 
 
-                    <div class="product-meta">
+                    <div class="product-meta" th:if="${product.brand != null or product.category != null}">
 
 
-                        <span>Học sinh</span>
+                        <span th:if="${product.category != null}" th:text="${product.category.name}">Danh mục</span>
 
 
-                        <span>262 km/lần sạc</span>
-
-
-                    </div>
-
-
-                    <h3>VinFast Feliz Lite</h3>
-
-
-                    <p>Động cơ 500W, pin LFP 14Ah, tích hợp hệ thống chống nước IP67 cho thời tiết mưa gió.</p>
-
-
-                    <strong class="product-price">25.900.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Ưu đãi</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Evo200 Lite">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Học sinh</span>
-
-
-                        <span>203 km/lần sạc</span>
+                        <span th:if="${product.brand != null}" th:text="${product.brand.name}">Thương hiệu</span>
 
 
                     </div>
 
 
-                    <h3>VinFast Evo200 Lite</h3>
+                    <h3 th:text="${product.name}">Tên sản phẩm</h3>
 
 
-                    <p>Trọng lượng nhẹ, vận tốc giới hạn 49 km/h phù hợp với lứa tuổi học sinh, thiết kế năng động.</p>
+                    <p th:text="${product.description != null ? (#strings.length(product.description) > 100 ? #strings.substring(product.description, 0, 100) + '...' : product.description) : 'Sản phẩm chất lượng cao từ VinFast'}">
+                        Mô tả sản phẩm
+                    </p>
 
 
-                    <strong class="product-price">18.800.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Hot</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Evo200 Neo">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Học sinh</span>
-
-
-                        <span>198 km/lần sạc</span>
-
-
+                    <div class="product-price-container">
+                        <strong class="product-price" th:text="${#numbers.formatDecimal(product.finalPrice, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</strong>
+                        <span class="product-price-old" th:if="${product.discountPrice != null}" 
+                              th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</span>
                     </div>
 
 
-                    <h3>VinFast Evo200 Neo</h3>
-
-
-                    <p>Đèn LED tròn cá tính, kết nối ứng dụng VinFast E-Scooter và chế độ định vị thông minh.</p>
-
-
-                    <strong class="product-price">14.400.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Mới</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz 2025">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Học sinh</span>
-
-
-                        <span>205 km/lần sạc</span>
-
-
-                    </div>
-
-
-                    <h3>VinFast Feliz 2025</h3>
-
-
-                    <p>Bản nâng cấp 02 pin, tích hợp phanh CBS và khóa thông minh chống trộm toàn diện.</p>
-
-
-                    <strong class="product-price">29.000.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
+                    <a th:href="@{'/san-pham/' + ${product.slug}}" class="vf-btn--ghost">Xem chi tiết →</a>
 
 
                 </article>
@@ -478,7 +381,7 @@
             </div>
 
 
-            <button class="carousel-control next" data-target="studentCarousel" aria-label="next">&#8594;</button>
+            <button class="carousel-control next" data-target="productCarousel" aria-label="next">&#8594;</button>
 
 
         </div>
@@ -490,187 +393,6 @@
 
 
 
-    <section class="vf-container product-section" data-animate>
-
-
-        <div class="section-header">
-
-
-            <small>Khám phá</small>
-
-
-            <h2>Xe máy điện cá tính</h2>
-
-
-            <p>Phong cách hiện đại, hiệu năng vượt trội, phù hợp cho những hành trình dài và nhu cầu di chuyển hàng ngày.</p>
-
-
-        </div>
-
-
-        <div class="product-carousel-wrapper">
-
-
-            <button class="carousel-control prev" data-target="lifestyleCarousel" aria-label="prev">&#8592;</button>
-
-
-            <div class="product-carousel" id="lifestyleCarousel">
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Best seller</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Vero X">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Cao cấp</span>
-
-
-                        <span>30 km/h Eco</span>
-
-
-                    </div>
-
-
-                    <h3>VinFast Vero X 2025</h3>
-
-
-                    <p>Thiết kế thời trang, bảng màu trẻ trung, hệ thống phanh ABS hai kênh đảm bảo an toàn.</p>
-
-
-                    <strong class="product-price">34.900.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Mới</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Feliz 2025">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Phổ thông</span>
-
-
-                        <span>262 km/lần sạc</span>
-
-
-                    </div>
-
-
-                    <h3>VinFast Feliz 2025</h3>
-
-
-                    <p>Sở hữu động cơ công suất 3.500W, tăng tốc mượt mà và vận hành êm ái trên mọi cung đường.</p>
-
-
-                    <strong class="product-price">25.900.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Ưu đãi</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast EvoGrand">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Phổ thông</span>
-
-
-                        <span>210 km/lần sạc</span>
-
-
-                    </div>
-
-
-                    <h3>VinFast EvoGrand</h3>
-
-
-                    <p>Khoang để chân rộng, yên dài cho 2 người, tích hợp cổng sạc USB tiện lợi cho điện thoại.</p>
-
-
-                    <strong class="product-price">21.000.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-                <article class="product-card">
-
-
-                    <span class="tag">Hot</span>
-
-
-                    <img th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Evo Neo">
-
-
-                    <div class="product-meta">
-
-
-                        <span>Phổ thông</span>
-
-
-                        <span>200 km/lần sạc</span>
-
-
-                    </div>
-
-
-                    <h3>VinFast Evo Neo</h3>
-
-
-                    <p>Phong cách thể thao, công nghệ chìa khóa thông minh SmartKey và chống trộm toàn diện.</p>
-
-
-                    <strong class="product-price">17.800.000 ₫</strong>
-
-
-                    <button class="vf-btn--ghost">Mua ngay →</button>
-
-
-                </article>
-
-
-            </div>
-
-
-            <button class="carousel-control next" data-target="lifestyleCarousel" aria-label="next">&#8594;</button>
-
-
-        </div>
-
-
-    </section>
 
 
 

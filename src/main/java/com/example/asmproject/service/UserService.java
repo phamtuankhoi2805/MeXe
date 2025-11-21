@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,8 @@ import java.util.stream.Collectors;
 
 /**
  * Service xử lý các logic nghiệp vụ liên quan đến User
- * Bao gồm: đăng ký, đăng nhập Google, xác thực email, quên mật khẩu, đổi mật khẩu
+ * Bao gồm: đăng ký, đăng nhập Google, xác thực email, quên mật khẩu, đổi mật
+ * khẩu
  * 
  * @author VinFast Development Team
  * @version 1.0
@@ -32,29 +34,29 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserService {
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private EmailService emailService;
-    
+
     @Autowired
     private OrderRepository orderRepository;
-    
+
     @Autowired
     private OrderMapper orderMapper;
-    
+
     /**
      * Đăng ký tài khoản mới bằng email và mật khẩu
      * 
-     * @param email Email của người dùng (phải unique)
+     * @param email    Email của người dùng (phải unique)
      * @param password Mật khẩu (sẽ được mã hóa bằng BCrypt)
      * @param fullName Họ và tên
-     * @param phone Số điện thoại (optional)
+     * @param phone    Số điện thoại (optional)
      * @return User object đã được lưu vào database
      * @throws RuntimeException nếu email đã tồn tại
      */
@@ -64,7 +66,7 @@ public class UserService {
         if (userRepository.existsByEmail(email)) {
             throw new RuntimeException("Email đã được sử dụng. Vui lòng sử dụng email khác hoặc đăng nhập.");
         }
-        
+
         // Tạo user mới
         User user = new User();
         user.setEmail(email);
@@ -76,42 +78,44 @@ public class UserService {
         user.setRole(User.Role.USER); // Mặc định là USER, ADMIN chỉ được tạo thủ công
         user.setEnabled(true); // Cho phép đăng nhập ngay
         user.setEmailVerified(false); // Chưa xác thực email
-        
-        // Tạo token xác thực ngẫu nhiên (UUID)
-        // Token này sẽ được gửi trong email để người dùng click vào xác thực
-        String verificationToken = UUID.randomUUID().toString();
-        user.setVerificationToken(verificationToken);
-        
+
+        // Tạo mã xác nhận 6 số ngẫu nhiên
+        // Mã này sẽ được gửi trong email để người dùng nhập vào xác thực
+        String verificationCode = generateVerificationCode();
+        user.setVerificationToken(verificationCode);
+
         // Gửi email xác thực
         // Email sẽ chứa link với token để người dùng click vào
         // Link format: /api/auth/verify-email?token={verificationToken}
-        emailService.sendVerificationEmail(user.getEmail(), verificationToken);
-        
+        emailService.sendVerificationEmail(user.getEmail(), user.getFullName(), verificationCode);
+
         // Lưu user vào database và trả về
         return userRepository.save(user);
     }
-    
+
     /**
      * Đăng ký hoặc đăng nhập bằng tài khoản Google OAuth
      * 
      * Logic:
      * 1. Nếu đã có user với providerId này -> trả về user hiện tại (đăng nhập)
-     * 2. Nếu chưa có providerId nhưng email đã tồn tại -> liên kết Google với email đó
+     * 2. Nếu chưa có providerId nhưng email đã tồn tại -> liên kết Google với email
+     * đó
      * 3. Nếu chưa có cả providerId và email -> tạo tài khoản mới
      * 
-     * @param email Email từ Google (đã được Google xác thực)
-     * @param fullName Tên đầy đủ từ Google
+     * @param email      Email từ Google (đã được Google xác thực)
+     * @param fullName   Tên đầy đủ từ Google
      * @param providerId Google User ID (unique, không bao giờ thay đổi)
      * @return User object (đã tồn tại hoặc mới tạo)
      */
     public User registerWithGoogle(String email, String fullName, String providerId) {
-        // Bước 1: Kiểm tra xem đã có user nào đăng nhập bằng Google với providerId này chưa
+        // Bước 1: Kiểm tra xem đã có user nào đăng nhập bằng Google với providerId này
+        // chưa
         // Nếu có thì đây là lần đăng nhập tiếp theo -> trả về user hiện tại
         Optional<User> existingUser = userRepository.findByProviderAndProviderId("google", providerId);
         if (existingUser.isPresent()) {
             return existingUser.get();
         }
-        
+
         // Bước 2: Kiểm tra xem email này đã được dùng để đăng ký tài khoản thường chưa
         // Nếu có thì liên kết Google với tài khoản đó
         // Điều này cho phép người dùng đăng nhập bằng cả email/password hoặc Google
@@ -125,7 +129,7 @@ public class UserService {
             user.setEmailVerified(true);
             return userRepository.save(user);
         }
-        
+
         // Bước 3: Chưa có tài khoản nào -> tạo mới
         // Vì đăng nhập bằng Google nên không cần password
         User user = new User();
@@ -137,35 +141,74 @@ public class UserService {
         user.setEnabled(true);
         // Email từ Google đã được xác thực nên set emailVerified = true
         user.setEmailVerified(true);
-        
+
         return userRepository.save(user);
     }
-    
+
     /**
-     * Xác thực email bằng token
-     * Token được gửi trong email khi đăng ký
+     * Tạo mã xác nhận 6 số ngẫu nhiên
      * 
-     * @param token Verification token từ link trong email
-     * @return true nếu xác thực thành công, false nếu token không hợp lệ
+     * @return Mã xác nhận 6 số (000000 - 999999)
+     */
+    private String generateVerificationCode() {
+        SecureRandom random = new SecureRandom();
+        int code = random.nextInt(900000) + 100000; // Tạo số từ 100000 đến 999999
+        return String.valueOf(code);
+    }
+
+    /**
+     * Xác thực email bằng mã xác nhận 6 số
+     * Mã được gửi trong email khi đăng ký
+     * 
+     * @param code  Mã xác nhận 6 số từ email
+     * @param email Email của người dùng (để tìm user)
+     * @return true nếu xác thực thành công, false nếu mã không hợp lệ
+     */
+    public boolean verifyEmail(String code, String email) {
+        // Tìm user theo email
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // Kiểm tra mã xác nhận
+            if (user.getVerificationToken() != null && user.getVerificationToken().equals(code)) {
+                // Đánh dấu email đã được xác thực
+                user.setEmailVerified(true);
+                // Xóa mã sau khi đã sử dụng (mã chỉ dùng 1 lần)
+                user.setVerificationToken(null);
+                userRepository.save(user);
+                return true;
+            }
+        }
+
+        // Mã không hợp lệ hoặc email không tồn tại
+        return false;
+    }
+
+    /**
+     * Xác thực email bằng token (giữ lại để tương thích với code cũ)
+     * 
+     * @param token Verification token
+     * @return true nếu xác thực thành công
      */
     public boolean verifyEmail(String token) {
         // Tìm user có token này
         Optional<User> userOpt = userRepository.findByVerificationToken(token);
-        
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             // Đánh dấu email đã được xác thực
             user.setEmailVerified(true);
-            // Xóa token sau khi đã sử dụng (token chỉ dùng 1 lần)
+            // Xóa token sau khi đã sử dụng
             user.setVerificationToken(null);
             userRepository.save(user);
             return true;
         }
-        
-        // Token không tồn tại hoặc đã được sử dụng
+
         return false;
     }
-    
+
     /**
      * Yêu cầu đặt lại mật khẩu
      * Tạo reset token và gửi email chứa link đặt lại mật khẩu
@@ -176,21 +219,21 @@ public class UserService {
     public void requestPasswordReset(String email) {
         // Tìm user theo email
         Optional<User> userOpt = userRepository.findByEmail(email);
-        
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            
+
             // Tạo reset token ngẫu nhiên (UUID)
             String resetToken = UUID.randomUUID().toString();
             user.setResetToken(resetToken);
-            
+
             // Set thời hạn token là 24 giờ kể từ bây giờ
             // Sau 24 giờ token sẽ hết hiệu lực
             user.setResetTokenExpiry(LocalDateTime.now().plusHours(24));
-            
+
             // Lưu token vào database
             userRepository.save(user);
-            
+
             // Gửi email chứa link đặt lại mật khẩu
             // Link format: /reset-password?token={resetToken}
             emailService.sendPasswordResetEmail(user.getEmail(), resetToken);
@@ -198,50 +241,80 @@ public class UserService {
         // Lưu ý: Không throw exception nếu email không tồn tại
         // Để tránh hacker biết được email nào có trong hệ thống (bảo mật)
     }
-    
+
+    /**
+     * Gửi lại mã xác nhận email
+     * Tạo mã mới và gửi lại email
+     * 
+     * @param email Email của người dùng
+     * @return true nếu gửi thành công, false nếu email không tồn tại
+     */
+    public boolean resendVerificationCode(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+
+            // Chỉ gửi lại nếu email chưa được xác thực
+            if (!user.getEmailVerified()) {
+                // Tạo mã xác nhận mới
+                String verificationCode = generateVerificationCode();
+                user.setVerificationToken(verificationCode);
+                userRepository.save(user);
+
+                // Gửi email với mã mới
+                emailService.sendVerificationEmail(user.getEmail(), user.getFullName(), verificationCode);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Đặt lại mật khẩu bằng reset token
      * Token phải còn hiệu lực (chưa quá 24 giờ)
      * 
-     * @param token Reset token từ link trong email
+     * @param token       Reset token từ link trong email
      * @param newPassword Mật khẩu mới (sẽ được mã hóa)
-     * @return true nếu đặt lại thành công, false nếu token không hợp lệ hoặc hết hạn
+     * @return true nếu đặt lại thành công, false nếu token không hợp lệ hoặc hết
+     *         hạn
      */
     public boolean resetPassword(String token, String newPassword) {
         // Tìm user có token này
         Optional<User> userOpt = userRepository.findByResetToken(token);
-        
+
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            
+
             // Kiểm tra token còn hiệu lực không
             // So sánh thời hạn token với thời gian hiện tại
-            if (user.getResetTokenExpiry() != null && 
-                user.getResetTokenExpiry().isAfter(LocalDateTime.now())) {
-                
+            if (user.getResetTokenExpiry() != null &&
+                    user.getResetTokenExpiry().isAfter(LocalDateTime.now())) {
+
                 // Token còn hiệu lực -> đặt mật khẩu mới
                 // Mã hóa mật khẩu mới bằng BCrypt
                 user.setPassword(passwordEncoder.encode(newPassword));
-                
+
                 // Xóa token sau khi đã sử dụng (token chỉ dùng 1 lần)
                 user.setResetToken(null);
                 user.setResetTokenExpiry(null);
-                
+
                 userRepository.save(user);
                 return true;
             }
             // Token đã hết hạn (quá 24 giờ)
         }
-        
+
         // Token không tồn tại hoặc đã hết hạn
         return false;
     }
-    
+
     /**
      * Đổi mật khẩu khi người dùng đã đăng nhập
      * Yêu cầu mật khẩu cũ để xác thực
      * 
-     * @param userId ID của người dùng (lấy từ session hoặc JWT)
+     * @param userId      ID của người dùng (lấy từ session hoặc JWT)
      * @param oldPassword Mật khẩu cũ (để xác thực)
      * @param newPassword Mật khẩu mới (sẽ được mã hóa)
      * @throws RuntimeException nếu user không tồn tại hoặc mật khẩu cũ sai
@@ -249,35 +322,35 @@ public class UserService {
     public void changePassword(Long userId, String oldPassword, String newPassword) {
         // Tìm user theo ID
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-        
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
         // So sánh mật khẩu cũ với mật khẩu trong database
         // passwordEncoder.matches() sẽ tự động so sánh plain text với BCrypt hash
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new RuntimeException("Mật khẩu cũ không đúng. Vui lòng thử lại.");
         }
-        
+
         // Mật khẩu cũ đúng -> đổi sang mật khẩu mới
         // Mã hóa mật khẩu mới bằng BCrypt
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
-    
+
     /**
      * Cập nhật thông tin profile của user
      * 
-     * @param userId ID của user
+     * @param userId   ID của user
      * @param fullName Họ tên mới (optional)
-     * @param phone Số điện thoại mới (optional)
-     * @param avatar URL ảnh đại diện mới (optional)
+     * @param phone    Số điện thoại mới (optional)
+     * @param avatar   URL ảnh đại diện mới (optional)
      * @return User object đã được cập nhật
      * @throws RuntimeException nếu user không tồn tại
      */
     public User updateProfile(Long userId, String fullName, String phone, String avatar) {
         // Tìm user theo ID
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-        
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
         // Chỉ cập nhật các field có giá trị (không null)
         // Cho phép cập nhật từng phần thông tin
         if (fullName != null && !fullName.trim().isEmpty()) {
@@ -289,10 +362,10 @@ public class UserService {
         if (avatar != null && !avatar.trim().isEmpty()) {
             user.setAvatar(avatar);
         }
-        
+
         return userRepository.save(user);
     }
-    
+
     /**
      * Tìm user theo email
      * 
@@ -302,7 +375,7 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-    
+
     /**
      * Tìm user theo ID
      * 
@@ -312,7 +385,7 @@ public class UserService {
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-    
+
     /**
      * Đếm tổng số user trong hệ thống (chỉ USER role, không tính ADMIN)
      * 
@@ -321,24 +394,21 @@ public class UserService {
     public long getTotalUsers() {
         return userRepository.countUsers();
     }
-    
+
     /**
      * Tìm kiếm người dùng với phân trang
      */
     public Page<UserResponse> searchUsers(String keyword, UserStatus status, Pageable pageable) {
         Specification<User> spec = Specification.where(null);
-        
+
         if (keyword != null && !keyword.trim().isEmpty()) {
             String keywordLower = keyword.toLowerCase();
-            spec = spec.and((root, query, cb) -> 
-                cb.or(
+            spec = spec.and((root, query, cb) -> cb.or(
                     cb.like(cb.lower(root.get("email")), "%" + keywordLower + "%"),
                     cb.like(cb.lower(root.get("fullName")), "%" + keywordLower + "%"),
-                    cb.like(cb.lower(root.get("phone")), "%" + keywordLower + "%")
-                )
-            );
+                    cb.like(cb.lower(root.get("phone")), "%" + keywordLower + "%")));
         }
-        
+
         if (status != null) {
             Boolean enabled = null;
             if (status == UserStatus.HOAT_DONG) {
@@ -351,10 +421,10 @@ public class UserService {
                 spec = spec.and((root, query, cb) -> cb.equal(root.get("enabled"), finalEnabled));
             }
         }
-        
+
         return userRepository.findAll(spec, pageable).map(this::toUserResponse);
     }
-    
+
     /**
      * Tạo người dùng mới
      */
@@ -362,7 +432,7 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email đã được sử dụng");
         }
-        
+
         User user = new User();
         user.setEmail(request.getEmail());
         user.setFullName(request.getFullName());
@@ -370,30 +440,30 @@ public class UserService {
         user.setRole(User.Role.USER);
         user.setEnabled(request.getStatus() == UserStatus.HOAT_DONG);
         user.setEmailVerified(false);
-        
+
         if (request.getAddress() != null && !request.getAddress().trim().isEmpty()) {
             // Note: Address is a separate entity, this is a simplified version
             // In a real implementation, you'd need to handle address creation separately
         }
-        
+
         user = userRepository.save(user);
         return toUserResponse(user);
     }
-    
+
     /**
      * Cập nhật thông tin người dùng
      */
     public UserResponse update(Long id, UserRequest request) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-        
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
         if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
             if (userRepository.existsByEmail(request.getEmail())) {
                 throw new RuntimeException("Email đã được sử dụng");
             }
             user.setEmail(request.getEmail());
         }
-        
+
         if (request.getFullName() != null) {
             user.setFullName(request.getFullName());
         }
@@ -403,31 +473,31 @@ public class UserService {
         if (request.getStatus() != null) {
             user.setEnabled(request.getStatus() == UserStatus.HOAT_DONG);
         }
-        
+
         user = userRepository.save(user);
         return toUserResponse(user);
     }
-    
+
     /**
      * Hủy kích hoạt người dùng
      */
     public void deactivate(Long id) {
         User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
         user.setEnabled(false);
         userRepository.save(user);
     }
-    
+
     /**
      * Lấy lịch sử mua hàng của người dùng
      */
     public List<OrderResponse> getPurchaseHistory(Long id) {
         List<com.example.asmproject.model.Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(id);
         return orders.stream()
-            .map(orderMapper::toResponse)
-            .collect(Collectors.toList());
+                .map(orderMapper::toResponse)
+                .collect(Collectors.toList());
     }
-    
+
     /**
      * Chuyển đổi User sang UserResponse
      */
@@ -448,4 +518,3 @@ public class UserService {
         return response;
     }
 }
-

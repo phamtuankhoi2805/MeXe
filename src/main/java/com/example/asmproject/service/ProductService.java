@@ -119,7 +119,14 @@ public class ProductService {
      */
     @Transactional(readOnly = true)
     public Optional<Product> getProductBySlugWithDetails(String slug) {
-        return productRepository.findBySlugWithBrandAndCategory(slug);
+        Optional<Product> productOpt = productRepository.findBySlugWithBrandAndCategory(slug);
+        // Initialize lazy collections
+        productOpt.ifPresent(product -> {
+            if (product.getProductImages() != null) {
+                product.getProductImages().size(); // Trigger fetch
+            }
+        });
+        return productOpt;
     }
     
     /**

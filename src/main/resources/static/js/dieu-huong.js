@@ -256,6 +256,111 @@
             hideSearchBox();
         }
     });
+    
+    // Autocomplete/Suggestions
+    if (searchInput) {
+        let suggestionsContainer = null;
+        let debounceTimer;
+        
+        const createSuggestionsContainer = () => {
+            if (!suggestionsContainer) {
+                suggestionsContainer = document.createElement('div');
+                suggestionsContainer.className = 'vf-search-suggestions';
+                suggestionsContainer.style.cssText = 'position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-height: 300px; overflow-y: auto; z-index: 1001; display: none;';
+                const searchForm = searchBox.querySelector('.vf-search-form');
+                if (searchForm) {
+                    searchForm.style.position = 'relative';
+                    searchForm.appendChild(suggestionsContainer);
+                } else {
+                    searchBox.appendChild(suggestionsContainer);
+                }
+            }
+            return suggestionsContainer;
+        };
+        
+        const hideSuggestions = () => {
+            if (suggestionsContainer) {
+                suggestionsContainer.style.display = 'none';
+            }
+        };
+        
+        const showSuggestions = (suggestions) => {
+            const container = createSuggestionsContainer();
+            container.innerHTML = '';
+            
+            if (suggestions.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            suggestions.forEach(product => {
+                const item = document.createElement('a');
+                item.href = '/san-pham/' + product.slug;
+                item.className = 'vf-suggestion-item';
+                item.style.cssText = 'display: flex; align-items: center; padding: 12px; text-decoration: none; color: #1e293b; border-bottom: 1px solid #f1f5f9; transition: background 0.2s;';
+                item.innerHTML = `
+                    <img src="${product.image || '/image/evo200.jpg'}" 
+                         alt="${product.name}" 
+                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 12px;"
+                         onerror="this.src='/image/evo200.jpg'">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">${product.name}</div>
+                        <div style="font-size: 14px; color: #2563eb; font-weight: 600;">
+                            ${new Intl.NumberFormat('vi-VN').format(product.price)} ₫
+                        </div>
+                    </div>
+                `;
+                item.addEventListener('mouseenter', () => {
+                    item.style.background = '#f8fafc';
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.background = 'transparent';
+                });
+                container.appendChild(item);
+            });
+            
+            container.style.display = 'block';
+        };
+        
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.trim();
+            
+            clearTimeout(debounceTimer);
+            
+            if (keyword.length < 2) {
+                hideSuggestions();
+                return;
+            }
+            
+            // Debounce: đợi 300ms sau khi người dùng ngừng gõ
+            debounceTimer = setTimeout(() => {
+                fetch(`/api/products/suggestions?keyword=${encodeURIComponent(keyword)}`)
+                    .then(response => response.json())
+                    .then(suggestions => {
+                        showSuggestions(suggestions);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching suggestions:', error);
+                        hideSuggestions();
+                    });
+            }, 300);
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchBox.contains(e.target)) {
+                hideSuggestions();
+            }
+        });
+        
+        // Hide suggestions on form submit
+        const searchForm = searchBox.querySelector('form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', () => {
+                hideSuggestions();
+            });
+        }
+    }
 })();
 
 // Account dropdown menu functionality

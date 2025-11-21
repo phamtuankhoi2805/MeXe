@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực email - VinFast</title>
+    <link rel="stylesheet" th:href="@{/css/dang-ky-tai-khoan.css}">
+    <style>
+        .verify-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .verify-title {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .verify-description {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .code-input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .code-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .code-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .verify-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .verify-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .resend-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .resend-link a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .resend-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .message-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .message-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <h1 class="verify-title">Xác thực email</h1>
+        <p class="verify-description">
+            Chúng tôi đã gửi mã xác nhận 6 số đến email của bạn.<br>
+            Vui lòng nhập mã để hoàn tất đăng ký.
+        </p>
+        
+        <div id="messageDiv" class="message" style="display: none;"></div>
+        
+        <form id="verifyForm">
+            <input type="hidden" id="email" th:value="${email}">
+            
+            <div class="code-input-group">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" id="code1" autocomplete="off">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" id="code2" autocomplete="off">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" id="code3" autocomplete="off">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" id="code4" autocomplete="off">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" id="code5" autocomplete="off">
+                <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" id="code6" autocomplete="off">
+            </div>
+            
+            <button type="submit" class="verify-button" id="verifyButton">Xác thực</button>
+        </form>
+        
+        <div class="resend-link">
+            <p>Chưa nhận được mã? <a href="#" id="resendLink">Gửi lại mã</a></p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeInputs = document.querySelectorAll('.code-input');
+            const verifyForm = document.getElementById('verifyForm');
+            const messageDiv = document.getElementById('messageDiv');
+            const verifyButton = document.getElementById('verifyButton');
+            const resendLink = document.getElementById('resendLink');
+            const emailInput = document.getElementById('email');
+            
+            // Auto-focus và auto-move giữa các input
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    if (this.value.length === 1) {
+                        if (index < codeInputs.length - 1) {
+                            codeInputs[index + 1].focus();
+                        }
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+                
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const paste = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = paste.replace(/\D/g, '').slice(0, 6);
+                    
+                    for (let i = 0; i < digits.length && i < codeInputs.length; i++) {
+                        codeInputs[i].value = digits[i];
+                    }
+                    
+                    if (digits.length === 6) {
+                        codeInputs[5].focus();
+                    } else if (digits.length > 0) {
+                        codeInputs[digits.length].focus();
+                    }
+                });
+            });
+            
+            // Xử lý submit form
+            verifyForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                
+                if (code.length !== 6) {
+                    showMessage('Vui lòng nhập đầy đủ 6 số', 'error');
+                    return;
+                }
+                
+                const email = emailInput.value || new URLSearchParams(window.location.search).get('email');
+                
+                if (!email) {
+                    showMessage('Email không hợp lệ', 'error');
+                    return;
+                }
+                
+                verifyButton.disabled = true;
+                verifyButton.textContent = 'Đang xác thực...';
+                
+                try {
+                    const response = await fetch('/api/auth/verify-email', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            code: code
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showMessage(data.message || 'Xác thực thành công!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/login?verified=true';
+                        }, 2000);
+                    } else {
+                        showMessage(data.message || 'Mã xác nhận không hợp lệ', 'error');
+                        verifyButton.disabled = false;
+                        verifyButton.textContent = 'Xác thực';
+                        // Clear inputs
+                        codeInputs.forEach(input => input.value = '');
+                        codeInputs[0].focus();
+                    }
+                } catch (error) {
+                    showMessage('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
+                    verifyButton.disabled = false;
+                    verifyButton.textContent = 'Xác thực';
+                }
+            });
+            
+            // Gửi lại mã
+            resendLink.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                const email = emailInput.value || new URLSearchParams(window.location.search).get('email');
+                
+                if (!email) {
+                    showMessage('Email không hợp lệ', 'error');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/auth/resend-verification', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: email
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showMessage('Mã xác nhận mới đã được gửi đến email của bạn', 'success');
+                    } else {
+                        showMessage(data.message || 'Không thể gửi lại mã', 'error');
+                    }
+                } catch (error) {
+                    showMessage('Có lỗi xảy ra. Vui lòng thử lại sau.', 'error');
+                }
+            });
+            
+            function showMessage(message, type) {
+                messageDiv.textContent = message;
+                messageDiv.className = 'message message-' + type;
+                messageDiv.style.display = 'block';
+            }
+            
+            // Focus vào input đầu tiên
+            codeInputs[0].focus();
+        });
+    </script>
+</body>
+</html>
+

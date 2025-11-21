@@ -74,6 +74,9 @@ public class Product {
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductColor> productColors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages = new ArrayList<>();
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> cartItems = new ArrayList<>();
@@ -236,6 +239,14 @@ public class Product {
     
     public void setProductColors(List<ProductColor> productColors) {
         this.productColors = productColors;
+    }
+
+    public List<ProductImage> getProductImages() {
+        return productImages;
+    }
+
+    public void setProductImages(List<ProductImage> productImages) {
+        this.productImages = productImages;
     }
     
     public List<Cart> getCartItems() {

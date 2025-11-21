@@ -39,7 +39,6 @@
         
         <!-- Form đăng nhập (hiển thị khi vào /login) -->
         <form th:if="${isLogin == true}" class="signup-form" method="post" th:action="@{/login}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <h2>Đăng nhập</h2>
             <label>
                 Email
@@ -162,14 +161,16 @@
                     const data = await response.json();
                     
                     if (data.success) {
-                        successDiv.textContent = data.message || 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.';
+                        successDiv.textContent = data.message || 'Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác nhận 6 số.';
                         successDiv.style.display = 'block';
-                        registerForm.reset();
                         
-                        // Redirect sau 3 giây
+                        // Lấy email từ form
+                        const email = document.getElementById('email').value;
+                        
+                        // Redirect đến trang xác thực email
                         setTimeout(() => {
-                            window.location.href = '/login?registered=true';
-                        }, 3000);
+                            window.location.href = '/verify-email?email=' + encodeURIComponent(email);
+                        }, 2000);
                     } else {
                         errorDiv.textContent = data.message || 'Đăng ký thất bại. Vui lòng thử lại.';
                         errorDiv.style.display = 'block';

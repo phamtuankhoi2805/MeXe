@@ -32,7 +32,9 @@
             
             <!-- Hiển thị cart items từ database nếu user đã đăng nhập -->
             <article th:each="item : ${cartItems}" class="cart-item">
-                <img th:src="${item.product.image != null and !item.product.image.isEmpty()} ? @{/image/{img}(img=${item.product.image})} : @{/image/evo200.jpg}" 
+                <img th:src="${item.product.image != null and !item.product.image.isEmpty()} ? 
+                               (${item.product.image.startsWith('/')} ? @{${item.product.image}} : @{/image/{img}(img=${item.product.image})}) 
+                               : @{/image/evo200.jpg}" 
                      src="/image/evo200.jpg" 
                      th:alt="${item.product.name}">
                 <div class="cart-item__info">
@@ -115,7 +117,8 @@
                 <h3>Mã ưu đãi</h3>
                 <div class="voucher-input-group" style="display: flex; gap: 8px;">
                     <input type="text" id="voucherCode" placeholder="Nhập mã giảm giá" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    <button type="button" class="vf-btn vf-btn--ghost" onclick="applyVoucher()">Áp dụng</button>
+                    <button type="button" class="vf-btn vf-btn--ghost" onclick="openVoucherModal()" style="background: #f0f7ff; color: #0048ff; border: 1px solid #0048ff;">Chọn mã</button>
+                    <button type="button" class="vf-btn vf-btn--primary" onclick="applyVoucher()">Áp dụng</button>
                 </div>
                 <p id="voucherMessage" class="text-success" style="margin-top: 8px; color: #00a86b; font-size: 0.9rem;"></p>
             </div>
@@ -172,6 +175,21 @@
             </article>
         </div>
     </section>
+
+    <!-- Voucher Modal -->
+    <div id="voucherModal" class="voucher-modal">
+        <div class="voucher-modal-content">
+            <div class="voucher-header">
+                <h3>Chọn mã giảm giá</h3>
+                <button class="close-modal" onclick="closeVoucherModal()">×</button>
+            </div>
+            <div class="voucher-list" id="voucherList">
+                <!-- Voucher items will be injected here -->
+                <p style="text-align: center; color: #888;">Đang tải...</p>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
@@ -362,6 +380,72 @@
             currentSubtotal = parseFloat(subtotalEl.innerText.replace(/[^\d]/g, '')) || 0;
         }
     })();
+
+    // Voucher Modal Logic
+    const voucherModal = document.getElementById('voucherModal');
+    const voucherList = document.getElementById('voucherList');
+
+    function openVoucherModal() {
+        voucherModal.classList.add('is-active');
+        fetchVouchers();
+    }
+
+    function closeVoucherModal() {
+        voucherModal.classList.remove('is-active');
+    }
+
+    // Close modal when clicking outside
+    voucherModal.addEventListener('click', function(e) {
+        if (e.target === voucherModal) {
+            closeVoucherModal();
+        }
+    });
+
+    async function fetchVouchers() {
+        try {
+            const response = await fetch('/api/vouchers/available');
+            const vouchers = await response.json();
+            
+            voucherList.innerHTML = '';
+            
+            if (vouchers.length === 0) {
+                voucherList.innerHTML = '<p style="text-align: center; color: #888;">Không có mã giảm giá nào khả dụng.</p>';
+                return;
+            }
+            
+            vouchers.forEach(voucher => {
+                const isPercentage = voucher.discountType === 'PERCENTAGE';
+                const discountText = isPercentage ? voucher.discountValue + '%' : parseFloat(voucher.discountValue).toLocaleString('vi-VN') + 'đ';
+                
+                // Check if valid for current order
+                const isValid = !voucher.minOrderAmount || currentSubtotal >= voucher.minOrderAmount;
+                
+                const item = document.createElement('div');
+                item.className = `voucher-item ${isValid ? '' : 'disabled'}`;
+                item.innerHTML = `
+                    <div class="voucher-info">
+                        <h4>${voucher.code}</h4>
+                        <p>${voucher.description || 'Giảm ' + discountText}</p>
+                        <span class="voucher-expiry">HSD: ${new Date(voucher.endDate).toLocaleDateString('vi-VN')}</span>
+                        ${!isValid ? `<br><small style="color: #e53e3e; margin-top: 4px; display: block;">Đơn tối thiểu ${parseFloat(voucher.minOrderAmount).toLocaleString('vi-VN')}đ</small>` : ''}
+                    </div>
+                    <div class="voucher-action">
+                        <button class="btn-apply-voucher" onclick="selectVoucher('${voucher.code}')" ${isValid ? '' : 'disabled'}>Dùng ngay</button>
+                    </div>
+                `;
+                voucherList.appendChild(item);
+            });
+        } catch (error) {
+            console.error('Error fetching vouchers:', error);
+            voucherList.innerHTML = '<p style="text-align: center; color: #e53e3e;">Có lỗi khi tải danh sách voucher.</p>';
+        }
+    }
+
+    function selectVoucher(code) {
+        document.getElementById('voucherCode').value = code;
+        closeVoucherModal();
+        applyVoucher(); // Auto apply
+    }
 </script>
 </body>
 </html>

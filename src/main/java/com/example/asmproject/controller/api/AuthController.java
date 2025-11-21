@@ -306,8 +306,50 @@ public class AuthController {
      * @param token Token xác thực được gửi trong email
      * @return JSON response với thông báo kết quả
      */
+    /**
+     * API xác thực email bằng mã xác nhận 6 số
+     * POST /api/auth/verify-email
+     * Body: { "email": "user@example.com", "code": "123456" }
+     */
+    @PostMapping("/verify-email")
+    public ResponseEntity<Map<String, Object>> verifyEmail(@RequestBody Map<String, String> request) {
+        Map<String, Object> response = new HashMap<>();
+        
+        String email = request.get("email");
+        String code = request.get("code");
+        
+        if (email == null || email.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Email không được để trống.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        if (code == null || code.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Mã xác nhận không được để trống.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        // Gọi service để xác thực email bằng mã 6 số
+        boolean success = userService.verifyEmail(code, email);
+        
+        if (success) {
+            response.put("success", true);
+            response.put("message", "Xác thực email thành công. Bạn có thể đăng nhập ngay bây giờ.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "Mã xác nhận không hợp lệ hoặc đã được sử dụng.");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    /**
+     * API xác thực email bằng token (giữ lại để tương thích)
+     * GET /api/auth/verify-email?token=xxx
+     */
     @GetMapping("/verify-email")
-    public ResponseEntity<Map<String, Object>> verifyEmail(@RequestParam String token) {
+    public ResponseEntity<Map<String, Object>> verifyEmailByToken(@RequestParam(required = false) String token) {
         Map<String, Object> response = new HashMap<>();
         
         if (token == null || token.isEmpty()) {
@@ -316,11 +358,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        // Gọi service để xác thực email
-        // Service sẽ:
-        // - Tìm user theo verification token
-        // - Set emailVerified = true
-        // - Xóa verification token
+        // Gọi service để xác thực email bằng token
         boolean success = userService.verifyEmail(token);
         
         if (success) {
@@ -330,6 +368,37 @@ public class AuthController {
         } else {
             response.put("success", false);
             response.put("message", "Token xác thực không hợp lệ hoặc đã được sử dụng.");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    /**
+     * API gửi lại mã xác nhận email
+     * POST /api/auth/resend-verification
+     * Body: { "email": "user@example.com" }
+     */
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Map<String, Object>> resendVerification(@RequestBody Map<String, String> request) {
+        Map<String, Object> response = new HashMap<>();
+        
+        String email = request.get("email");
+        
+        if (email == null || email.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Email không được để trống.");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        // Gọi service để gửi lại mã xác nhận
+        boolean success = userService.resendVerificationCode(email);
+        
+        if (success) {
+            response.put("success", true);
+            response.put("message", "Mã xác nhận mới đã được gửi đến email của bạn.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "Email không tồn tại hoặc đã được xác thực.");
             return ResponseEntity.badRequest().body(response);
         }
     }

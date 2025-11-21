@@ -203,5 +203,45 @@ public class ProductController {
         
         return ResponseEntity.ok(response);
     }
+    
+    /**
+     * API lấy gợi ý tìm kiếm (autocomplete)
+     * Trả về danh sách sản phẩm gợi ý dựa trên từ khóa
+     * Giới hạn 5 kết quả để hiển thị nhanh
+     * 
+     * @param keyword Từ khóa tìm kiếm
+     * @return Danh sách sản phẩm gợi ý (tối đa 5)
+     */
+    @GetMapping("/suggestions")
+    public ResponseEntity<List<Map<String, Object>>> getSearchSuggestions(
+            @RequestParam(required = false) String keyword) {
+        
+        List<Map<String, Object>> suggestions = new java.util.ArrayList<>();
+        
+        if (keyword != null && !keyword.trim().isEmpty() && keyword.trim().length() >= 2) {
+            // Tìm kiếm với giới hạn 5 kết quả
+            Pageable pageable = PageRequest.of(0, 5);
+            Page<Product> products = productService.searchProducts(
+                keyword.trim(), 
+                null, 
+                null, 
+                Product.ProductStatus.ACTIVE, 
+                pageable
+            );
+            
+            // Chuyển đổi sang format đơn giản cho autocomplete
+            for (Product product : products.getContent()) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("id", product.getId());
+                item.put("name", product.getName());
+                item.put("slug", product.getSlug());
+                item.put("image", product.getImage());
+                item.put("price", product.getFinalPrice());
+                suggestions.add(item);
+            }
+        }
+        
+        return ResponseEntity.ok(suggestions);
+    }
 }
 

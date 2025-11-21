@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${keyword != null ? 'Tìm kiếm: ' + keyword + ' - VinFast' : 'Tìm kiếm sản phẩm - VinFast'}">Tìm kiếm - VinFast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}">
+    <style>
+        .search-results {
+            padding: 40px 0;
+            min-height: 60vh;
+        }
+        
+        .search-header {
+            margin-bottom: 30px;
+        }
+        
+        .search-header h1 {
+            font-size: 28px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        
+        .search-info {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .search-info strong {
+            color: #2563eb;
+        }
+        
+        .search-form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .search-form-container form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-form-container input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-form-container input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .search-form-container button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .search-form-container button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+        
+        .no-results svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .no-results h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+        
+        .no-results p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .suggestions {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .suggestions h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+        
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .suggestions li {
+            padding: 8px 0;
+        }
+        
+        .suggestions a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .suggestions a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+    
+    <main>
+        <section class="vf-container search-results">
+            <div class="search-header">
+                <h1 th:if="${keyword != null and !keyword.isEmpty()}">
+                    Kết quả tìm kiếm cho: "<span th:text="${keyword}"></span>"
+                </h1>
+                <h1 th:unless="${keyword != null and !keyword.isEmpty()}">
+                    Tìm kiếm sản phẩm
+                </h1>
+                <div class="search-info" th:if="${keyword != null and !keyword.isEmpty() and totalResults != null}">
+                    Tìm thấy <strong th:text="${totalResults}">0</strong> sản phẩm
+                </div>
+            </div>
+            
+            <!-- Search Form -->
+            <div class="search-form-container">
+                <form th:action="@{/tim-kiem}" method="get">
+                    <input type="text" 
+                           name="keyword" 
+                           th:value="${keyword}"
+                           placeholder="Nhập tên sản phẩm, thương hiệu, danh mục..." 
+                           autocomplete="off"
+                           id="searchKeyword">
+                    <button type="submit">Tìm kiếm</button>
+                </form>
+            </div>
+            
+            <!-- Search Results -->
+            <div th:if="${products != null and !products.isEmpty()}">
+                <div class="product-carousel-wrapper">
+                    <div class="product-carousel" id="productCarousel" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+                        <article class="product-card" th:each="product : ${products}">
+                            <span class="tag" th:if="${product.discountPrice != null}">Ưu đãi</span>
+                            <span class="tag" th:unless="${product.discountPrice != null}">Mới</span>
+                            
+                            <img th:src="${product.image != null ? product.image : '/image/evo200.jpg'}" 
+                                 th:alt="${product.name}"
+                                 onerror="this.src='/image/evo200.jpg'"
+                                 alt="Sản phẩm VinFast">
+                            
+                            <div class="product-meta" th:if="${product.brand != null or product.category != null}">
+                                <span th:if="${product.category != null}" th:text="${product.category.name}">Danh mục</span>
+                                <span th:if="${product.brand != null}" th:text="${product.brand.name}">Thương hiệu</span>
+                            </div>
+                            
+                            <h3 th:text="${product.name}">Tên sản phẩm</h3>
+                            
+                            <p th:text="${product.description != null ? (#strings.length(product.description) > 100 ? #strings.substring(product.description, 0, 100) + '...' : product.description) : 'Sản phẩm chất lượng cao từ VinFast'}">
+                            </p>
+                            
+                            <div class="product-price-container">
+                                <strong class="product-price" th:text="${#numbers.formatDecimal(product.finalPrice, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</strong>
+                                <span class="product-price-old" th:if="${product.discountPrice != null}" 
+                                      th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</span>
+                            </div>
+                            
+                            <a th:href="@{'/san-pham/' + ${product.slug}}" class="vf-btn--ghost">Xem chi tiết →</a>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- No Results -->
+            <div class="no-results" th:if="${keyword != null and !keyword.isEmpty() and (products == null or products.isEmpty())}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m20 20-4.35-4.35"/>
+                </svg>
+                <h2>Không tìm thấy sản phẩm</h2>
+                <p>Không có sản phẩm nào khớp với từ khóa "<strong th:text="${keyword}"></strong>"</p>
+                
+                <div class="suggestions">
+                    <h3>Gợi ý:</h3>
+                    <ul>
+                        <li>Kiểm tra lại chính tả từ khóa</li>
+                        <li>Thử tìm kiếm với từ khóa khác</li>
+                        <li>Sử dụng từ khóa ngắn gọn hơn</li>
+                        <li><a th:href="@{/}">Xem tất cả sản phẩm</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Empty State (no keyword) -->
+            <div class="no-results" th:if="${keyword == null or keyword.isEmpty()}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m20 20-4.35-4.35"/>
+                </svg>
+                <h2>Nhập từ khóa để tìm kiếm</h2>
+                <p>Bạn có thể tìm kiếm theo tên sản phẩm, thương hiệu hoặc danh mục</p>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        // Auto-focus search input
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchKeyword');
+            if (searchInput) {
+                searchInput.focus();
+                // Select text if there's a value
+                if (searchInput.value) {
+                    searchInput.select();
+                }
+                
+                // Enter key to submit
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.closest('form').submit();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

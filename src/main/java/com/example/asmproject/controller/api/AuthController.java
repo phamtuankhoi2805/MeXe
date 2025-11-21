@@ -46,17 +46,69 @@ public class AuthController {
             String fullName = request.get("fullName");
             String phone = request.get("phone");
             
-            // Kiểm tra dữ liệu đầu vào
-            if (email == null || email.isEmpty()) {
+            // Kiểm tra dữ liệu đầu vào với thông báo chi tiết
+            if (email == null || email.trim().isEmpty()) {
                 response.put("success", false);
                 response.put("message", "Email không được để trống.");
+                response.put("field", "email");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // Validate email format
+            String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+            if (!email.matches(emailRegex)) {
+                response.put("success", false);
+                response.put("message", "Email không hợp lệ. Vui lòng nhập đúng định dạng email (ví dụ: user@example.com).");
+                response.put("field", "email");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            if (fullName == null || fullName.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Họ và tên không được để trống.");
+                response.put("field", "fullName");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            if (fullName.trim().length() < 2) {
+                response.put("success", false);
+                response.put("message", "Họ và tên phải có ít nhất 2 ký tự.");
+                response.put("field", "fullName");
                 return ResponseEntity.badRequest().body(response);
             }
             
             if (password == null || password.isEmpty()) {
                 response.put("success", false);
                 response.put("message", "Mật khẩu không được để trống.");
+                response.put("field", "password");
                 return ResponseEntity.badRequest().body(response);
+            }
+            
+            // Validate password strength
+            if (password.length() < 6) {
+                response.put("success", false);
+                response.put("message", "Mật khẩu phải có ít nhất 6 ký tự.");
+                response.put("field", "password");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            if (password.length() > 50) {
+                response.put("success", false);
+                response.put("message", "Mật khẩu không được vượt quá 50 ký tự.");
+                response.put("field", "password");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            // Validate phone (optional but if provided, should be valid)
+            if (phone != null && !phone.trim().isEmpty()) {
+                String phoneRegex = "^[0-9]{10,11}$";
+                String phoneDigits = phone.replaceAll("[^0-9]", "");
+                if (!phoneDigits.matches(phoneRegex)) {
+                    response.put("success", false);
+                    response.put("message", "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại từ 10-11 chữ số.");
+                    response.put("field", "phone");
+                    return ResponseEntity.badRequest().body(response);
+                }
             }
             
             // Gọi service để đăng ký tài khoản
@@ -64,18 +116,29 @@ public class AuthController {
             // - Mã hóa mật khẩu bằng BCrypt
             // - Tạo verification token
             // - Gửi email xác thực
-            User user = userService.register(email, password, fullName, phone);
+            User user = userService.register(email.trim(), password, fullName.trim(), phone != null ? phone.trim() : null);
             
             // Trả về kết quả thành công
             response.put("success", true);
-            response.put("message", "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản.");
+            response.put("message", "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác nhận 6 số.");
             response.put("userId", user.getId());
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            // Xử lý lỗi và trả về thông báo
+        } catch (RuntimeException e) {
+            // Xử lý lỗi từ service (ví dụ: email đã tồn tại)
             response.put("success", false);
-            response.put("message", e.getMessage());
+            String errorMessage = e.getMessage();
+            if (errorMessage != null && errorMessage.contains("Email đã được sử dụng")) {
+                response.put("message", "Email này đã được sử dụng. Vui lòng sử dụng email khác hoặc đăng nhập.");
+                response.put("field", "email");
+            } else {
+                response.put("message", errorMessage != null ? errorMessage : "Đăng ký thất bại. Vui lòng thử lại.");
+            }
             return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            // Xử lý lỗi không mong đợi
+            response.put("success", false);
+            response.put("message", "Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.");
+            return ResponseEntity.status(500).body(response);
         }
     }
     

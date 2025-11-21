@@ -1,7 +1,11 @@
 package com.example.asmproject.service;
 
 import com.example.asmproject.dto.ProductDetailDTO;
+import com.example.asmproject.dto.ProductRequest;
+import com.example.asmproject.dto.ProductResponse;
 import com.example.asmproject.model.Product;
+import com.example.asmproject.repository.BrandRepository;
+import com.example.asmproject.repository.CategoryRepository;
 import com.example.asmproject.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +29,12 @@ public class ProductService {
     
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
     
     /**
      * Tìm kiếm sản phẩm với nhiều tiêu chí
@@ -129,6 +139,115 @@ public class ProductService {
         return productOpt;
     }
     
+    /**
+     * Tạo sản phẩm mới từ ProductRequest
+     */
+    public ProductResponse createProduct(ProductRequest request) {
+        Product product = new Product();
+        mapRequestToProduct(request, product);
+        
+        // Generate slug if not provided
+        if (product.getSlug() == null || product.getSlug().isEmpty()) {
+            product.setSlug(generateSlug(product.getName()));
+        }
+        
+        // Check unique slug
+        if (productRepository.findBySlug(product.getSlug()).isPresent()) {
+            throw new RuntimeException("Slug đã tồn tại: " + product.getSlug());
+        }
+        
+        Product saved = productRepository.save(product);
+        return toProductResponse(saved);
+    }
+
+    /**
+     * Cập nhật sản phẩm từ ProductRequest
+     */
+    public ProductResponse updateProduct(Long id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+        
+        mapRequestToProduct(request, product);
+        
+        // Check unique slug if changed
+        if (request.getSlug() != null && !request.getSlug().equals(product.getSlug())) {
+            if (productRepository.findBySlug(request.getSlug()).isPresent()) {
+                throw new RuntimeException("Slug đã tồn tại: " + request.getSlug());
+            }
+        }
+        
+        Product saved = productRepository.save(product);
+        return toProductResponse(saved);
+    }
+
+    /**
+     * Helper method: Map ProductRequest to Product
+     */
+    private void mapRequestToProduct(ProductRequest request, Product product) {
+        product.setName(request.getName());
+        if (request.getSlug() != null && !request.getSlug().isEmpty()) {
+            product.setSlug(request.getSlug());
+        }
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setDiscountPrice(request.getDiscountPrice());
+        product.setQuantity(request.getQuantity());
+        product.setImage(request.getImage());
+        product.setImages(request.getImages());
+        product.setSpecifications(request.getSpecifications());
+        product.setStatus(request.getStatus());
+        
+        if (request.getBrandId() != null) {
+            product.setBrand(brandRepository.findById(request.getBrandId()).orElse(null));
+        }
+        
+        if (request.getCategoryId() != null) {
+            product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null));
+        }
+    }
+
+    /**
+     * Helper method: Map Product to ProductResponse
+     */
+    public ProductResponse toProductResponse(Product product) {
+        ProductResponse response = new ProductResponse();
+        response.setId(product.getId());
+        response.setName(product.getName());
+        response.setSlug(product.getSlug());
+        response.setDescription(product.getDescription());
+        response.setPrice(product.getPrice());
+        response.setDiscountPrice(product.getDiscountPrice());
+        response.setQuantity(product.getQuantity());
+        response.setImage(product.getImage());
+        response.setImages(product.getImages());
+        response.setSpecifications(product.getSpecifications());
+        response.setStatus(product.getStatus());
+        response.setCreatedAt(product.getCreatedAt());
+        response.setUpdatedAt(product.getUpdatedAt());
+        
+        if (product.getBrand() != null) {
+            response.setBrandId(product.getBrand().getId());
+            response.setBrandName(product.getBrand().getName());
+        }
+        
+        if (product.getCategory() != null) {
+            response.setCategoryId(product.getCategory().getId());
+            response.setCategoryName(product.getCategory().getName());
+        }
+        
+        return response;
+    }
+
+    /**
+     * Helper method: Generate slug from string
+     */
+    private String generateSlug(String input) {
+        if (input == null) return "";
+        return input.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-");
+    }
+
     /**
      * Lưu sản phẩm (thêm mới hoặc cập nhật)
      * 

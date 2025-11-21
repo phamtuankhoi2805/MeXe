@@ -125,21 +125,70 @@
                 errorDiv.style.display = 'none';
                 successDiv.style.display = 'none';
                 
-                const fullName = document.getElementById('fullName').value;
-                const email = document.getElementById('email').value;
-                const phone = document.getElementById('phone').value;
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
                 
-                // Validate
-                if (password !== confirmPassword) {
-                    errorDiv.textContent = 'Mật khẩu xác nhận không khớp!';
-                    errorDiv.style.display = 'block';
-                    return;
+                // Clear previous errors
+                document.querySelectorAll('.field-error').forEach(el => el.remove());
+                
+                let hasError = false;
+                
+                // Validate fullName
+                if (!fullName) {
+                    showFieldError('fullName', 'Họ và tên không được để trống.');
+                    hasError = true;
+                } else if (fullName.length < 2) {
+                    showFieldError('fullName', 'Họ và tên phải có ít nhất 2 ký tự.');
+                    hasError = true;
                 }
                 
-                if (password.length < 6) {
-                    errorDiv.textContent = 'Mật khẩu phải có ít nhất 6 ký tự!';
+                // Validate email
+                if (!email) {
+                    showFieldError('email', 'Email không được để trống.');
+                    hasError = true;
+                } else {
+                    const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+                    if (!emailRegex.test(email)) {
+                        showFieldError('email', 'Email không hợp lệ. Vui lòng nhập đúng định dạng email.');
+                        hasError = true;
+                    }
+                }
+                
+                // Validate phone (optional)
+                if (phone) {
+                    const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
+                    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                        showFieldError('phone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                        hasError = true;
+                    }
+                }
+                
+                // Validate password
+                if (!password) {
+                    showFieldError('password', 'Mật khẩu không được để trống.');
+                    hasError = true;
+                } else if (password.length < 6) {
+                    showFieldError('password', 'Mật khẩu phải có ít nhất 6 ký tự.');
+                    hasError = true;
+                } else if (password.length > 50) {
+                    showFieldError('password', 'Mật khẩu không được vượt quá 50 ký tự.');
+                    hasError = true;
+                }
+                
+                // Validate confirm password
+                if (!confirmPassword) {
+                    showFieldError('confirmPassword', 'Vui lòng xác nhận mật khẩu.');
+                    hasError = true;
+                } else if (password !== confirmPassword) {
+                    showFieldError('confirmPassword', 'Mật khẩu xác nhận không khớp!');
+                    hasError = true;
+                }
+                
+                if (hasError) {
+                    errorDiv.textContent = 'Vui lòng kiểm tra lại các thông tin đã nhập.';
                     errorDiv.style.display = 'block';
                     return;
                 }
@@ -172,8 +221,13 @@
                             window.location.href = '/verify-email?email=' + encodeURIComponent(email);
                         }, 2000);
                     } else {
-                        errorDiv.textContent = data.message || 'Đăng ký thất bại. Vui lòng thử lại.';
-                        errorDiv.style.display = 'block';
+                        // Hiển thị lỗi ở field cụ thể nếu có
+                        if (data.field) {
+                            showFieldError(data.field, data.message || 'Có lỗi xảy ra.');
+                        } else {
+                            errorDiv.textContent = data.message || 'Đăng ký thất bại. Vui lòng thử lại.';
+                            errorDiv.style.display = 'block';
+                        }
                     }
                 } catch (error) {
                     errorDiv.textContent = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
@@ -181,6 +235,33 @@
                     console.error('Error:', error);
                 }
             });
+        }
+        
+        // Function to show field error
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                // Remove existing error
+                const existingError = field.parentElement.querySelector('.field-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Add error message
+                const errorSpan = document.createElement('span');
+                errorSpan.className = 'field-error';
+                errorSpan.style.cssText = 'display: block; color: #c33; font-size: 0.875rem; margin-top: 4px;';
+                errorSpan.textContent = message;
+                field.parentElement.appendChild(errorSpan);
+                
+                // Highlight field
+                field.style.borderColor = '#c33';
+                field.addEventListener('input', function() {
+                    field.style.borderColor = '';
+                    const error = field.parentElement.querySelector('.field-error');
+                    if (error) error.remove();
+                }, { once: true });
+            }
         }
     });
 </script>

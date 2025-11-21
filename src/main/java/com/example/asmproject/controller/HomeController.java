@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -247,6 +248,7 @@ public class HomeController {
      */
     @GetMapping("/login")
     public String hienThiTrangDangNhap(Model moHinh,
+            HttpServletRequest request,
             @org.springframework.web.bind.annotation.RequestParam(required = false) String error,
             @org.springframework.web.bind.annotation.RequestParam(required = false) String registered) {
         moHinh.addAttribute(TRANG_DANG_CHON, "dang-nhap");
@@ -254,9 +256,17 @@ public class HomeController {
 
         // Kiểm tra nếu có lỗi thì hiển thị thông báo
         if (error != null) {
-            if ("oauth_failed".equals(error)) {
+            String message = request.getParameter("message");
+            if (message != null && !message.isEmpty()) {
+                // Sử dụng thông báo từ URL parameter
+                moHinh.addAttribute("error", message);
+            } else if ("oauth_failed".equals(error)) {
                 moHinh.addAttribute("error", "Đăng nhập Google thất bại. Vui lòng thử lại.");
-            } else if ("true".equals(error)) {
+            } else if ("email_not_verified".equals(error)) {
+                moHinh.addAttribute("error", "Email chưa được xác thực. Vui lòng kiểm tra email và nhập mã xác nhận 6 số.");
+            } else if ("account_disabled".equals(error)) {
+                moHinh.addAttribute("error", "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+            } else if ("bad_credentials".equals(error) || "true".equals(error)) {
                 moHinh.addAttribute("error", "Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
             } else {
                 moHinh.addAttribute("error", "Đăng nhập thất bại. Vui lòng thử lại.");

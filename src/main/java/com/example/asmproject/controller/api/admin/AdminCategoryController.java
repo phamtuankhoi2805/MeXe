@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller quản lý Danh mục (Category).
+ */
 @RestController
 @RequestMapping("/api/admin/categories")
 public class AdminCategoryController {
@@ -17,11 +20,27 @@ public class AdminCategoryController {
     @Autowired
     private CategoryService categoryService;
     
+    /**
+     * Lấy tất cả danh mục sản phẩm.
+     */
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
+
+    /**
+     * Lấy chi tiết danh mục.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+        return categoryService.getCategoryById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
     
+    /**
+     * Tạo danh mục mới.
+     */
     @PostMapping
     public ResponseEntity<Map<String, Object>> createCategory(@RequestBody Category category) {
         Map<String, Object> response = new HashMap<>();
@@ -38,6 +57,9 @@ public class AdminCategoryController {
         }
     }
     
+    /**
+     * Cập nhật danh mục.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateCategory(@PathVariable Long id,
                                                               @RequestBody Category category) {
@@ -56,6 +78,9 @@ public class AdminCategoryController {
         }
     }
     
+    /**
+     * Xóa danh mục.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();

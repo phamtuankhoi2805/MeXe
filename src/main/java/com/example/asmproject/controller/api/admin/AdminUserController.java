@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller quản lý người dùng (Admin).
+ * Cho phép admin xem danh sách, tạo mới, sửa và khóa tài khoản người dùng.
+ */
 @RestController
 @RequestMapping("/api/admin/users")
 public class AdminUserController {
@@ -22,6 +26,10 @@ public class AdminUserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Tìm kiếm người dùng theo từ khóa và trạng thái.
+     * Kết quả trả về có phân trang.
+     */
     @GetMapping
     public ResponseEntity<Page<UserResponse>> searchUsers(
             @RequestParam(required = false) String keyword,
@@ -32,6 +40,9 @@ public class AdminUserController {
         return ResponseEntity.ok(users);
     }
 
+    /**
+     * Lấy thông tin chi tiết của một người dùng.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable @NonNull Long id) {
         return userService.findById(id)
@@ -41,8 +52,9 @@ public class AdminUserController {
                     response.setFullName(user.getFullName());
                     response.setEmail(user.getEmail());
                     response.setPhone(user.getPhone());
+                    // Lấy địa chỉ đầu tiên làm đại diện nếu có
                     if (!user.getAddresses().isEmpty()) {
-                        response.setAddress(user.getAddresses().get(0).toString()); // Lấy địa chỉ đầu tiên làm đại diện
+                        response.setAddress(user.getAddresses().get(0).toString());
                     }
                     response.setStatus(user.getEnabled() ? UserStatus.HOAT_DONG : UserStatus.TAM_KHOA);
                     response.setCreatedAt(user.getCreatedAt());
@@ -53,6 +65,9 @@ public class AdminUserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Tạo mới tài khoản người dùng từ trang admin.
+     */
     @PostMapping
     public ResponseEntity<Map<String, Object>> createUser(@Valid @RequestBody UserRequest request) {
         Map<String, Object> response = new HashMap<>();
@@ -69,6 +84,9 @@ public class AdminUserController {
         }
     }
 
+    /**
+     * Cập nhật thông tin người dùng.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable @NonNull Long id,
             @Valid @RequestBody UserRequest request) {
@@ -86,6 +104,9 @@ public class AdminUserController {
         }
     }
 
+    /**
+     * Xóa (khóa) tài khoản người dùng.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable @NonNull Long id) {
         Map<String, Object> response = new HashMap<>();

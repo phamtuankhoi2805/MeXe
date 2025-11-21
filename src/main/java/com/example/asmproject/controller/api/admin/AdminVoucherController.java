@@ -12,31 +12,51 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller quản lý Voucher (Mã giảm giá).
+ */
 @RestController
 @RequestMapping("/api/admin/vouchers")
 public class AdminVoucherController {
-    
+
     @Autowired
     private VoucherService voucherService;
-    
+
+    /**
+     * Lấy danh sách voucher, có hỗ trợ lọc theo trạng thái.
+     */
     @GetMapping
     public ResponseEntity<Page<Voucher>> getAllVouchers(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        
+
         Pageable pageable = PageRequest.of(page, size);
         Voucher.VoucherStatus voucherStatus = null;
         if (status != null) {
             try {
                 voucherStatus = Voucher.VoucherStatus.valueOf(status.toUpperCase());
-            } catch (IllegalArgumentException e) {}
+            } catch (IllegalArgumentException e) {
+            }
         }
-        
+
         Page<Voucher> vouchers = voucherService.getVouchersByStatus(voucherStatus, pageable);
         return ResponseEntity.ok(vouchers);
     }
-    
+
+    /**
+     * Lấy thông tin chi tiết 1 voucher.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Voucher> getVoucherById(@PathVariable Long id) {
+        return voucherService.getVoucherById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Tạo mới mã giảm giá.
+     */
     @PostMapping
     public ResponseEntity<Map<String, Object>> createVoucher(@RequestBody Voucher voucher) {
         Map<String, Object> response = new HashMap<>();
@@ -52,10 +72,13 @@ public class AdminVoucherController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-    
+
+    /**
+     * Cập nhật mã giảm giá.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateVoucher(@PathVariable Long id,
-                                                             @RequestBody Voucher voucher) {
+            @RequestBody Voucher voucher) {
         Map<String, Object> response = new HashMap<>();
         try {
             voucher.setId(id);
@@ -70,7 +93,10 @@ public class AdminVoucherController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-    
+
+    /**
+     * Xóa mã giảm giá.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteVoucher(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
@@ -86,4 +112,3 @@ public class AdminVoucherController {
         }
     }
 }
-

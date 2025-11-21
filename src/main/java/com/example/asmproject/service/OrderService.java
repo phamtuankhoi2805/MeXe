@@ -180,6 +180,14 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
+    /**
+     * Lấy chi tiết đơn hàng trả về dạng Response DTO.
+     * Sử dụng cho các API hiển thị chi tiết đơn hàng.
+     */
+    public Optional<OrderResponse> getOrderResponseById(Long id) {
+        return orderRepository.findById(id).map(orderMapper::toResponse);
+    }
+
     public Optional<Order> getOrderByCode(String orderCode) {
         return orderRepository.findByOrderCode(orderCode);
     }
@@ -191,24 +199,26 @@ public class OrderService {
         return orderRepository.searchOrders(keyword, orderStatus, paymentStatus, deliveryMethod, pageable);
     }
 
-    public Order updateOrderStatus(Long orderId, Order.OrderStatus status) {
+    public OrderResponse updateOrderStatus(Long orderId, Order.OrderStatus status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
         order.setOrderStatus(status);
-        return orderRepository.save(order);
+        order = orderRepository.save(order);
+        return orderMapper.toResponse(order);
     }
 
-    public Order updatePaymentStatus(Long orderId, Order.PaymentStatus status) {
+    public OrderResponse updatePaymentStatus(Long orderId, Order.PaymentStatus status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
         order.setPaymentStatus(status);
         if (status == Order.PaymentStatus.PAID) {
             order.setOrderStatus(Order.OrderStatus.CONFIRMED);
         }
-        return orderRepository.save(order);
+        order = orderRepository.save(order);
+        return orderMapper.toResponse(order);
     }
 
-    public Order updateFastDeliveryStatus(Long orderId, String status, String trackingNumber) {
+    public OrderResponse updateFastDeliveryStatus(Long orderId, String status, String trackingNumber) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
 
@@ -220,11 +230,14 @@ public class OrderService {
         if (trackingNumber != null) {
             order.setTrackingNumber(trackingNumber);
         }
-        return orderRepository.save(order);
+        order = orderRepository.save(order);
+        return orderMapper.toResponse(order);
     }
 
-    public List<Order> getFastDeliveryOrders() {
-        return orderRepository.findFastDeliveryOrders();
+    public List<OrderResponse> getFastDeliveryOrders() {
+        return orderRepository.findFastDeliveryOrders().stream()
+                .map(orderMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     public long countOrdersByStatus(Order.OrderStatus status) {

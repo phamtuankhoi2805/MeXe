@@ -36,6 +36,10 @@ public class SecurityConfig {
     @Lazy
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     
+    @Autowired
+    @Lazy
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -106,7 +110,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .successHandler(customAuthenticationSuccessHandler)
-                .failureUrl("/login?error=true")
+                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()
             )
             // OAuth2 Login - Đã có OAuth2 credentials

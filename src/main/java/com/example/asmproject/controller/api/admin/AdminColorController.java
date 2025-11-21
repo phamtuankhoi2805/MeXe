@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller quản lý Màu sắc (Color).
+ */
 @RestController
 @RequestMapping("/api/admin/colors")
 public class AdminColorController {
@@ -17,11 +20,27 @@ public class AdminColorController {
     @Autowired
     private ColorService colorService;
     
+    /**
+     * Lấy danh sách tất cả màu sắc.
+     */
     @GetMapping
     public ResponseEntity<List<Color>> getAllColors() {
         return ResponseEntity.ok(colorService.getAllColors());
     }
+
+    /**
+     * Lấy chi tiết màu sắc.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Color> getColorById(@PathVariable Long id) {
+        return colorService.getColorById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
     
+    /**
+     * Thêm mới màu sắc.
+     */
     @PostMapping
     public ResponseEntity<Map<String, Object>> createColor(@RequestBody Color color) {
         Map<String, Object> response = new HashMap<>();
@@ -38,6 +57,9 @@ public class AdminColorController {
         }
     }
     
+    /**
+     * Cập nhật màu sắc.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateColor(@PathVariable Long id,
                                                            @RequestBody Color color) {
@@ -56,6 +78,9 @@ public class AdminColorController {
         }
     }
     
+    /**
+     * Xóa màu sắc.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteColor(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();

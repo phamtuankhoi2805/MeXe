@@ -22,6 +22,13 @@ public class VoucherService {
         return voucherRepository.findAll();
     }
 
+    /**
+     * Lấy thông tin chi tiết voucher theo ID.
+     */
+    public Optional<Voucher> getVoucherById(Long id) {
+        return voucherRepository.findById(id);
+    }
+
     public Optional<Voucher> getVoucherByCode(String code) {
         return voucherRepository.findByCode(code);
     }

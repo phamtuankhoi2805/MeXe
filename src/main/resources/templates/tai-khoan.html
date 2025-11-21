@@ -294,8 +294,14 @@
             </div>
             
             <!-- Thông báo -->
-            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <div th:if="${success}" class="alert alert-success" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">✓</span>
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-error" style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">✗</span>
+                <span th:text="${error}"></span>
+            </div>
             
             <!-- Thông báo cho user mới -->
             <div th:if="${isNewUser}" class="new-user-notice">
@@ -328,15 +334,17 @@
                         <span class="account-info-value" th:text="${isGoogleLogin ? 'Google' : 'Email/Password'}"></span>
                     </div>
                     
-                    <form th:action="@{/tai-khoan/cap-nhat}" method="post" style="margin-top: 24px;">
+                    <form th:action="@{/tai-khoan/cap-nhat}" method="post" id="updateInfoForm" style="margin-top: 24px;">
                         <div class="form-group">
                             <label for="fullName">Họ tên *</label>
-                            <input type="text" id="fullName" name="fullName" th:value="${user.fullName}" required>
+                            <input type="text" id="fullName" name="fullName" th:value="${user.fullName}" required minlength="2" maxlength="100">
+                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                         
                         <div class="form-group">
                             <label for="phone">Số điện thoại *</label>
                             <input type="tel" id="phone" name="phone" th:value="${user.phone}" placeholder="0123456789" required>
+                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                         
                         <button type="submit" class="btn-submit">Cập nhật thông tin</button>
@@ -347,20 +355,23 @@
                 <div class="account-card" th:unless="${isGoogleLogin}">
                     <h2>Đổi mật khẩu</h2>
                     
-                    <form th:action="@{/tai-khoan/doi-mat-khau}" method="post">
+                    <form th:action="@{/tai-khoan/doi-mat-khau}" method="post" id="changePasswordForm">
                         <div class="form-group">
                             <label for="currentPassword">Mật khẩu hiện tại *</label>
                             <input type="password" id="currentPassword" name="currentPassword" required>
+                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                         
                         <div class="form-group">
                             <label for="newPassword">Mật khẩu mới *</label>
-                            <input type="password" id="newPassword" name="newPassword" minlength="6" required>
+                            <input type="password" id="newPassword" name="newPassword" minlength="6" maxlength="50" required>
+                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                         
                         <div class="form-group">
                             <label for="confirmPassword">Xác nhận mật khẩu mới *</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="6" required>
+                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="6" maxlength="50" required>
+                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                         
                         <button type="submit" class="btn-submit">Đổi mật khẩu</button>
@@ -406,17 +417,19 @@
                 </p>
                 
                 <!-- Form thêm địa chỉ mới -->
-                <form th:action="@{/tai-khoan/dia-chi/them}" method="post" style="margin-top: 24px;">
+                <form th:action="@{/tai-khoan/dia-chi/them}" method="post" id="addAddressForm" style="margin-top: 24px;">
                     <h3 style="font-size: 1.2rem; margin-bottom: 20px; color: var(--signup-dark);">Thêm địa chỉ mới</h3>
                     
                     <div class="form-group">
                         <label for="addressFullName">Họ tên người nhận *</label>
-                        <input type="text" id="addressFullName" name="fullName" th:value="${user.fullName}" required>
+                        <input type="text" id="addressFullName" name="fullName" th:value="${user.fullName}" required minlength="2" maxlength="100">
+                        <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="addressPhone">Số điện thoại *</label>
                         <input type="tel" id="addressPhone" name="phone" th:value="${user.phone}" placeholder="0123456789" required>
+                        <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                     </div>
                     
                     <div class="grid-2">
@@ -448,7 +461,8 @@
                         
                         <div class="form-group">
                             <label for="street">Địa chỉ cụ thể *</label>
-                            <input type="text" id="street" name="street" placeholder="Ví dụ: Số 123, Đường ABC" required>
+                            <input type="text" id="street" name="street" placeholder="Ví dụ: Số 123, Đường ABC" required minlength="5" maxlength="200">
+                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                     </div>
                     
@@ -669,6 +683,177 @@
             
             // Initialize
             loadProvinces();
+        })();
+        
+        // Form validation functions
+        (function() {
+            // Helper function to show field error
+            function showFieldError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    const existingError = field.parentElement.querySelector('.field-error');
+                    if (existingError) {
+                        existingError.textContent = message;
+                        existingError.style.display = 'block';
+                    }
+                    field.style.borderColor = '#c33';
+                    field.addEventListener('input', function() {
+                        field.style.borderColor = '';
+                        const error = field.parentElement.querySelector('.field-error');
+                        if (error) error.style.display = 'none';
+                    }, { once: true });
+                }
+            }
+            
+            // Validate update info form
+            const updateInfoForm = document.getElementById('updateInfoForm');
+            if (updateInfoForm) {
+                updateInfoForm.addEventListener('submit', function(e) {
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const phone = document.getElementById('phone').value.trim();
+                    let hasError = false;
+                    
+                    // Clear previous errors
+                    document.querySelectorAll('#updateInfoForm .field-error').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    
+                    if (!fullName) {
+                        showFieldError('fullName', 'Họ và tên không được để trống.');
+                        hasError = true;
+                    } else if (fullName.length < 2) {
+                        showFieldError('fullName', 'Họ và tên phải có ít nhất 2 ký tự.');
+                        hasError = true;
+                    }
+                    
+                    if (!phone) {
+                        showFieldError('phone', 'Số điện thoại không được để trống.');
+                        hasError = true;
+                    } else {
+                        const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
+                        if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                            showFieldError('phone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                            hasError = true;
+                        }
+                    }
+                    
+                    if (hasError) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
+            
+            // Validate change password form
+            const changePasswordForm = document.getElementById('changePasswordForm');
+            if (changePasswordForm) {
+                changePasswordForm.addEventListener('submit', function(e) {
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    let hasError = false;
+                    
+                    // Clear previous errors
+                    document.querySelectorAll('#changePasswordForm .field-error').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    
+                    if (!currentPassword) {
+                        showFieldError('currentPassword', 'Vui lòng nhập mật khẩu hiện tại.');
+                        hasError = true;
+                    }
+                    
+                    if (!newPassword) {
+                        showFieldError('newPassword', 'Vui lòng nhập mật khẩu mới.');
+                        hasError = true;
+                    } else if (newPassword.length < 6) {
+                        showFieldError('newPassword', 'Mật khẩu mới phải có ít nhất 6 ký tự.');
+                        hasError = true;
+                    } else if (newPassword.length > 50) {
+                        showFieldError('newPassword', 'Mật khẩu mới không được vượt quá 50 ký tự.');
+                        hasError = true;
+                    }
+                    
+                    if (!confirmPassword) {
+                        showFieldError('confirmPassword', 'Vui lòng xác nhận mật khẩu mới.');
+                        hasError = true;
+                    } else if (newPassword && newPassword !== confirmPassword) {
+                        showFieldError('confirmPassword', 'Mật khẩu xác nhận không khớp.');
+                        hasError = true;
+                    }
+                    
+                    if (hasError) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
+            
+            // Validate add address form
+            const addAddressForm = document.getElementById('addAddressForm');
+            if (addAddressForm) {
+                addAddressForm.addEventListener('submit', function(e) {
+                    const fullName = document.getElementById('addressFullName').value.trim();
+                    const phone = document.getElementById('addressPhone').value.trim();
+                    const province = document.getElementById('province').value;
+                    const district = document.getElementById('district').value;
+                    const ward = document.getElementById('ward').value;
+                    const street = document.getElementById('street').value.trim();
+                    let hasError = false;
+                    
+                    // Clear previous errors
+                    document.querySelectorAll('#addAddressForm .field-error').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    
+                    if (!fullName) {
+                        showFieldError('addressFullName', 'Họ tên người nhận không được để trống.');
+                        hasError = true;
+                    } else if (fullName.length < 2) {
+                        showFieldError('addressFullName', 'Họ tên người nhận phải có ít nhất 2 ký tự.');
+                        hasError = true;
+                    }
+                    
+                    if (!phone) {
+                        showFieldError('addressPhone', 'Số điện thoại không được để trống.');
+                        hasError = true;
+                    } else {
+                        const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
+                        if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                            showFieldError('addressPhone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                            hasError = true;
+                        }
+                    }
+                    
+                    if (!province) {
+                        alert('Vui lòng chọn Tỉnh/Thành phố.');
+                        hasError = true;
+                    }
+                    
+                    if (!district) {
+                        alert('Vui lòng chọn Quận/Huyện.');
+                        hasError = true;
+                    }
+                    
+                    if (!ward) {
+                        alert('Vui lòng chọn Phường/Xã.');
+                        hasError = true;
+                    }
+                    
+                    if (!street) {
+                        showFieldError('street', 'Địa chỉ cụ thể không được để trống.');
+                        hasError = true;
+                    } else if (street.length < 5) {
+                        showFieldError('street', 'Địa chỉ cụ thể phải có ít nhất 5 ký tự.');
+                        hasError = true;
+                    }
+                    
+                    if (hasError) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
         })();
         
         // Set default address

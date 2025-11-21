@@ -16,20 +16,26 @@ buildNumber.properties
 *.iws
 *.ipr
 .vscode/
+.settings/
 .classpath
 .project
-.settings/
+.factorypath
 *.swp
 *.swo
 *~
+
+# Application properties (chứa thông tin nhạy cảm)
+src/main/resources/application.properties
+target/classes/application.properties
+
+# Logs
+*.log
+logs/
 
 # OS
 .DS_Store
 Thumbs.db
 bash.exe.stackdump
-
-# Logs
-*.log
 
 # Compiled class files
 *.class
@@ -46,4 +52,4 @@ bash.exe.stackdump
 # Temporary files
 *.tmp
 *.temp
-
+*.bak

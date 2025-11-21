@@ -46,5 +46,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @Query("SELECT COUNT(p) FROM Product p WHERE p.quantity <= 0")
     long countOutOfStockProducts();
+    
+    /**
+     * Lấy sản phẩm theo slug với JOIN FETCH để load brand, category và productColors với Color
+     * Tránh lazy loading exception
+     */
+    @Query("SELECT DISTINCT p FROM Product p " +
+           "LEFT JOIN FETCH p.brand " +
+           "LEFT JOIN FETCH p.category " +
+           "LEFT JOIN FETCH p.productColors pc " +
+           "LEFT JOIN FETCH pc.color " +
+           "WHERE p.slug = :slug")
+    Optional<Product> findBySlugWithBrandAndCategory(@Param("slug") String slug);
 }
 

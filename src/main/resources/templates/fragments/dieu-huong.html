@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" 
+      lang="vi">
 <body>
 <header class="vf-header" th:fragment="thanhDieuHuong">
     <div class="vf-container vf-header-inner">
@@ -63,17 +65,67 @@
         </nav>
 
         <div class="vf-actions">
-            <a th:href="@{/dang-ky/tai-khoan}">Tài khoản</a>
-            <a th:href="@{/gio-hang}" class="vf-icon-button" aria-label="Giỏ hàng">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
+            <!-- Search Button - Icon Only -->
+            <button class="vf-icon-only vf-search-toggle" type="button" aria-label="Tìm kiếm" id="searchToggle">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="m20 20-4.35-4.35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            
+            <!-- Search Box (hidden by default) -->
+            <div class="vf-search-box" id="searchBox" style="display: none;">
+                <form th:action="@{/tim-kiem}" method="get" class="vf-search-form">
+                    <input type="text" 
+                           name="keyword" 
+                           placeholder="Tìm kiếm sản phẩm..." 
+                           class="vf-search-input"
+                           id="searchInput"
+                           autocomplete="off">
+                    <button type="submit" class="vf-search-submit" aria-label="Tìm kiếm">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="m20 20-4.35-4.35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Account Button - Icon Only, Different when logged in -->
+            <a th:href="@{/dang-ky/tai-khoan}" 
+               class="vf-icon-only vf-account-button" 
+               aria-label="Tài khoản"
+               th:classappend="${#authentication != null && #authentication.isAuthenticated() && #authentication.name != 'anonymousUser'} ? 'vf-account-button--logged-in' : ''">
+                <!-- Icon when not logged in -->
+                <svg th:if="${#authentication == null || !#authentication.isAuthenticated() || #authentication.name == 'anonymousUser'}" 
+                     viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <!-- Icon when logged in (filled user) -->
+                <svg th:if="${#authentication != null && #authentication.isAuthenticated() && #authentication.name != 'anonymousUser'}" 
+                     viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+            
+            <!-- Cart Button - Icon Only -->
+            <a th:href="@{/gio-hang}" class="vf-icon-only" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
                     <path d="M7.5 6h-3l-1 2v1h2l2.5 8.5h10.5l2.5-9.5h-13z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
                     <circle cx="10.5" cy="19.5" r="1.2" fill="currentColor"/>
                     <circle cx="16.5" cy="19.5" r="1.2" fill="currentColor"/>
                 </svg>
-                <span>Giỏ hàng</span>
             </a>
-            <a th:href="@{/dang-ky/lai-thu}" class="vf-btn vf-btn--ghost">Đăng ký lái thử</a>
-            <a th:href="@{/dat-mua/xe-may-dien}" class="vf-btn vf-btn--primary">Mua ngay</a>
+            
+            <!-- Test Drive Button - Icon Only -->
+            <a th:href="@{/dang-ky/lai-thu}" class="vf-icon-only" aria-label="Đăng ký lái thử">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                    <path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+            </a>
         </div>
     </div>
 </header>

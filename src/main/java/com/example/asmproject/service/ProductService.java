@@ -1,5 +1,6 @@
 package com.example.asmproject.service;
 
+import com.example.asmproject.dto.ProductDetailDTO;
 import com.example.asmproject.model.Product;
 import com.example.asmproject.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,31 @@ public class ProductService {
      */
     public Optional<Product> getProductBySlug(String slug) {
         return productRepository.findBySlug(slug);
+    }
+    
+    /**
+     * Lấy chi tiết sản phẩm theo slug với JOIN FETCH để tránh lazy loading
+     * Trả về ProductDetailDTO để tránh vấn đề lazy loading exception
+     * 
+     * @param slug Slug của sản phẩm
+     * @return Optional<ProductDetailDTO> - có thể empty nếu không tìm thấy
+     */
+    @Transactional(readOnly = true)
+    public Optional<ProductDetailDTO> getProductDetailBySlug(String slug) {
+        Optional<Product> productOpt = productRepository.findBySlugWithBrandAndCategory(slug);
+        return productOpt.map(ProductDetailDTO::new);
+    }
+    
+    /**
+     * Lấy sản phẩm theo slug với tất cả thông tin liên quan (brand, category, productColors, color)
+     * Sử dụng JOIN FETCH để tránh lazy loading exception
+     * 
+     * @param slug Slug của sản phẩm
+     * @return Optional<Product> - có thể empty nếu không tìm thấy
+     */
+    @Transactional(readOnly = true)
+    public Optional<Product> getProductBySlugWithDetails(String slug) {
+        return productRepository.findBySlugWithBrandAndCategory(slug);
     }
     
     /**

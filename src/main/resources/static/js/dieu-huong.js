@@ -170,4 +170,92 @@
     window.addEventListener('resize', handleResize);
 })();
 
+// Search box hover functionality
+(function() {
+    const searchToggle = document.getElementById('searchToggle');
+    const searchBox = document.getElementById('searchBox');
+    const searchInput = document.getElementById('searchInput');
+    
+    if (!searchToggle || !searchBox) {
+        return;
+    }
+    
+    let hoverTimer;
+    let isHovering = false;
+    
+    const showSearchBox = () => {
+        clearTimeout(hoverTimer);
+        searchBox.style.display = 'block';
+        // Force reflow to trigger transition
+        searchBox.offsetHeight;
+        searchBox.classList.add('show');
+        if (searchInput) {
+            setTimeout(() => searchInput.focus(), 150);
+        }
+    };
+    
+    const hideSearchBox = (delay = 0) => {
+        clearTimeout(hoverTimer);
+        const hide = () => {
+            searchBox.classList.remove('show');
+            setTimeout(() => {
+                if (!isHovering) {
+                    searchBox.style.display = 'none';
+                }
+            }, 300); // Wait for transition to complete
+        };
+        
+        if (delay > 0) {
+            hoverTimer = setTimeout(() => {
+                if (!isHovering) {
+                    hide();
+                }
+            }, delay);
+        } else {
+            hide();
+        }
+    };
+    
+    // Hover on search button
+    searchToggle.addEventListener('mouseenter', () => {
+        isHovering = true;
+        showSearchBox();
+    });
+    
+    searchToggle.addEventListener('mouseleave', () => {
+        isHovering = false;
+        hideSearchBox(200); // Delay 200ms before hiding
+    });
+    
+    // Hover on search box
+    searchBox.addEventListener('mouseenter', () => {
+        isHovering = true;
+        clearTimeout(hoverTimer);
+    });
+    
+    searchBox.addEventListener('mouseleave', () => {
+        isHovering = false;
+        hideSearchBox(200); // Delay 200ms before hiding
+    });
+    
+    // Click on search button (toggle)
+    searchToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isVisible = searchBox.style.display !== 'none';
+        if (isVisible) {
+            hideSearchBox();
+        } else {
+            showSearchBox();
+        }
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!searchBox.contains(e.target) && !searchToggle.contains(e.target)) {
+            isHovering = false;
+            hideSearchBox();
+        }
+    });
+})();
+
 

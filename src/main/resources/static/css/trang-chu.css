@@ -169,6 +169,7 @@ header.vf-header {
     display: flex;
     align-items: center;
     gap: 12px;
+    position: relative;
 }
 
 .vf-icon-button {
@@ -182,6 +183,7 @@ header.vf-header {
     color: var(--vf-dark);
     font-weight: 600;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
 }
 
 .vf-icon-button svg {
@@ -193,6 +195,123 @@ header.vf-header {
     border-color: rgba(0, 72, 255, 0.4);
     box-shadow: 0 10px 20px rgba(0, 72, 255, 0.15);
     transform: translateY(-1px);
+}
+
+/* Icon Only Buttons - No Text */
+.vf-icon-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(6, 18, 41, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--vf-dark);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.vf-icon-only svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.vf-icon-only:hover {
+    border-color: rgba(0, 72, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 72, 255, 0.15);
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 1);
+}
+
+/* Account Button - Different style when logged in */
+.vf-account-button--logged-in {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border-color: #2563eb;
+    color: white;
+}
+
+.vf-account-button--logged-in:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    border-color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Search Box Styles */
+.vf-search-box {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 350px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0.3s ease-out;
+    pointer-events: none;
+}
+
+.vf-search-box[style*="display: block"],
+.vf-search-box.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.vf-search-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.vf-search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    transition: border-color 0.3s ease;
+}
+
+.vf-search-input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.vf-search-submit {
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.vf-search-submit:hover {
+    background: #1d4ed8;
+}
+
+.vf-search-submit svg {
+    width: 20px;
+    height: 20px;
+}
+
+.vf-search-toggle {
+    position: relative;
 }
 
 
@@ -1648,18 +1767,23 @@ header.vf-header {
 
 
 
+.product-price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 12px 0;
+}
+
 .product-price {
-
-
     font-weight: 700;
-
-
     font-size: 1.15rem;
-
-
     color: var(--vf-blue);
+}
 
-
+.product-price-old {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    text-decoration: line-through;
 }
 
 

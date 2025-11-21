@@ -4,6 +4,7 @@ import com.example.asmproject.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -14,7 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -26,6 +27,7 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
     
+    // OAuth2LoginSuccessHandler - Đã có OAuth2 credentials
     @Autowired
     @Lazy // Trì hoãn injection để tránh circular dependency
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -57,8 +59,8 @@ public class SecurityConfig {
                 .requestMatchers("/", "/san-pham/**", "/phu-kien", "/dich-vu-pin", 
                                "/dich-vu-hau-mai", "/ve-chung-toi", "/tin-tuc",
                                "/dang-ky/**", "/login", "/oauth2/**", "/verify-email",
-                               "/reset-password", "/api/public/**", "/css/**", "/js/**", 
-                               "/image/**", "/static/**").permitAll()
+                               "/reset-password", "/khong-co-quyen", "/api/public/**", 
+                               "/css/**", "/js/**", "/image/**", "/static/**").permitAll()
                 
                 // API Auth - public cho đăng ký, quên mật khẩu
                 .requestMatchers("/api/auth/register", "/api/auth/google", 
@@ -100,6 +102,7 @@ public class SecurityConfig {
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
+            // OAuth2 Login - Đã có OAuth2 credentials
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
                 .successHandler(oAuth2LoginSuccessHandler) // Dùng OAuth2LoginSuccessHandler để tự động đăng ký user
@@ -111,6 +114,9 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .accessDeniedHandler(accessDeniedHandler()) // Xử lý lỗi 403 - không có quyền
             );
         
         return http.build();
@@ -126,6 +132,17 @@ public class SecurityConfig {
         handler.setDefaultTargetUrl("/");
         handler.setUseReferer(false);
         return handler;
+    }
+    
+    /**
+     * Handler xử lý lỗi 403 - Không có quyền truy cập
+     * Redirect đến trang thông báo không có quyền
+     */
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.sendRedirect("/khong-co-quyen");
+        };
     }
 }
 

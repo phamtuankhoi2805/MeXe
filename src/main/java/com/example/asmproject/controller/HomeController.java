@@ -1,5 +1,6 @@
 package com.example.asmproject.controller;
 
+import com.example.asmproject.dto.ProductDetailDTO;
 import com.example.asmproject.model.*;
 import com.example.asmproject.service.*;
 import com.example.asmproject.util.SecurityUtil;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +66,7 @@ public class HomeController {
     /**
      * Trang chi tiết sản phẩm theo slug
      * Hiển thị thông tin sản phẩm, màu sắc, tồn kho, và đánh giá
+     * Sử dụng DTO và JOIN FETCH để tránh lazy loading exception
      * 
      * @param slug Slug của sản phẩm (URL-friendly name)
      * @param moHinh Model để truyền dữ liệu vào view
@@ -72,20 +76,39 @@ public class HomeController {
     public String hienThiChiTietSanPham(@PathVariable String slug, Model moHinh) {
         moHinh.addAttribute(TRANG_DANG_CHON, "san-pham");
         
-        // Lấy thông tin sản phẩm theo slug từ database
-        Optional<Product> productOpt = productService.getProductBySlug(slug);
+        // Lấy thông tin sản phẩm theo slug từ database với JOIN FETCH
+        // Query này sẽ load brand, category, productColors và color cùng lúc
+        Optional<Product> productEntityOpt = productService.getProductBySlugWithDetails(slug);
         
-        if (!productOpt.isPresent()) {
+        if (!productEntityOpt.isPresent()) {
             // Nếu không tìm thấy sản phẩm thì redirect về trang chủ
             return "redirect:/";
         }
         
-        Product product = productOpt.get();
+        Product productEntity = productEntityOpt.get();
+        
+        // Chuyển đổi sang DTO để tránh lazy loading khi render template
+        ProductDetailDTO product = new ProductDetailDTO(productEntity);
         moHinh.addAttribute("product", product);
         
-        // Lấy danh sách màu sắc và tồn kho của sản phẩm
-        // Mỗi màu có số lượng tồn kho riêng
-        List<ProductColor> productColors = product.getProductColors();
+        // Parse danh sách ảnh phụ từ string (comma-separated)
+        List<String> productImages = new ArrayList<>();
+        if (product.getImage() != null && !product.getImage().isEmpty()) {
+            productImages.add(product.getImage()); // Ảnh chính
+        }
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            String[] images = product.getImages().split(",");
+            for (String img : images) {
+                String trimmedImg = img.trim();
+                if (!trimmedImg.isEmpty() && !productImages.contains(trimmedImg)) {
+                    productImages.add(trimmedImg);
+                }
+            }
+        }
+        moHinh.addAttribute("productImages", productImages);
+        
+        // Lấy danh sách màu sắc và tồn kho của sản phẩm (đã được load bằng JOIN FETCH)
+        List<ProductColor> productColors = productEntity.getProductColors();
         moHinh.addAttribute("productColors", productColors);
         
         // Lấy danh sách đánh giá của sản phẩm
@@ -244,6 +267,40 @@ public class HomeController {
         moHinh.addAttribute(TRANG_DANG_CHON, "dang-ky");
         moHinh.addAttribute("isLogin", false); // Đánh dấu đây là trang đăng ký
         return "dang-ky-tai-khoan";
+    }
+    
+    /**
+     * Trang tìm kiếm sản phẩm
+     * Hiển thị kết quả tìm kiếm dựa trên từ khóa
+     */
+    @GetMapping("/tim-kiem")
+    public String hienThiTimKiem(@RequestParam(required = false) String keyword, Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "san-pham");
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // Tìm kiếm sản phẩm theo từ khóa
+            Pageable pageable = PageRequest.of(0, 50); // Lấy tối đa 50 sản phẩm
+            var productsPage = productService.searchProducts(keyword.trim(), null, null, Product.ProductStatus.ACTIVE, pageable);
+            moHinh.addAttribute("products", productsPage.getContent());
+            moHinh.addAttribute("keyword", keyword.trim());
+            moHinh.addAttribute("totalResults", productsPage.getTotalElements());
+        } else {
+            // Nếu không có từ khóa, hiển thị tất cả sản phẩm
+            List<Product> products = productService.getAllActiveProducts();
+            moHinh.addAttribute("products", products);
+        }
+        
+        return "trang-chu";
+    }
+    
+    /**
+     * Trang thông báo không có quyền truy cập (403)
+     * Hiển thị khi user không có quyền truy cập trang admin
+     */
+    @GetMapping("/khong-co-quyen")
+    public String hienThiKhongCoQuyen(Model moHinh) {
+        moHinh.addAttribute(TRANG_DANG_CHON, "khong-co-quyen");
+        return "khong-co-quyen";
     }
 }
 

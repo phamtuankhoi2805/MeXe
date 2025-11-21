@@ -1,1050 +1,436 @@
 <!DOCTYPE html>
-
-
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
-
 <head>
-
-
     <meta charset="UTF-8">
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-    <title>VinFast Vero X - Chi tiết sản phẩm</title>
-
-
+    
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}"/>
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : ''}"/>
+    
+    <title th:text="${product != null ? product.name : 'Sản phẩm'}">Chi tiết sản phẩm</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-
-    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
-
-
-    <link rel="stylesheet" th:href="@{/css/chi-tiet-san-pham.css}" href="/css/chi-tiet-san-pham.css">
-
-
+    
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}">
+    <link rel="stylesheet" th:href="@{/css/chi-tiet-san-pham.css}">
 </head>
-
-
 <body>
 
+    <div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
 
-<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
-
-
-
-
-
-<main class="product-detail-page">
-
-
-    <section class="vf-container product-hero" data-animate>
-
-
-        <aside class="product-hero__media">
-
-
-            <div class="product-hero__badge">Phiên bản 2025</div>
-
-
-            <img id="productHeroImage" th:src="@{/image/evo200.jpg}" src="/image/evo200.jpg" alt="VinFast Vero X 2025">
-
-
-            <!-- Hiển thị danh sách màu sắc từ database -->
-            <div class="product-hero__gallery color-selector" th:if="${productColors != null and !productColors.empty}">
-                <!-- Lặp qua danh sách productColors từ controller -->
-                <button th:each="productColor, iterStat : ${productColors}" 
-                        class="color-dot" 
-                        th:classappend="${iterStat.first} ? 'is-active' : ''"
-                        th:data-image="${productColor.product.image != null and !productColor.product.image.isEmpty()} ? @{/image/{img}(img=${productColor.product.image})} : @{/image/evo200.jpg}"
-                        th:data-name="${productColor.color.name}"
-                        th:data-quantity="${productColor.quantity}"
-                        th:data-color-id="${productColor.color.id}"
-                        th:style="'--color:' + ${productColor.color.hexCode != null ? productColor.color.hexCode : '#c7d1cf'}"
-                        th:aria-label="${productColor.color.name}">
-                    <span></span>
-                </button>
-            </div>
-            
-            <!-- Hiển thị tên màu và tồn kho -->
-            <div class="color-name" th:if="${productColors != null and !productColors.empty}">
-                <span id="selectedColorName" th:text="${productColors[0].color.name}">Màu sắc</span>
-            </div>
-            
-            <!-- Hiển thị trạng thái tồn kho -->
-            <div class="stock-status" style="margin-top: 12px;">
-                <span id="stockLabel" class="badge badge-success" 
-                      th:if="${productColors != null and !productColors.empty}"
-                      th:data-initial-quantity="${productColors[0].quantity}"
-                      th:text="${productColors[0].quantity > 0 ? (productColors[0].quantity < 5 ? 'Sắp hết hàng (Còn ' + productColors[0].quantity + ' xe)' : 'Còn hàng (' + productColors[0].quantity + ' xe)') : 'Hết hàng'}">
-                    Còn hàng
-                </span>
-                <span th:unless="${productColors != null and !productColors.empty}" class="badge badge-danger">Hết hàng</span>
+    <div class="product-detail-wrapper">
+        <div class="vf-container">
+            <!-- Error State -->
+            <div th:if="${product == null}" class="error-message">
+                <h1>Sản phẩm không tồn tại</h1>
+                <p>Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+                <a href="/" class="vf-btn vf-btn--primary">Về trang chủ</a>
             </div>
 
-
-        </aside>
-
-
-        <article class="product-hero__content">
-
-
-            <p class="breadcrumb">
-
-
-                <a href="/">Trang chủ</a>
-
-
-                <span>/</span>
-
-
-                <a href="#">Xe máy điện</a>
-
-
-                <span>/</span>
-
-
-                Vero X 2025
-
-
-            </p>
-
-
-            <h1>VinFast Vero X 2025</h1>
-
-
-            <p class="product-subtitle">Mẫu xe điện cá tính dành cho giới trẻ, thiết kế thời trang, vận hành mạnh mẽ và nhiều công nghệ hỗ trợ thông minh.</p>
-
-
-            <div class="product-price-block">
-
-
-                <div>
-
-
-                    <small>Giá bán lẻ đề xuất</small>
-
-
-                    <strong>34.900.000 VNĐ</strong>
-
-
-                </div>
-
-
-                <div class="price-note">Đã bao gồm VAT, chưa bao gồm pin</div>
-
-
-            </div>
-
-
-            <div class="product-highlight-list">
-
-
-                <div>
-
-
-                    <span>262 km</span>
-
-
-                    <small>Quãng đường tối đa</small>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <span>72 km/h</span>
-
-
-                    <small>Tốc độ tối đa</small>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <span>3.500 W</span>
-
-
-                    <small>Công suất động cơ</small>
-
-
-                </div>
-
-
-            </div>
-
-
-            <div class="product-cta-group">
-
-
-                <button class="vf-btn vf-btn--primary">Đặt cọc ngay</button>
-
-
-                <button class="vf-btn product-cta-secondary">So sánh các phiên bản</button>
-
-
-            </div>
-
-
-            <div class="product-meta-grid">
-
-
-                <div>
-
-
-                    <h3>Ưu đãi tháng 11</h3>
-
-
-                    <p>Giảm ngay 2 triệu khi đặt cọc online, tặng kèm 12 tháng bảo hành mở rộng.</p>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <h3>Hỗ trợ trả góp</h3>
-
-
-                    <p>Lãi suất ưu đãi từ 0,79%/tháng, thanh toán trước chỉ từ 30% giá trị xe.</p>
-
-
-                </div>
-
-
-            </div>
-
-
-        </article>
-
-
-    </section>
-
-
-
-
-
-    <section class="vf-container product-specs" data-animate>
-
-
-        <header class="section-header">
-
-
-            <small>Thông số kỹ thuật</small>
-
-
-            <h2>Hiệu suất vượt trội trong từng chi tiết</h2>
-
-
-            <p>Các thông số nổi bật của VinFast Vero X được tối ưu cho nhu cầu di chuyển hàng ngày lẫn những chuyến đi dài.</p>
-
-
-        </header>
-
-
-        <div class="specs-grid">
-
-
-            <dl>
-
-
-                <div>
-
-
-                    <dt>Kích thước tổng thể</dt>
-
-
-                    <dd>1.908 x 690 x 1.140 mm</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Khoảng sáng gầm</dt>
-
-
-                    <dd>150 mm</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Khối lượng không tải</dt>
-
-
-                    <dd>99 kg</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Dung tích cốp</dt>
-
-
-                    <dd>24 lít</dd>
-
-
-                </div>
-
-
-            </dl>
-
-
-            <dl>
-
-
-                <div>
-
-
-                    <dt>Động cơ</dt>
-
-
-                    <dd>Mid-drive, chuẩn IP67</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Pin</dt>
-
-
-                    <dd>LFP 73,4V - 27Ah</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Sạc nhanh</dt>
-
-
-                    <dd>80% trong 2 giờ</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Chế độ lái</dt>
-
-
-                    <dd>Eco / Normal / Sport</dd>
-
-
-                </div>
-
-
-            </dl>
-
-
-            <dl>
-
-
-                <div>
-
-
-                    <dt>Hệ thống phanh</dt>
-
-
-                    <dd>ABS hai kênh</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Hệ thống treo</dt>
-
-
-                    <dd>Phuộc ống lồng & lò xo trụ</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Bánh xe</dt>
-
-
-                    <dd>Trước 110/70-12 - Sau 120/70-12</dd>
-
-
-                </div>
-
-
-                <div>
-
-
-                    <dt>Kết nối</dt>
-
-
-                    <dd>VinFast App, định vị GPS</dd>
-
-
-                </div>
-
-
-            </dl>
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-    <section class="feature-showcase" data-animate>
-
-
-        <div class="vf-container feature-cards">
-
-
-            <article class="feature-card">
-
-
-                <h3>Bảo vệ toàn diện</h3>
-
-
-                <p>Hệ thống ABS hai kênh thế hệ mới giúp xe luôn ổn định khi phanh gấp, kết hợp phanh đĩa lớn và lốp bám đường cao.</p>
-
-
-            </article>
-
-
-            <article class="feature-card">
-
-
-                <h3>Kết nối thông minh</h3>
-
-
-                <p>Quản lý xe dễ dàng qua VinFast App: theo dõi trạng thái pin, định vị, thiết lập vùng an toàn và nhận thông báo tức thì.</p>
-
-
-            </article>
-
-
-            <article class="feature-card">
-
-
-                <h3>Trải nghiệm cao cấp</h3>
-
-
-                <p>Yên da 2 tầng mềm mại, cụm đèn LED toàn bộ, bảng đồng hồ TFT 5,5 inch sắc nét và cốp chứa đồ rộng 24 lít.</p>
-
-
-            </article>
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-    <section class="vf-container pricing-section" data-animate>
-
-
-        <header class="section-header">
-
-
-            <small>Lựa chọn tài chính</small>
-
-
-            <h2>Tùy chọn mua phù hợp với nhu cầu</h2>
-
-
-        </header>
-
-
-        <div class="pricing-grid">
-
-
-            <article class="pricing-card">
-
-
-                <h3>Mua đứt</h3>
-
-
-                <p class="price">34.900.000 VNĐ</p>
-
-
-                <ul>
-
-
-                    <li>Thanh toán 1 lần, nhận xe trong 48 giờ</li>
-
-
-                    <li>Tặng 01 năm bảo dưỡng miễn phí</li>
-
-
-                    <li>Miễn phí đổi pin tháng đầu</li>
-
-
-                </ul>
-
-
-                <button class="vf-btn vf-btn--primary">Đặt mua</button>
-
-
-            </article>
-
-
-            <article class="pricing-card pricing-card--highlight">
-
-
-                <div class="card-ribbon">Khuyên dùng</div>
-
-
-                <h3>Thuê pin linh hoạt</h3>
-
-
-                <p class="price">189.000 VNĐ/tháng</p>
-
-
-                <ul>
-
-
-                    <li>Không lo chi phí thay pin</li>
-
-
-                    <li>Đổi pin tại 150.000+ điểm toàn quốc</li>
-
-
-                    <li>Bảo hành pin trọn đời thuê</li>
-
-
-                </ul>
-
-
-                <button class="vf-btn vf-btn--primary">Đăng ký gói thuê</button>
-
-
-            </article>
-
-
-            <article class="pricing-card">
-
-
-                <h3>Trả góp 0%</h3>
-
-
-                <p class="price">Trả trước từ 10,5 triệu</p>
-
-
-                <ul>
-
-
-                    <li>Kỳ hạn 12 - 36 tháng</li>
-
-
-                    <li>Duyệt hồ sơ online trong 24 giờ</li>
-
-
-                    <li>Tặng bộ phụ kiện cao cấp</li>
-
-
-                </ul>
-
-
-                <button class="vf-btn vf-btn--primary">Tư vấn trả góp</button>
-
-
-            </article>
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-    <section class="product-accordion vf-container" data-animate>
-
-
-        <div class="accordion">
-
-
-            <button class="accordion-header" type="button">Thiết kế & ngoại thất</button>
-
-
-            <div class="accordion-content">
-
-
-                <p>Vero X sở hữu ngôn ngữ thiết kế lai giữa tay ga đô thị và dòng touring cao cấp, các đường nét sắc sảo, dãy đèn daylight LED hình cánh chim đặc trưng nhà VinFast.</p>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div class="accordion">
-
-
-            <button class="accordion-header" type="button">Công nghệ & tiện nghi</button>
-
-
-            <div class="accordion-content">
-
-
-                <p>Xe hỗ trợ chìa khóa thông minh SmartKey, cảnh báo chống trộm, cập nhật OTA cho hệ thống điều khiển và kết nối Bluetooth với điện thoại.</p>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div class="accordion">
-
-
-            <button class="accordion-header" type="button">Bảo hành & dịch vụ</button>
-
-
-            <div class="accordion-content">
-
-
-                <p>Thời gian bảo hành 3 năm hoặc 30.000 km. Miễn phí cứu hộ 24/7 trong 12 tháng đầu. Dịch vụ chăm sóc lưu động tại 30 tỉnh thành.</p>
-
-
-            </div>
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-    <section class="vf-container consult-section detail-consult" data-animate>
-
-
-        <div>
-
-
-            <h2>Đăng ký tư vấn VinFast Vero X</h2>
-
-
-            <p>Để lại thông tin, chuyên viên của VinFast sẽ liên hệ hỗ trợ bạn lựa chọn phiên bản, gói pin và ưu đãi tốt nhất.</p>
-
-
-        </div>
-
-
-        <form>
-
-
-            <div class="form-grid">
-
-
-                <label>
-
-
-                    Họ và tên *
-
-
-                    <input type="text" placeholder="Nguyễn Văn A">
-
-
-                </label>
-
-
-                <label>
-
-
-                    Số điện thoại *
-
-
-                    <input type="tel" placeholder="0987 654 321">
-
-
-                </label>
-
-
-                <label>
-
-
-                    Email *
-
-
-                    <input type="email" placeholder="email@vinfast.vn">
-
-
-                </label>
-
-
-                <label>
-
-
-                    Tỉnh/Thành phố *
-
-
-                    <select>
-
-
-                        <option value="">Chọn tỉnh/thành</option>
-
-
-                        <option>Hà Nội</option>
-
-
-                        <option>Đà Nẵng</option>
-
-
-                        <option>TP. Hồ Chí Minh</option>
-
-
-                        <option>Cần Thơ</option>
-
-
-                    </select>
-
-
-                </label>
-
-
-            </div>
-
-
-            <label>
-
-
-                Thời gian dự kiến mua *
-
-
-                <select>
-
-
-                    <option value="">Chọn thời gian</option>
-
-
-                    <option>Trong tháng này</option>
-
-
-                    <option>1 - 3 tháng tới</option>
-
-
-                    <option>3 - 6 tháng tới</option>
-
-
-                    <option>Chưa xác định</option>
-
-
-                </select>
-
-
-            </label>
-
-
-            <label class="checkbox">
-
-
-                <input type="checkbox" checked>
-
-
-                Tôi đồng ý cho VinFast liên hệ và tư vấn theo Chính sách Bảo vệ Dữ liệu cá nhân.
-
-
-            </label>
-
-
-            <button type="submit" class="vf-btn vf-btn--primary">Đăng ký ngay</button>
-
-
-        </form>
-
-
-    </section>
-    
-    <!-- Phần Đánh giá & Nhận xét -->
-    <section class="vf-container reviews-section" data-animate style="margin-top: 60px; padding-top: 40px; border-top: 1px solid #eee;">
-        <header class="section-header">
-            <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h2>Đánh giá từ khách hàng</h2>
-                <div class="rating-overview" th:if="${averageRating != null and reviewCount > 0}">
-                    <strong class="rating-score" style="font-size: 2rem; color: #1d1f23;" th:text="${#numbers.formatDecimal(averageRating, 1, 'COMMA', 1, 'POINT')} + '/5'">4.8/5</strong>
-                    <div class="stars" style="color: #ffab00; font-size: 1.2rem;">
-                        <span th:each="i : ${#numbers.sequence(1, 5)}" 
-                              th:text="${i <= averageRating ? '★' : '☆'}">★</span>
+            <!-- Product Content -->
+            <div th:if="${product != null}">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb-nav animate-fade-in">
+                    <a href="/">Trang chủ</a> / 
+                    <a href="#">Sản phẩm</a> / 
+                    <span th:text="${product.name}">Tên sản phẩm</span>
+                </nav>
+
+                <!-- Hero Highlights - Giống VinFast -->
+                <div class="hero-highlights animate-fade-in-up delay-200">
+                    <div class="highlight-item">
+                        <span class="highlight-value">70 km/h</span>
+                        <span class="highlight-label">Tốc độ tối đa</span>
                     </div>
-                    <span th:text="'(' + ${reviewCount} + ' đánh giá)'">(128 đánh giá)</span>
+                    <div class="highlight-item">
+                        <span class="highlight-value">~262 km</span>
+                        <span class="highlight-label">Quãng đường di chuyển</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-value">35 lít</span>
+                        <span class="highlight-label">Dung tích cốp xe</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-value">15s</span>
+                        <span class="highlight-label">Tăng tốc 0-50 km/h</span>
+                    </div>
                 </div>
-            </div>
-        </header>
-        
-        <!-- Danh sách đánh giá -->
-        <div class="reviews-list" th:if="${reviews != null and !reviews.empty}">
-            <article th:each="review : ${reviews}" class="review-card" style="background: #fff; padding: 20px; border-radius: 16px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                <div class="review-header" style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
-                    <img th:src="@{'https://ui-avatars.com/api/?name=' + ${review.user.fullName} + '&size=40&background=0048ff&color=fff'}" 
-                         alt="Avatar" 
-                         class="review-avatar" 
-                         style="width: 40px; height: 40px; border-radius: 50%;">
-                    <div>
-                        <strong th:text="${review.user.fullName}">Tên khách hàng</strong>
-                        <div class="stars" style="color: #ffab00; font-size: 0.9rem;">
-                            <span th:each="i : ${#numbers.sequence(1, 5)}" 
-                                  th:text="${i <= review.rating ? '★' : '☆'}">★</span>
+
+                <!-- Product Hero -->
+                <div class="product-hero">
+                    <!-- Product Image -->
+                    <div class="animate-slide-in-left">
+                        <div class="product-image-wrapper">
+                            <div th:if="${product.discountPrice != null}" class="product-badge">
+                                Ưu đãi đặc biệt
+                            </div>
+                            <img id="mainProductImage" 
+                                 th:src="${product.image}" 
+                                 th:alt="${product.name}"
+                                 onerror="this.src='https://placehold.co/600x400?text=VinFast'">
+                        </div>
+                        
+                        <!-- Thumbnail Gallery -->
+                        <div class="product-thumbnails animate-fade-in delay-300" th:if="${productImages != null and !productImages.isEmpty()}">
+                            <div class="thumbnail-item" 
+                                 th:each="img, iterStat : ${productImages}"
+                                 th:classappend="${iterStat.first} ? 'active' : ''"
+                                 th:data-image="${img}"
+                                 onclick="changeMainImage(this.dataset.image, this)">
+                                <img th:src="${img}" 
+                                     th:alt="${product.name + ' - Ảnh ' + iterStat.count}"
+                                     onerror="this.src='https://placehold.co/100x100?text=VinFast'">
+                            </div>
+                        </div>
+                        
+                        <div class="brand-tag animate-fade-in delay-300">
+                            <strong>Thương hiệu: </strong>
+                            <span th:text="${product.brandName != null and product.brandName != '' ? product.brandName : 'VinFast'}">VinFast</span>
                         </div>
                     </div>
-                    <span class="review-date" style="margin-left: auto; color: #888; font-size: 0.85rem;" 
-                          th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">12/11/2024</span>
+
+                    <!-- Product Details -->
+                    <div class="animate-slide-in-right">
+                        <h1 class="product-title" th:text="${product.name}">Tên sản phẩm</h1>
+                        
+                        <div th:if="${product.description != null}" class="product-description animate-fade-in delay-200">
+                            <p th:text="${product.description}">Mô tả sản phẩm</p>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-container animate-scale-in delay-300">
+                            <div class="price-main">
+                                <span th:text="${#numbers.formatDecimal(product.finalPrice, 0, 'COMMA', 0, 'POINT')}">0</span>
+                                <span class="price-unit">VNĐ</span>
+                            </div>
+                            <div th:if="${product.discountPrice != null}" class="price-old animate-fade-in delay-400">
+                                <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">0</span> VNĐ
+                            </div>
+                            <div class="price-note">
+                                (Đã bao gồm VAT, 01 pin và 01 bộ sạc)
+                            </div>
+                        </div>
+
+                        <!-- Stock Status -->
+                        <div class="animate-fade-in delay-400">
+                            <div th:if="${product.quantity != null && product.quantity > 0}" 
+                                 class="stock-status in-stock">
+                                <span>✓</span>
+                                <span>Còn hàng</span>
+                            </div>
+                            <div th:unless="${product.quantity != null && product.quantity > 0}" 
+                                 class="stock-status out-of-stock">
+                                <span>✖</span>
+                                <span>Tạm hết hàng</span>
+                            </div>
+                        </div>
+
+                        <!-- Add to Cart -->
+                        <div class="animate-fade-in delay-500 cta-group">
+                            <div class="quantity-selector">
+                                <label>Số lượng:</label>
+                                <input type="number" 
+                                       id="qtyInput" 
+                                       value="1" 
+                                       min="1" 
+                                       max="10"
+                                       class="quantity-input">
+                            </div>
+                            
+                            <button type="button" 
+                                    class="btn-buy-now"
+                                    th:disabled="${product.quantity == null || product.quantity <= 0}"
+                                    onclick="addToCart()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                </svg>
+                                <span>Mua Ngay</span>
+                            </button>
+                            
+                            <button type="button" 
+                                    class="btn-installment"
+                                    onclick="alert('Tính năng đang phát triển')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                                </svg>
+                                <span>Mua trả góp</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <p class="review-content" th:if="${review.comment != null and !review.comment.isEmpty()}" th:text="${review.comment}">Nội dung đánh giá</p>
-                <div class="review-images" th:if="${review.images != null and !review.images.isEmpty()}">
-                    <img th:each="img : ${#strings.arraySplit(review.images, ',')}" 
-                         th:src="@{/image/{img}(img=${img.trim()})}" 
-                         alt="Ảnh thực tế" 
-                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 10px; margin-right: 8px;">
+
+                <!-- Specifications - Thông số kỹ thuật mẫu -->
+                <div class="specs-section animate-fade-in-up delay-400">
+                    <h2 class="specs-title">THÔNG SỐ KỸ THUẬT</h2>
+                    
+                    <div class="specs-grid">
+                        <!-- Kích thước & Trọng lượng -->
+                        <div class="specs-category animate-fade-in delay-500">
+                            <h3 class="specs-category-title">Kích thước & Trọng lượng</h3>
+                            <div class="specs-list">
+                                <div class="spec-item">
+                                    <span class="spec-label">Dài x Rộng x Cao (mm)</span>
+                                    <span class="spec-value">1858 x 690 x 1100</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Khoảng cách trục bánh</span>
+                                    <span class="spec-value">1295 mm</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Khoảng sáng gầm</span>
+                                    <span class="spec-value">133 mm</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Chiều cao yên</span>
+                                    <span class="spec-value">770 mm</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Thể tích cốp</span>
+                                    <span class="spec-value">35L (16L khi lắp pin phụ)</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Kích thước lốp Trước - Sau</span>
+                                    <span class="spec-value">90/90-12 | 90/90-12</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Động cơ & Hiệu suất -->
+                        <div class="specs-category animate-fade-in delay-600">
+                            <h3 class="specs-category-title">Động cơ & Hiệu suất</h3>
+                            <div class="specs-list">
+                                <div class="spec-item">
+                                    <span class="spec-label">Công suất danh định</span>
+                                    <span class="spec-value">1500 W</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Công suất tối đa</span>
+                                    <span class="spec-value">2250 W</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Loại động cơ</span>
+                                    <span class="spec-value">BLDC Inhub</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Tốc độ tối đa</span>
+                                    <span class="spec-value">70 km/h</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Gia tốc 0 - 50 km/h</span>
+                                    <span class="spec-value">&lt;15s</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Giảm xóc trước và sau</span>
+                                    <span class="spec-value">Ống lồng - Giảm chấn thủy lực</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pin & Sạc -->
+                        <div class="specs-category animate-fade-in delay-500">
+                            <h3 class="specs-category-title">Pin & Sạc</h3>
+                            <div class="specs-list">
+                                <div class="spec-item">
+                                    <span class="spec-label">Dung lượng pin</span>
+                                    <span class="spec-value">2.4 kWh (Tùy chọn thêm 1 pin 2.4 kWh)</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Loại pin</span>
+                                    <span class="spec-value">LFP</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Trọng lượng pin</span>
+                                    <span class="spec-value">18 kg</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Thời gian sạc tiêu chuẩn</span>
+                                    <span class="spec-value">Khoảng 6h30 phút từ 0 - 100%</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Quãng đường đi được 1 lần sạc</span>
+                                    <span class="spec-value">Khoảng 134 km (+128 km khi lắp thêm pin phụ)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tính năng & An toàn -->
+                        <div class="specs-category animate-fade-in delay-600">
+                            <h3 class="specs-category-title">Tính năng & An toàn</h3>
+                            <div class="specs-list">
+                                <div class="spec-item">
+                                    <span class="spec-label">Hệ thống phanh</span>
+                                    <span class="spec-value">Phanh đĩa trước, Phanh tang trống sau</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Khóa xe</span>
+                                    <span class="spec-value">Khóa thông minh (Smart Key)</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Màn hình</span>
+                                    <span class="spec-value">Màn hình TFT hiện đại</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Chống nước</span>
+                                    <span class="spec-value">Tiêu chuẩn IP67</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Kết nối</span>
+                                    <span class="spec-value">PAAK, App điện thoại, Esim</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Màu sắc</span>
+                                    <span class="spec-value">Xanh Rêu, Xanh Oliu, Đen nhám, Trắng Ngọc Trai</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </article>
+            </div>
         </div>
-        
-        <!-- Thông báo nếu chưa có đánh giá -->
-        <div th:if="${reviews == null or reviews.empty}" style="text-align: center; padding: 40px; color: #888;">
-            <p>Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh giá!</p>
-        </div>
-        
-        <!-- Form viết đánh giá -->
-        <div class="write-review-box" style="margin-top: 30px; background: #f8f9fa; padding: 24px; border-radius: 16px;">
-            <h3>Viết đánh giá của bạn</h3>
-            <form action="/api/reviews" method="POST" id="reviewForm">
-                <input type="hidden" name="productId" th:value="${product.id}">
-                <div class="rating-input" style="margin-bottom: 12px;">
-                    <span>Đánh giá: </span>
-                    <select name="rating" required style="padding: 8px; border: 1px solid #ddd; border-radius: 8px; margin-left: 8px;">
-                        <option value="">Chọn số sao</option>
-                        <option value="5">5 Sao (Tuyệt vời)</option>
-                        <option value="4">4 Sao (Tốt)</option>
-                        <option value="3">3 Sao (Bình thường)</option>
-                        <option value="2">2 Sao (Kém)</option>
-                        <option value="1">1 Sao (Rất kém)</option>
-                    </select>
-                </div>
-                <textarea name="comment" rows="3" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..." 
-                          style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin: 12px 0; font-family: inherit;"></textarea>
-                <button type="submit" class="vf-btn vf-btn--primary">Gửi đánh giá</button>
-            </form>
-        </div>
-    </section>
+    </div>
 
-</main>
+    <div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
 
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-
-
-
-<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
-
-
-
-
-
-<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
-
-
-<script>
-
-
-    (function () {
-
-
-        const colorDots = document.querySelectorAll('.color-dot');
-
-
-        const heroImage = document.getElementById('productHeroImage');
-
-
-        const colorNameLabel = document.querySelector('.color-name');
-
-
-        const baseSrc = heroImage.getAttribute('src');
-
-
-
-
-
-        // Script cập nhật tồn kho khi chọn màu
-        const stockLabel = document.getElementById('stockLabel');
-        const selectedColorName = document.getElementById('selectedColorName');
-        
-        colorDots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                colorDots.forEach(item => item.classList.remove('is-active'));
-                dot.classList.add('is-active');
-                
-                const src = dot.dataset.image || baseSrc;
-                const name = dot.dataset.name;
-                const quantity = parseInt(dot.dataset.quantity || 0);
-                
-                heroImage.setAttribute('src', src);
-                
-                // Cập nhật tên màu
-                if (selectedColorName) {
-                    selectedColorName.textContent = name;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) translateX(0)';
                 }
-                
-                // Cập nhật trạng thái tồn kho
-                if (stockLabel) {
-                    if (quantity === 0) {
-                        stockLabel.className = 'badge badge-danger';
-                        stockLabel.innerText = 'Hết hàng';
-                        // Disable nút thêm vào giỏ hàng
-                        const addToCartBtn = document.querySelector('.product-cta-group button');
-                        if (addToCartBtn) {
-                            addToCartBtn.disabled = true;
-                            addToCartBtn.style.opacity = '0.5';
-                            addToCartBtn.style.cursor = 'not-allowed';
-                        }
-                    } else if (quantity < 5) {
-                        stockLabel.className = 'badge badge-warning';
-                        stockLabel.innerText = `Sắp hết hàng (Còn ${quantity} xe)`;
-                        // Enable nút thêm vào giỏ hàng
-                        const addToCartBtn = document.querySelector('.product-cta-group button');
-                        if (addToCartBtn) {
-                            addToCartBtn.disabled = false;
-                            addToCartBtn.style.opacity = '1';
-                            addToCartBtn.style.cursor = 'pointer';
-                        }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.animate-fade-in-up, .animate-slide-in-left, .animate-slide-in-right, .animate-scale-in');
+            animatedElements.forEach(el => observer.observe(el));
+            
+            // Add float animation to highlight items
+            const highlightItems = document.querySelectorAll('.highlight-item');
+            highlightItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.style.animation = `float 3s ease-in-out infinite`;
+            });
+        });
+        
+        // Change main product image when clicking thumbnail
+        function changeMainImage(imageUrl, clickedThumbnail) {
+            const mainImage = document.getElementById('mainProductImage');
+            if (mainImage) {
+                mainImage.src = imageUrl;
+                // Update active state
+                document.querySelectorAll('.thumbnail-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                clickedThumbnail.classList.add('active');
+            }
+        }
+
+        // Add to Cart Function
+        function addToCart() {
+            var productId = /*[[${product != null ? product.id : null}]]*/ null;
+            if (!productId) {
+                alert('Không tìm thấy thông tin sản phẩm');
+                return;
+            }
+            
+            var quantity = document.getElementById('qtyInput').value;
+            var userId = 1; // TODO: Lấy từ session
+            
+            var csrfToken = document.querySelector("meta[name='_csrf']")?.getAttribute("content");
+            var csrfHeader = document.querySelector("meta[name='_csrf_header']")?.getAttribute("content");
+            
+            var headers = { 
+                'Content-Type': 'application/json' 
+            };
+            
+            if (csrfToken && csrfHeader) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            // Disable button during request
+            var btn = event.target.closest('.btn-buy-now') || event.target;
+            btn.disabled = true;
+            var btnSpan = btn.querySelector('span');
+            if (btnSpan) {
+                btnSpan.textContent = 'Đang xử lý...';
+            } else {
+                btn.textContent = 'Đang xử lý...';
+            }
+
+            fetch('/api/cart/add', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    userId: userId,
+                    productId: productId,
+                    quantity: parseInt(quantity),
+                    colorId: null
+                })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return res.text().then(text => { throw new Error(text || res.statusText) });
+                }
+                return res.json();
+            })
+            .then(data => {
+                if(data.success) {
+                    // Success animation
+                    var btnSpan = btn.querySelector('span');
+                    if (btnSpan) {
+                        btnSpan.textContent = '✓ Đã thêm!';
                     } else {
-                        stockLabel.className = 'badge badge-success';
-                        stockLabel.innerText = `Còn hàng (${quantity} xe)`;
-                        // Enable nút thêm vào giỏ hàng
-                        const addToCartBtn = document.querySelector('.product-cta-group button');
-                        if (addToCartBtn) {
-                            addToCartBtn.disabled = false;
-                            addToCartBtn.style.opacity = '1';
-                            addToCartBtn.style.cursor = 'pointer';
+                        btn.textContent = '✓ Đã thêm!';
+                    }
+                    btn.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        if (btnSpan) {
+                            btnSpan.textContent = 'Mua Ngay';
+                        } else {
+                            btn.textContent = 'Mua Ngay';
                         }
+                        btn.style.background = '';
+                    }, 2000);
+                } else {
+                    alert('Lỗi: ' + (data.message || 'Không xác định'));
+                    btn.disabled = false;
+                    var btnSpan = btn.querySelector('span');
+                    if (btnSpan) {
+                        btnSpan.textContent = 'Mua Ngay';
+                    } else {
+                        btn.textContent = 'Mua Ngay';
                     }
                 }
-            });
-        });
-
-
-
-
-
-        document.querySelectorAll('.accordion-header').forEach(button => {
-
-
-            button.addEventListener('click', () => {
-
-
-                const content = button.nextElementSibling;
-
-
-                button.classList.toggle('is-open');
-
-
-                content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + 'px';
-
-
-            });
-
-
-        });
-
-
-
-
-
-        const observer = new IntersectionObserver(entries => {
-
-
-            entries.forEach(entry => {
-
-
-                if (entry.isIntersecting) {
-
-
-                    entry.target.classList.add('is-visible');
-
-
+            })
+            .catch(err => {
+                console.error("Lỗi:", err);
+                alert('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+                btn.disabled = false;
+                var btnSpan = btn.querySelector('span');
+                if (btnSpan) {
+                    btnSpan.textContent = 'Mua Ngay';
+                } else {
+                    btn.textContent = 'Mua Ngay';
                 }
-
-
             });
-
-
-        }, { threshold: 0.25 });
-
-
-
-
-
-        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
-
-
-    })();
-
-
-</script>
-
+        }
+    </script>
+    
+    <script th:src="@{/js/dieu-huong.js}"></script>
 
 </body>
-
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

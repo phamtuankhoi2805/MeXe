@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Không có quyền truy cập - VinFast</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}">
+    
+    <style>
+        .access-denied-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafbfc;
+            padding: 40px 20px;
+        }
+        
+        .access-denied-content {
+            text-align: center;
+            max-width: 600px;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .access-denied-icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            color: #dc2626;
+        }
+        
+        .access-denied-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+        
+        .access-denied-message {
+            font-size: 1.1rem;
+            color: #6b7280;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+        
+        .access-denied-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary {
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            background: white;
+            color: #2563eb;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .access-denied-content {
+                padding: 40px 24px;
+            }
+            
+            .access-denied-icon {
+                font-size: 80px;
+            }
+            
+            .access-denied-title {
+                font-size: 2rem;
+            }
+            
+            .access-denied-actions {
+                flex-direction: column;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+    
+    <div class="access-denied-container">
+        <div class="access-denied-content">
+            <div class="access-denied-icon">🚫</div>
+            <h1 class="access-denied-title">Không có quyền truy cập</h1>
+            <p class="access-denied-message">
+                Bạn không có quyền truy cập trang này. Trang này chỉ dành cho quản trị viên.
+                <br><br>
+                Nếu bạn cần truy cập, vui lòng liên hệ với quản trị viên hệ thống.
+            </p>
+            <div class="access-denied-actions">
+                <a href="/" class="btn-primary">Về trang chủ</a>
+                <a href="javascript:history.back()" class="btn-secondary">Quay lại</a>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+</body>
+</html>
+

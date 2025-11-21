@@ -32,6 +32,10 @@ public class SecurityConfig {
     @Lazy // Trì hoãn injection để tránh circular dependency
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     
+    @Autowired
+    @Lazy
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -73,6 +77,9 @@ public class SecurityConfig {
                 // API Products - public cho GET, ADMIN cho POST/PUT/DELETE
                 .requestMatchers("/api/products", "/api/products/**").permitAll()
                 
+                // API Locations - public cho tất cả
+                .requestMatchers("/api/locations/**").permitAll()
+                
                 // API Vouchers - public cho xem danh sách và validate
                 .requestMatchers("/api/vouchers/available", "/api/vouchers/code/**").permitAll()
                 
@@ -98,7 +105,7 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
+                .successHandler(customAuthenticationSuccessHandler)
                 .failureUrl("/login?error=true")
                 .permitAll()
             )

@@ -258,4 +258,76 @@
     });
 })();
 
+// Account dropdown menu functionality
+(function() {
+    const accountToggle = document.getElementById('accountToggle');
+    const accountMenu = document.getElementById('accountMenu');
+    
+    if (!accountToggle || !accountMenu) {
+        return;
+    }
+    
+    let isHovering = false;
+    let hoverTimer;
+    
+    const showMenu = () => {
+        clearTimeout(hoverTimer);
+        accountMenu.classList.add('show');
+    };
+    
+    const hideMenu = (delay = 0) => {
+        clearTimeout(hoverTimer);
+        if (delay > 0) {
+            hoverTimer = setTimeout(() => {
+                if (!isHovering) {
+                    accountMenu.classList.remove('show');
+                }
+            }, delay);
+        } else {
+            accountMenu.classList.remove('show');
+        }
+    };
+    
+    // Click toggle
+    accountToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isVisible = accountMenu.classList.contains('show');
+        if (isVisible) {
+            hideMenu();
+        } else {
+            showMenu();
+        }
+    });
+    
+    // Hover on button
+    accountToggle.addEventListener('mouseenter', () => {
+        isHovering = true;
+        showMenu();
+    });
+    
+    accountToggle.addEventListener('mouseleave', () => {
+        isHovering = false;
+        hideMenu(200);
+    });
+    
+    // Hover on menu
+    accountMenu.addEventListener('mouseenter', () => {
+        isHovering = true;
+        clearTimeout(hoverTimer);
+    });
+    
+    accountMenu.addEventListener('mouseleave', () => {
+        isHovering = false;
+        hideMenu(200);
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!accountMenu.contains(e.target) && !accountToggle.contains(e.target)) {
+            isHovering = false;
+            hideMenu();
+        }
+    });
+})();
+
 

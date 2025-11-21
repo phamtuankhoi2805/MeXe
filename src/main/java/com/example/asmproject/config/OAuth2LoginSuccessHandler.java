@@ -1,6 +1,7 @@
 package com.example.asmproject.config;
 
 import com.example.asmproject.model.User;
+import com.example.asmproject.service.AddressService;
 import com.example.asmproject.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +34,10 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     @Autowired
     @Lazy // Trì hoãn injection để tránh circular dependency
     private UserService userService;
+    
+    @Autowired
+    @Lazy
+    private AddressService addressService;
     
     /**
      * Xử lý sau khi đăng nhập OAuth2 thành công
@@ -91,6 +96,16 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             
             // Set session để giữ đăng nhập
             request.getSession().setAttribute("user", user);
+            
+            // Kiểm tra nếu user mới (chưa có phone hoặc chưa có address)
+            boolean isNewUser = (user.getPhone() == null || user.getPhone().isEmpty()) 
+                             || addressService.getUserAddresses(user.getId()).isEmpty();
+            
+            if (isNewUser) {
+                // Redirect đến trang tài khoản để nhập thông tin
+                getRedirectStrategy().sendRedirect(request, response, "/tai-khoan");
+                return;
+            }
             
         } catch (Exception e) {
             // Nếu có lỗi thì redirect về trang login với error

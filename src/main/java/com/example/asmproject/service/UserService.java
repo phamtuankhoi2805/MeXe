@@ -1,15 +1,25 @@
 package com.example.asmproject.service;
 
+import com.example.asmproject.dto.OrderResponse;
+import com.example.asmproject.dto.UserRequest;
+import com.example.asmproject.dto.UserResponse;
+import com.example.asmproject.model.Order;
 import com.example.asmproject.model.User;
+import com.example.asmproject.model.enums.UserStatus;
 import com.example.asmproject.repository.UserRepository;
+import com.example.asmproject.service.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service xử lý các logic nghiệp vụ liên quan đến User
@@ -30,6 +40,9 @@ public class UserService {
     
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private OrderMapper orderMapper;
     
     /**
      * Đăng ký tài khoản mới bằng email và mật khẩu
@@ -303,6 +316,87 @@ public class UserService {
      */
     public long getTotalUsers() {
         return userRepository.countUsers();
+    }
+    
+    // New methods for API
+    public Page<UserResponse> searchUsers(String keyword, UserStatus status, Pageable pageable) {
+        Page<User> users = userRepository.searchUsers(keyword, status, pageable);
+        return users.map(this::toResponse);
+    }
+    
+    public UserResponse create(UserRequest request) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email đã được sử dụng");
+        }
+        
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setStatus(request.getStatus() != null ? request.getStatus() : UserStatus.HOAT_DONG);
+        user.setRole(User.Role.USER);
+        user.setEnabled(true);
+        user.setEmailVerified(false);
+        
+        user = userRepository.save(user);
+        return toResponse(user);
+    }
+    
+    public UserResponse update(Long id, UserRequest request) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+        
+        // Check if email is being changed and if it's already taken
+        if (!user.getEmail().equals(request.getEmail()) && 
+            userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email đã được sử dụng");
+        }
+        
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        if (request.getStatus() != null) {
+            user.setStatus(request.getStatus());
+        }
+        
+        user = userRepository.save(user);
+        return toResponse(user);
+    }
+    
+    public void deactivate(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+        
+        user.setStatus(UserStatus.TAM_KHOA);
+        user.setEnabled(false);
+        userRepository.save(user);
+    }
+    
+    public List<OrderResponse> getPurchaseHistory(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+        
+        List<Order> orders = user.getOrders();
+        return orders.stream()
+            .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+            .map(orderMapper::toResponse)
+            .collect(Collectors.toList());
+    }
+    
+    private UserResponse toResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setFullName(user.getFullName());
+        response.setEmail(user.getEmail());
+        response.setPhone(user.getPhone());
+        response.setAddress(user.getAddress());
+        response.setStatus(user.getStatus());
+        response.setCreatedAt(user.getCreatedAt());
+        response.setUpdatedAt(user.getUpdatedAt());
+        return response;
     }
 }
 

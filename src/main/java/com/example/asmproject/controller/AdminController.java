@@ -1,8 +1,6 @@
 package com.example.asmproject.controller;
 
 import com.example.asmproject.model.Order;
-import com.example.asmproject.model.Product;
-import com.example.asmproject.model.User;
 import com.example.asmproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

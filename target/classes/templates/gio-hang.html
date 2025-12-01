@@ -145,12 +145,12 @@
             
             <div class="payment-options" style="margin-top: 20px;">
                 <h3>Phương thức thanh toán</h3>
-                <label><input type="radio" name="pay" checked> Chuyển khoản ngân hàng</label>
-                <label><input type="radio" name="pay"> Thẻ tín dụng / Ghi nợ</label>
-                <label><input type="radio" name="pay"> Thanh toán tại showroom</label>
+                <label><input type="radio" name="pay" value="BANK_TRANSFER" checked onchange="checkPaymentMethod()"> Chuyển khoản ngân hàng</label>
+                <label><input type="radio" name="pay" value="CREDIT_CARD" onchange="checkPaymentMethod()"> Thẻ tín dụng / Ghi nợ</label>
+                <label><input type="radio" name="pay" value="SHOWROOM" onchange="checkPaymentMethod()"> Thanh toán tại showroom</label>
             </div>
 
-            <button class="vf-btn vf-btn--primary" style="width: 100%; margin-top: 16px;" onclick="submitOrder()">Đặt mua ngay</button>
+            <button class="vf-btn vf-btn--primary" id="submitOrderBtn" style="width: 100%; margin-top: 16px;" onclick="submitOrder()">Đặt mua ngay</button>
             <p class="secure-note" style="margin-top: 12px; font-size: 0.85rem; color: #888; text-align: center;">Hợp đồng sẽ được gửi tới email để xác nhận bằng OTP.</p>
         </aside>
     </section>
@@ -317,6 +317,24 @@
         }
     }
     
+    // Kiểm tra phương thức thanh toán
+    function checkPaymentMethod() {
+        const paymentMethod = document.querySelector('input[name="pay"]:checked')?.value || 'BANK_TRANSFER';
+        const submitBtn = document.getElementById('submitOrderBtn');
+        
+        if (paymentMethod === 'SHOWROOM') {
+            // Nếu chọn thanh toán tại showroom, redirect đến trang thanh toán showroom
+            submitBtn.innerText = 'Thanh toán tại showroom';
+            submitBtn.onclick = function() {
+                window.location.href = '/thanh-toan-showroom';
+            };
+        } else {
+            // Nếu chọn phương thức khác, gọi hàm submitOrder như bình thường
+            submitBtn.innerText = 'Đặt mua ngay';
+            submitBtn.onclick = submitOrder;
+        }
+    }
+    
     // Gửi đơn hàng
     async function submitOrder() {
         const addressId = document.getElementById('addressId')?.value;
@@ -350,9 +368,15 @@
             
             const data = await response.json();
             
-            if (response.ok) {
-                alert('Đặt hàng thành công! Mã đơn hàng: ' + data.orderCode);
-                window.location.href = '/';
+            if (response.ok && data.success) {
+                // Redirect đến trang xác nhận đơn hàng
+                const orderCode = data.order?.orderCode || data.orderCode;
+                if (orderCode) {
+                    window.location.href = '/xac-nhan-don-hang?orderCode=' + orderCode;
+                } else {
+                    alert('Đặt hàng thành công!');
+                    window.location.href = '/';
+                }
             } else {
                 alert(data.message || 'Có lỗi xảy ra khi đặt hàng');
             }
@@ -361,6 +385,9 @@
             alert('Có lỗi xảy ra. Vui lòng thử lại.');
         }
     }
+    
+    // Khởi tạo khi trang load
+    checkPaymentMethod();
     
     // Animation observer
     (function () {

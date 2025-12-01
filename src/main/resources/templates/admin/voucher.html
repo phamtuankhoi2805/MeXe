@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VinFast Admin | Quản lý Voucher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-shell">
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <p class="eyebrow">Quản lý</p>
+                    <h1>Voucher</h1>
+                </div>
+                <div class="admin-topbar__actions">
+                    <a th:href="@{/admin/voucher/add}" class="adm-btn adm-btn--primary">Thêm Voucher</a>
+                </div>
+            </header>
+
+            <section class="admin-content">
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                <div class="admin-card">
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã Voucher</th>
+                                    <th>Loại giảm giá</th>
+                                    <th>Giá trị</th>
+                                    <th>Số lượng</th>
+                                    <th>Thời gian áp dụng</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="voucher : ${vouchers}">
+                                    <td><strong th:text="${voucher.code}">SUMMER2023</strong></td>
+                                    <td
+                                        th:text="${voucher.discountType.name() == 'PERCENTAGE' ? 'Phần trăm (%)' : 'Số tiền cố định'}">
+                                        Phần trăm</td>
+                                    <td>
+                                        <span th:if="${voucher.discountType.name() == 'PERCENTAGE'}"
+                                            th:text="${#numbers.formatDecimal(voucher.discountValue, 0, 'COMMA', 0, 'POINT')} + '%'">10%</span>
+                                        <span th:if="${voucher.discountType.name() == 'FIXED'}"
+                                            th:text="${#numbers.formatDecimal(voucher.discountValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'">50.000
+                                            ₫</span>
+                                    </td>
+                                    <td>
+                                        <span th:text="${voucher.usedCount} + '/' + ${voucher.quantity}">10/100</span>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 0.85em;">
+                                            <div th:text="${#temporals.format(voucher.startDate, 'dd/MM/yyyy HH:mm')}">
+                                                01/01/2023</div>
+                                            <div style="color: #64748b;">đến</div>
+                                            <div th:text="${#temporals.format(voucher.endDate, 'dd/MM/yyyy HH:mm')}">
+                                                31/01/2023</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="tag"
+                                            th:classappend="${voucher.status.name() == 'ACTIVE' ? 'tag--success' : (voucher.status.name() == 'EXPIRED' ? 'tag--danger' : 'tag--warning')}"
+                                            th:text="${voucher.status.name() == 'ACTIVE' ? 'Đang hoạt động' : (voucher.status.name() == 'EXPIRED' ? 'Hết hạn' : 'Ngừng hoạt động')}">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/admin/voucher/edit/{id}(id=${voucher.id})}"
+                                            class="adm-btn adm-btn--sm adm-btn--ghost">Sửa</a>
+                                        <a th:href="@{/admin/voucher/delete/{id}(id=${voucher.id})}"
+                                            class="adm-btn adm-btn--sm adm-btn--danger"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa voucher này?')">Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${vouchers.empty}">
+                                    <td colspan="7" style="text-align: center; padding: 20px;">Chưa có voucher nào</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+
+</html>

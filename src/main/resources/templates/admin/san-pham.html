@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,150 +9,190 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 24px;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: white;
+            min-width: 150px;
+        }
+
+        .product-image {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 6px;
+            background-color: #f1f5f9;
+        }
+    </style>
 </head>
+
 <body class="admin-body">
-<div class="admin-shell">
-    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+    <div class="admin-shell">
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
 
-    <div class="admin-main">
-        <header class="admin-topbar">
-            <div>
-                <p class="eyebrow">Sản phẩm</p>
-                <h1>Danh mục xe máy điện & phụ kiện</h1>
-            </div>
-            <div class="admin-topbar__actions">
-                <button class="adm-btn adm-btn--ghost">Nhập từ Excel</button>
-                <button class="adm-btn adm-btn--primary">Thêm sản phẩm</button>
-            </div>
-        </header>
-
-        <section class="admin-content">
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <span>Trạng thái:</span>
-                    <button class="chip is-active">Đang bán</button>
-                    <button class="chip">Sắp ra mắt</button>
-                    <button class="chip">Tạm ngưng</button>
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <p class="eyebrow">Quản lý</p>
+                    <h1>Sản phẩm</h1>
                 </div>
-                <input type="search" placeholder="Tìm theo tên sản phẩm, SKU...">
-            </div>
-
-            <div class="admin-grid">
-                <article class="admin-card product-card">
-                    <div class="product-card__header">
-                        <div>
-                            <h2>Feliz 2025</h2>
-                            <p>Phiên bản 02 pin, màu sắc tùy chọn</p>
-                        </div>
-                        <span class="tag tag--success">Đang bán</span>
-                    </div>
-                    <figure class="product-card__media">
-                        <img src="/image/evo200.jpg" alt="Feliz 2025">
-                    </figure>
-                    <ul>
-                        <li>SKU: VF-FZ-2025</li>
-                        <li>Giá: 29.000.000 ₫</li>
-                        <li>Tồn kho: 240 xe</li>
-                    </ul>
-                    <div class="product-card__actions">
-                        <button class="adm-btn adm-btn--ghost">Chỉnh sửa</button>
-                        <button class="adm-btn">Nhân bản</button>
-                    </div>
-                </article>
-
-                <article class="admin-card product-card">
-                    <div class="product-card__header">
-                        <div>
-                            <h2>Vero X</h2>
-                            <p>Phân khúc cao cấp, phanh ABS 2 kênh</p>
-                        </div>
-                        <span class="tag tag--warning">Sắp ra mắt</span>
-                    </div>
-                    <figure class="product-card__media">
-                        <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Vero X">
-                    </figure>
-                    <ul>
-                        <li>SKU: VF-VX-2025</li>
-                        <li>Giá dự kiến: 49.000.000 ₫</li>
-                        <li>Pre-order: 1.200</li>
-                    </ul>
-                    <div class="product-card__actions">
-                        <button class="adm-btn adm-btn--ghost">Chỉnh sửa</button>
-                        <button class="adm-btn">Tạo khuyến mại</button>
-                    </div>
-                </article>
-
-                <article class="admin-card product-card">
-                    <div class="product-card__header">
-                        <div>
-                            <h2>Evo Grand Lite</h2>
-                            <p>Mẫu học sinh, trọng lượng nhẹ</p>
-                        </div>
-                        <span class="tag tag--success">Đang bán</span>
-                    </div>
-                    <figure class="product-card__media">
-                        <img src="/image/shop.vinfastauto.com_vn_vi_xe-may-dien-verox.html.png" alt="Evo Grand Lite">
-                    </figure>
-                    <ul>
-                        <li>SKU: VF-EGL-2024</li>
-                        <li>Giá: 18.900.000 ₫</li>
-                        <li>Tồn kho: 410 xe</li>
-                    </ul>
-                    <div class="product-card__actions">
-                        <button class="adm-btn adm-btn--ghost">Chỉnh sửa</button>
-                        <button class="adm-btn">Cập nhật tồn kho</button>
-                    </div>
-                </article>
-            </div>
-
-            <div class="admin-card">
-                <header>
-                    <h2>Bảng sản phẩm chi tiết</h2>
-                </header>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Tên</th>
-                            <th>SKU</th>
-                            <th>Giá</th>
-                            <th>Tồn kho</th>
-                            <th>Trạng thái</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Klara Neo</td>
-                            <td>VF-KN-2024</td>
-                            <td>33.000.000 ₫</td>
-                            <td>178</td>
-                            <td><span class="tag tag--success">Hiển thị</span></td>
-                            <td><a href="#">Chi tiết</a></td>
-                        </tr>
-                        <tr>
-                            <td>Feliz Lite</td>
-                            <td>VF-FL-2023</td>
-                            <td>21.000.000 ₫</td>
-                            <td>92</td>
-                            <td><span class="tag tag--success">Hiển thị</span></td>
-                            <td><a href="#">Chi tiết</a></td>
-                        </tr>
-                        <tr>
-                            <td>Gói phụ kiện Premium</td>
-                            <td>ACC-PRM-01</td>
-                            <td>3.500.000 ₫</td>
-                            <td>540</td>
-                            <td><span class="tag tag--warning">Ẩn tạm</span></td>
-                            <td><a href="#">Chi tiết</a></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="admin-topbar__actions">
+                    <a th:href="@{/admin/san-pham/add}" class="adm-btn adm-btn--primary">Thêm sản phẩm</a>
                 </div>
-            </div>
-        </section>
+            </header>
+
+            <section class="admin-content">
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                <form th:action="@{/admin/san-pham}" method="get" class="filter-bar">
+                    <div class="filter-group" style="flex-grow: 1;">
+                        <input type="search" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên sản phẩm..."
+                            class="form-select" style="width: 100%;">
+                    </div>
+
+                    <div class="filter-group">
+                        <select name="brandId" class="form-select">
+                            <option value="">Tất cả thương hiệu</option>
+                            <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"
+                                th:selected="${brandId == brand.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <select name="categoryId" class="form-select">
+                            <option value="">Tất cả danh mục</option>
+                            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                                th:selected="${categoryId == cat.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <select name="status" class="form-select">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="ACTIVE" th:selected="${status != null && status.name() == 'ACTIVE'}">Đang bán
+                            </option>
+                            <option value="INACTIVE" th:selected="${status != null && status.name() == 'INACTIVE'}">
+                                Ngừng bán</option>
+                            <option value="OUT_OF_STOCK"
+                                th:selected="${status != null && status.name() == 'OUT_OF_STOCK'}">Hết hàng</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="adm-btn adm-btn--ghost">Lọc</button>
+                    <a th:href="@{/admin/san-pham}" class="adm-btn adm-btn--ghost" style="color: #64748b;">Xóa lọc</a>
+                </form>
+
+                <div class="admin-card">
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá bán</th>
+                                    <th>Tồn kho</th>
+                                    <th>Danh mục / Thương hiệu</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="product : ${products.content}">
+                                    <td>
+                                        <img th:if="${product.image}" th:src="${product.image}" class="product-image"
+                                            alt="Product">
+                                        <div th:unless="${product.image}" class="product-image"
+                                            style="display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                                            No img</div>
+                                    </td>
+                                    <td>
+                                        <strong th:text="${product.name}">VinFast Klara S</strong>
+                                        <div style="font-size: 0.85em; color: #64748b;" th:text="${product.slug}">
+                                            vinfast-klara-s</div>
+                                    </td>
+                                    <td>
+                                        <div th:if="${product.discountPrice}" style="color: #ef4444; font-weight: 600;">
+                                            <span
+                                                th:text="${#numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT')} + ' ₫'">35.000.000
+                                                ₫</span>
+                                        </div>
+                                        <div th:class="${product.discountPrice != null ? 'text-strike' : ''}"
+                                            th:style="${product.discountPrice != null ? 'text-decoration: line-through; color: #94a3b8; font-size: 0.9em;' : 'font-weight: 600;'}"
+                                            th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
+                                            39.900.000 ₫</div>
+                                    </td>
+                                    <td th:text="${product.quantity}">10</td>
+                                    <td>
+                                        <div th:if="${product.category}" th:text="${product.category.name}"
+                                            class="badge badge-blue">Xe máy điện</div>
+                                        <div th:if="${product.brand}" th:text="${product.brand.name}"
+                                            style="font-size: 0.85em; color: #64748b; margin-top: 4px;">VinFast</div>
+                                    </td>
+                                    <td>
+                                        <span class="tag"
+                                            th:classappend="${product.status.name() == 'ACTIVE' ? 'tag--success' : (product.status.name() == 'OUT_OF_STOCK' ? 'tag--warning' : 'tag--danger')}"
+                                            th:text="${product.status.name() == 'ACTIVE' ? 'Đang bán' : (product.status.name() == 'OUT_OF_STOCK' ? 'Hết hàng' : 'Ngừng bán')}">
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/admin/san-pham/edit/{id}(id=${product.id})}"
+                                            class="adm-btn adm-btn--sm adm-btn--ghost">Sửa</a>
+                                        <a th:href="@{/admin/san-pham/delete/{id}(id=${product.id})}"
+                                            class="adm-btn adm-btn--sm adm-btn--danger"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${products.empty}">
+                                    <td colspan="7" style="text-align: center; padding: 32px;">Không tìm thấy sản phẩm
+                                        nào</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" th:if="${products.totalPages > 1}"
+                        style="padding: 16px; display: flex; justify-content: center; gap: 8px;">
+                        <a th:if="${products.hasPrevious()}"
+                            th:href="@{/admin/san-pham(page=${products.number - 1}, keyword=${keyword}, brandId=${brandId}, categoryId=${categoryId}, status=${status})}"
+                            class="adm-btn adm-btn--ghost">&laquo; Trước</a>
+
+                        <span style="display: flex; align-items: center;">
+                            Trang <span th:text="${products.number + 1}"
+                                style="margin: 0 4px; font-weight: bold;">1</span> / <span
+                                th:text="${products.totalPages}" style="margin-left: 4px;">5</span>
+                        </span>
+
+                        <a th:if="${products.hasNext()}"
+                            th:href="@{/admin/san-pham(page=${products.number + 1}, keyword=${keyword}, brandId=${brandId}, categoryId=${categoryId}, status=${status})}"
+                            class="adm-btn adm-btn--ghost">Sau &raquo;</a>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
-</div>
 </body>
-</html>
 
+</html>

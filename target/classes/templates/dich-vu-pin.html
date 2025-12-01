@@ -156,7 +156,7 @@
                 </header>
                 <dl>
                     <div>
-                        <dt>6.248</dt>
+                        <dt th:text="${totalStations != null ? totalStations : '6.248'}">6.248</dt>
                         <dd>Trạm đổi pin</dd>
                     </div>
                     <div>
@@ -168,8 +168,77 @@
                         <dd>Mức sẵn sàng của pin</dd>
                     </div>
                 </dl>
-                <button class="vf-btn vf-btn--primary">Tìm trạm gần nhất</button>
+                <button class="vf-btn vf-btn--primary" onclick="findNearestStations()">Tìm trạm gần nhất</button>
             </div>
+        </div>
+    </section>
+
+    <!-- Section hiển thị danh sách trạm sạc pin gần nhất -->
+    <section class="vf-container stations-section" data-animate th:if="${chargingStations != null && !chargingStations.isEmpty()}">
+        <header class="section-header">
+            <small>Trạm sạc pin</small>
+            <h2>Trạm sạc pin gần nhất</h2>
+            <p>Danh sách các trạm sạc pin đang hoạt động, sắp xếp theo khoảng cách</p>
+        </header>
+        <div class="stations-grid">
+            <article class="station-card" th:each="station : ${chargingStations}">
+                <div class="station-header">
+                    <h3 th:text="${station.name}">Tên trạm</h3>
+                    <span class="station-status" 
+                          th:classappend="${station.status == 'ACTIVE'} ? 'status-active' : 'status-inactive'"
+                          th:text="${station.status == 'ACTIVE'} ? 'Đang hoạt động' : 'Tạm ngưng'">
+                        Đang hoạt động
+                    </span>
+                </div>
+                <div class="station-info">
+                    <div class="info-item">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke-width="2"/>
+                            <circle cx="12" cy="10" r="3" stroke-width="2"/>
+                        </svg>
+                        <span th:text="${station.address}">Địa chỉ</span>
+                    </div>
+                    <div class="info-item" th:if="${station.province != null}">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke-width="2"/>
+                            <path d="M2 17l10 5 10-5" stroke-width="2"/>
+                            <path d="M2 12l10 5 10-5" stroke-width="2"/>
+                        </svg>
+                        <span>
+                            <span th:text="${station.province}">Tỉnh/Thành phố</span>
+                            <span th:if="${station.district != null && !station.district.isEmpty()}" th:text="', ' + ${station.district}"></span>
+                        </span>
+                    </div>
+                    <div class="info-item" th:if="${station.phone != null}">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke-width="2"/>
+                        </svg>
+                        <span th:text="${station.phone}">Số điện thoại</span>
+                    </div>
+                </div>
+                <div class="station-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Pin có sẵn</span>
+                        <span class="stat-value" th:text="${station.availableBatteries} + '/' + ${station.totalCapacity}">0/0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Giờ hoạt động</span>
+                        <span class="stat-value" th:text="${station.operatingHours}">24/7</span>
+                    </div>
+                </div>
+                <div class="station-actions">
+                    <a th:href="@{'https://www.google.com/maps?q=' + ${station.latitude} + ',' + ${station.longitude}}" 
+                       target="_blank" 
+                       class="vf-btn vf-btn--ghost vf-btn--small">
+                        Xem bản đồ
+                    </a>
+                    <button class="vf-btn vf-btn--primary vf-btn--small call-station-btn" 
+                            th:data-phone="${station.phone}" 
+                            th:if="${station.phone != null && !station.phone.isEmpty()}">
+                        Gọi ngay
+                    </button>
+                </div>
+            </article>
         </div>
     </section>
 
@@ -247,6 +316,46 @@
 
         document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
     })();
+
+    // Hàm tìm trạm gần nhất dựa trên vị trí hiện tại
+    function findNearestStations() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    window.location.href = '/dich-vu-pin?lat=' + lat + '&lng=' + lng;
+                },
+                function(error) {
+                    alert('Không thể lấy vị trí của bạn. Vui lòng cho phép truy cập vị trí hoặc tìm kiếm thủ công.');
+                    // Nếu không lấy được vị trí, hiển thị tất cả trạm
+                    window.location.href = '/dich-vu-pin';
+                }
+            );
+        } else {
+            alert('Trình duyệt của bạn không hỗ trợ định vị. Vui lòng sử dụng trình duyệt khác.');
+            window.location.href = '/dich-vu-pin';
+        }
+    }
+
+    // Hàm gọi điện đến trạm
+    function callStation(phone) {
+        if (phone) {
+            window.location.href = 'tel:' + phone;
+        }
+    }
+
+    // Thêm event listener cho các nút gọi điện
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.call-station-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const phone = this.getAttribute('data-phone');
+                if (phone) {
+                    callStation(phone);
+                }
+            });
+        });
+    });
 </script>
 </body>
 </html>

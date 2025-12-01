@@ -457,3 +457,63 @@ BEGIN
     CROSS JOIN [dbo].[colors] c;
 END
 GO
+
+-- =============================================
+-- 4. CREATE CHARGING STATIONS TABLE
+-- =============================================
+
+-- Create Charging Stations Table
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[charging_stations]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[charging_stations] (
+    [id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [name] NVARCHAR(255) NOT NULL,
+    [address] NVARCHAR(500) NOT NULL,
+    [latitude] DECIMAL(10,8) NOT NULL,
+    [longitude] DECIMAL(11,8) NOT NULL,
+    [available_batteries] INT NOT NULL DEFAULT 0,
+    [total_capacity] INT NOT NULL DEFAULT 0,
+    [phone] NVARCHAR(20) NULL,
+    [operating_hours] NVARCHAR(100) NULL DEFAULT '24/7',
+    [status] NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    [province] NVARCHAR(100) NULL,
+    [district] NVARCHAR(100) NULL,
+    [created_at] DATETIME NOT NULL DEFAULT GETDATE(),
+    [updated_at] DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT [CK_charging_stations_status] CHECK ([status] IN ('ACTIVE', 'INACTIVE', 'MAINTENANCE')),
+    CONSTRAINT [CK_charging_stations_available] CHECK ([available_batteries] >= 0 AND [available_batteries] <= [total_capacity])
+);
+END
+GO
+
+-- Insert Sample Charging Stations Data
+IF NOT EXISTS (SELECT * FROM [dbo].[charging_stations])
+BEGIN
+    INSERT INTO [dbo].[charging_stations] 
+    ([name], [address], [latitude], [longitude], [available_batteries], [total_capacity], [phone], [operating_hours], [status], [province], [district], [created_at], [updated_at])
+    VALUES
+    -- Hà Nội
+    (N'Trạm sạc VinFast Cầu Giấy', N'123 Đường Cầu Giấy, Phường Dịch Vọng, Quận Cầu Giấy', 21.0285, 105.8542, 15, 20, '0241234567', '24/7', 'ACTIVE', N'Hà Nội', N'Cầu Giấy', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Hoàn Kiếm', N'456 Phố Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm', 21.0285, 105.8542, 12, 18, '0241234568', '24/7', 'ACTIVE', N'Hà Nội', N'Hoàn Kiếm', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Đống Đa', N'789 Đường Láng, Phường Láng Thượng, Quận Đống Đa', 21.0142, 105.8022, 18, 25, '0241234569', '24/7', 'ACTIVE', N'Hà Nội', N'Đống Đa', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Hai Bà Trưng', N'321 Phố Bạch Mai, Phường Bạch Mai, Quận Hai Bà Trưng', 21.0056, 105.8542, 10, 15, '0241234570', '24/7', 'ACTIVE', N'Hà Nội', N'Hai Bà Trưng', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Ba Đình', N'654 Đường Điện Biên Phủ, Phường Điện Biên, Quận Ba Đình', 21.0333, 105.8400, 20, 30, '0241234571', '24/7', 'ACTIVE', N'Hà Nội', N'Ba Đình', GETDATE(), GETDATE()),
+    
+    -- TP. Hồ Chí Minh
+    (N'Trạm sạc VinFast Quận 1', N'123 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1', 10.7769, 106.7009, 25, 35, '0281234567', '24/7', 'ACTIVE', N'TP. Hồ Chí Minh', N'Quận 1', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Quận 3', N'456 Đường Lê Văn Sỹ, Phường 12, Quận 3', 10.7831, 106.6967, 18, 28, '0281234568', '24/7', 'ACTIVE', N'TP. Hồ Chí Minh', N'Quận 3', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Quận 7', N'789 Đường Nguyễn Thị Thập, Phường Tân Phú, Quận 7', 10.7314, 106.7214, 22, 32, '0281234569', '24/7', 'ACTIVE', N'TP. Hồ Chí Minh', N'Quận 7', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Bình Thạnh', N'321 Đường Xô Viết Nghệ Tĩnh, Phường 25, Quận Bình Thạnh', 10.8022, 106.7147, 15, 25, '0281234570', '24/7', 'ACTIVE', N'TP. Hồ Chí Minh', N'Bình Thạnh', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Tân Bình', N'654 Đường Cộng Hòa, Phường 13, Quận Tân Bình', 10.8014, 106.6528, 20, 30, '0281234571', '24/7', 'ACTIVE', N'TP. Hồ Chí Minh', N'Tân Bình', GETDATE(), GETDATE()),
+    
+    -- Đà Nẵng
+    (N'Trạm sạc VinFast Hải Châu', N'123 Đường Bạch Đằng, Phường Hải Châu 1, Quận Hải Châu', 16.0544, 108.2022, 12, 20, '0236123456', '24/7', 'ACTIVE', N'Đà Nẵng', N'Hải Châu', GETDATE(), GETDATE()),
+    (N'Trạm sạc VinFast Thanh Khê', N'456 Đường Lê Duẩn, Phường Thanh Khê Tây, Quận Thanh Khê', 16.0683, 108.1917, 10, 18, '0236123457', '24/7', 'ACTIVE', N'Đà Nẵng', N'Thanh Khê', GETDATE(), GETDATE()),
+    
+    -- Cần Thơ
+    (N'Trạm sạc VinFast Ninh Kiều', N'123 Đường Nguyễn Thái Học, Phường Cái Khế, Quận Ninh Kiều', 10.0452, 105.7469, 8, 15, '0292123456', '24/7', 'ACTIVE', N'Cần Thơ', N'Ninh Kiều', GETDATE(), GETDATE()),
+    
+    -- Hải Phòng
+    (N'Trạm sạc VinFast Hồng Bàng', N'456 Đường Lạch Tray, Phường Đằng Giang, Quận Ngô Quyền', 20.8449, 106.6881, 14, 22, '0225123456', '24/7', 'ACTIVE', N'Hải Phòng', N'Ngô Quyền', GETDATE(), GETDATE());
+END
+GO

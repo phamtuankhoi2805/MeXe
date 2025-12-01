@@ -113,7 +113,10 @@
                         </div>
                         
                         <div class="action-buttons">
-                            <button class="btn-vf-primary btn-add-cart" onclick="addToCartAndGoToCart()">
+                            <button class="btn-vf-primary btn-add-cart" 
+                                    th:data-product-id="${product != null ? product.id : null}"
+                                    th:data-product-slug="${product != null ? product.slug : null}"
+                                    onclick="addToCartAndGoToCart(this)">
                                 MUA NGAY
                             </button>
                         </div>
@@ -236,6 +239,8 @@
         // Set global variables for cart.js
         window.isAuthenticated = /*[[${#authentication != null && #authentication.isAuthenticated() && #authentication.name != 'anonymousUser'}]]*/ false;
         window.currentUserId = /*[[${currentUserId != null ? currentUserId : null}]]*/ null;
+        window.productId = /*[[${product != null && product.id != null ? product.id : null}]]*/ null;
+        window.productSlug = /*[[${product != null && product.slug != null ? product.slug : null}]]*/ null;
         
         // Animation Observer
         const observerOptions = { threshold: 0.15 };
@@ -276,11 +281,38 @@
         }
 
         // Add to Cart and Go to Cart Page
-        function addToCartAndGoToCart() {
-            var productId = /*[[${product != null ? product.id : null}]]*/ null;
+        function addToCartAndGoToCart(button) {
+            // Lấy productId từ nhiều nguồn (ưu tiên theo thứ tự)
+            var productId = null;
             
+            // 1. Lấy từ button data attribute
+            if (button && button.dataset && button.dataset.productId) {
+                productId = parseInt(button.dataset.productId);
+            }
+            
+            // 2. Lấy từ button element nếu không có trong parameter
+            if (!productId && button) {
+                const btn = button.closest ? button : document.querySelector('.btn-add-cart');
+                if (btn && btn.dataset && btn.dataset.productId) {
+                    productId = parseInt(btn.dataset.productId);
+                }
+            }
+            
+            // 3. Lấy từ global variable (window.productId)
+            if (!productId && window.productId) {
+                productId = parseInt(window.productId);
+            }
+            
+            // 4. Fallback: Lấy từ button selector
             if (!productId) {
-                 console.error("Product ID not found");
+                const buyButton = document.querySelector('.btn-add-cart[data-product-id]');
+                if (buyButton && buyButton.dataset && buyButton.dataset.productId) {
+                    productId = parseInt(buyButton.dataset.productId);
+                }
+            }
+            
+            if (!productId || isNaN(productId)) {
+                 console.error("Product ID not found. Button:", button);
                  alert("Lỗi dữ liệu sản phẩm. Vui lòng tải lại trang.");
                  return;
             }
@@ -288,7 +320,10 @@
             var quantity = 1;
             const qtyInput = document.getElementById('qtyInput');
             if (qtyInput) {
-                quantity = parseInt(qtyInput.value);
+                const qtyValue = parseInt(qtyInput.value);
+                if (!isNaN(qtyValue) && qtyValue > 0) {
+                    quantity = qtyValue;
+                }
             }
 
             var userId = window.currentUserId;
@@ -301,28 +336,91 @@
             // Nếu sản phẩm có màu (có input radio) mà chưa chọn -> yêu cầu chọn
             var hasColorOptions = document.querySelector('input[name="colorId"]');
             
-            if (colorSelect) {
-                colorId = parseInt(colorSelect.value);
+            if (colorSelect && colorSelect.value) {
+                const colorValue = parseInt(colorSelect.value);
+                if (!isNaN(colorValue)) {
+                    colorId = colorValue;
+                }
             } else if (hasColorOptions) {
                 alert("Vui lòng chọn màu sắc");
                 // Scroll to color section
-                hasColorOptions.closest('.color-controls').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Highlight effect
-                hasColorOptions.closest('.color-controls').style.animation = 'pulse 0.5s 2';
+                const colorControls = hasColorOptions.closest('.color-controls');
+                if (colorControls) {
+                    colorControls.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Highlight effect
+                    colorControls.style.animation = 'pulse 0.5s 2';
+                }
                 return;
             }
             
-            console.log('Adding to cart:', { productId, colorId, quantity, userId });
+            console.log('Adding to cart:', { productId, colorId, quantity, userId, isAuthenticated });
 
+            // Kiểm tra lại trước khi gọi API
+            if (!productId || isNaN(productId) || !quantity || quantity <= 0) {
+                alert("Thông tin sản phẩm không hợp lệ. Vui lòng tải lại trang.");
+                console.error('Invalid product data:', { productId, quantity });
+                return;
+            }
+
+            // Kiểm tra window.addToCart có tồn tại không
+            if (typeof window.addToCart !== 'function') {
+                // Đợi một chút để cart.js load xong (nếu chưa load)
+                console.warn('window.addToCart not found, waiting for cart.js to load...');
+                let retryCount = 0;
+                const maxRetries = 10;
+                const checkInterval = setInterval(() => {
+                    retryCount++;
+                    if (typeof window.addToCart === 'function') {
+                        clearInterval(checkInterval);
+                        // Gọi lại function sau khi cart.js đã load
+                        setTimeout(() => addToCartAndGoToCart(button), 100);
+                    } else if (retryCount >= maxRetries) {
+                        clearInterval(checkInterval);
+                        alert("Lỗi hệ thống: Không thể tải module giỏ hàng. Vui lòng tải lại trang.");
+                        console.error('window.addToCart is still not available after retries');
+                        if (button) {
+                            button.disabled = false;
+                            button.textContent = 'MUA NGAY';
+                        }
+                    }
+                }, 100);
+                return;
+            }
+
+            // Disable button while processing
+            if (button) {
+                button.disabled = true;
+                const originalText = button.textContent;
+                button.textContent = 'Đang xử lý...';
+                
+                // Re-enable button after 5 seconds if error (tăng thời gian chờ)
+                setTimeout(() => {
+                    if (button && button.disabled) {
+                        button.disabled = false;
+                        button.textContent = originalText;
+                    }
+                }, 5000);
+            }
+
+            // Gọi hàm addToCart từ cart.js
             window.addToCart(productId, colorId, quantity, userId, isAuthenticated)
                 .then(() => {
+                    if (button) {
+                        button.textContent = '✓ Đã thêm!';
+                        button.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+                    }
                     setTimeout(() => {
                         window.location.href = '/gio-hang';
                     }, 500);
                 })
                 .catch(err => {
-                    console.error(err);
-                    // alert("Có lỗi khi thêm vào giỏ hàng: " + err);
+                    console.error('Error adding to cart:', err);
+                    if (button) {
+                        button.disabled = false;
+                        button.textContent = 'MUA NGAY';
+                        button.style.background = '';
+                    }
+                    alert("Có lỗi khi thêm vào giỏ hàng: " + (err.message || err));
                 });
         }
     </script>

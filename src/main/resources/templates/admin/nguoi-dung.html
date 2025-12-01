@@ -8,86 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
-    <style>
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .modal-header h2 {
-            margin: 0;
-        }
-        .close {
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover {
-            color: #000;
-        }
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .status-active {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .status-locked {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .status-inactive {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-    </style>
 </head>
 <body class="admin-body">
 <div class="admin-shell">
@@ -96,333 +16,75 @@
     <div class="admin-main">
         <header class="admin-topbar">
             <div>
-                <p class="eyebrow">Người dùng</p>
-                <h1>Quản lý tài khoản khách hàng</h1>
+                <p class="eyebrow">Hệ thống</p>
+                <h1>Người dùng</h1>
             </div>
             <div class="admin-topbar__actions">
-                <button class="adm-btn adm-btn--primary" onclick="openAddModal()">Thêm người dùng</button>
+                <button class="adm-btn adm-btn--primary">Thêm quản trị viên</button>
             </div>
         </header>
 
         <section class="admin-content">
             <div class="filter-bar">
                 <div class="filter-group">
-                    <span>Trạng thái:</span>
-                    <button class="chip is-active" onclick="filterByStatus(null)">Tất cả</button>
-                    <button class="chip" onclick="filterByStatus('HOAT_DONG')">Hoạt động</button>
-                    <button class="chip" onclick="filterByStatus('TAM_KHOA')">Tạm khóa</button>
-                    <button class="chip" onclick="filterByStatus('NGUNG_HOAT_DONG')">Ngừng hoạt động</button>
+                    <span>Vai trò:</span>
+                    <button class="chip is-active">Tất cả</button>
+                    <button class="chip">Admin</button>
+                    <button class="chip">User</button>
                 </div>
-                <input type="search" id="searchInput" placeholder="Tìm theo tên, email, số điện thoại..." onkeyup="handleSearch()">
+                <input type="search" placeholder="Tìm theo email, tên...">
             </div>
 
             <div class="admin-card">
                 <header>
-                    <h2>Danh sách người dùng</h2>
+                    <h2>Danh sách tài khoản</h2>
                 </header>
                 <div class="table-scroll">
                     <table>
                         <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Họ tên</th>
+                            <th>Họ và tên</th>
                             <th>Email</th>
                             <th>Số điện thoại</th>
-                            <th>Địa chỉ</th>
+                            <th>Vai trò</th>
+                            <th>Nguồn</th>
                             <th>Trạng thái</th>
-                            <th>Ngày tạo</th>
                             <th>Thao tác</th>
                         </tr>
                         </thead>
-                        <tbody id="userTableBody">
+                        <tbody>
                         <tr>
-                            <td colspan="8" style="text-align: center; padding: 2rem;">
-                                Đang tải dữ liệu...
+                            <td>1</td>
+                            <td>Administrator</td>
+                            <td>admin@vinfast.com</td>
+                            <td>0123456789</td>
+                            <td><span class="tag tag--warning">ADMIN</span></td>
+                            <td>Local</td>
+                            <td><span class="tag tag--success">Enabled</span></td>
+                            <td>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>nguyenvana@gmail.com</td>
+                            <td>0912345678</td>
+                            <td><span class="tag">USER</span></td>
+                            <td>Google</td>
+                            <td><span class="tag tag--success">Enabled</span></td>
+                            <td>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Khóa</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <div style="padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <span id="paginationInfo"></span>
-                    </div>
-                    <div>
-                        <button class="adm-btn adm-btn--ghost" onclick="previousPage()" id="prevBtn">Trước</button>
-                        <button class="adm-btn adm-btn--ghost" onclick="nextPage()" id="nextBtn">Sau</button>
-                    </div>
-                </div>
             </div>
         </section>
     </div>
 </div>
-
-<!-- Modal Thêm/Sửa User -->
-<div id="userModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 id="modalTitle">Thêm người dùng</h2>
-            <span class="close" onclick="closeModal()">&times;</span>
-        </div>
-        <form id="userForm" onsubmit="saveUser(event)">
-            <input type="hidden" id="userId">
-            <div class="form-group">
-                <label for="fullName">Họ tên *</label>
-                <input type="text" id="fullName" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="phone">Số điện thoại</label>
-                <input type="text" id="phone">
-            </div>
-            <div class="form-group">
-                <label for="address">Địa chỉ</label>
-                <input type="text" id="address">
-            </div>
-            <div class="form-group">
-                <label for="status">Trạng thái</label>
-                <select id="status">
-                    <option value="HOAT_DONG">Hoạt động</option>
-                    <option value="TAM_KHOA">Tạm khóa</option>
-                    <option value="NGUNG_HOAT_DONG">Ngừng hoạt động</option>
-                </select>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="adm-btn adm-btn--ghost" onclick="closeModal()">Hủy</button>
-                <button type="submit" class="adm-btn adm-btn--primary">Lưu</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    let currentPage = 0;
-    let currentStatus = null;
-    let currentKeyword = '';
-    const pageSize = 20;
-
-    // Load users on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        loadUsers();
-    });
-
-    function loadUsers() {
-        let url = `/api/admin/users?page=${currentPage}&size=${pageSize}`;
-        if (currentKeyword) {
-            url += `&keyword=${encodeURIComponent(currentKeyword)}`;
-        }
-        if (currentStatus) {
-            url += `&status=${currentStatus}`;
-        }
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                displayUsers(data.content);
-                updatePagination(data);
-            })
-            .catch(error => {
-                console.error('Error loading users:', error);
-                document.getElementById('userTableBody').innerHTML = 
-                    '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: red;">Lỗi khi tải dữ liệu</td></tr>';
-            });
-    }
-
-    function displayUsers(users) {
-        const tbody = document.getElementById('userTableBody');
-        if (users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem;">Không có dữ liệu</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = users.map(user => {
-            const statusClass = getStatusClass(user.status);
-            const statusText = getStatusText(user.status);
-            const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : '-';
-            
-            return `
-                <tr>
-                    <td>${user.id}</td>
-                    <td>${user.fullName || '-'}</td>
-                    <td>${user.email || '-'}</td>
-                    <td>${user.phone || '-'}</td>
-                    <td>${user.address || '-'}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>${createdAt}</td>
-                    <td>
-                        <button class="adm-btn adm-btn--ghost" onclick="editUser(${user.id})" style="margin-right: 0.5rem;">Sửa</button>
-                        <button class="adm-btn" onclick="deleteUser(${user.id})" style="background-color: #dc3545; color: white;">Xóa</button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    function getStatusClass(status) {
-        switch(status) {
-            case 'HOAT_DONG': return 'status-active';
-            case 'TAM_KHOA': return 'status-locked';
-            case 'NGUNG_HOAT_DONG': return 'status-inactive';
-            default: return '';
-        }
-    }
-
-    function getStatusText(status) {
-        switch(status) {
-            case 'HOAT_DONG': return 'Hoạt động';
-            case 'TAM_KHOA': return 'Tạm khóa';
-            case 'NGUNG_HOAT_DONG': return 'Ngừng hoạt động';
-            default: return status;
-        }
-    }
-
-    function updatePagination(data) {
-        document.getElementById('paginationInfo').textContent = 
-            `Trang ${data.number + 1} / ${data.totalPages} (Tổng: ${data.totalElements} người dùng)`;
-        
-        document.getElementById('prevBtn').disabled = data.first;
-        document.getElementById('nextBtn').disabled = data.last;
-    }
-
-    function previousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            loadUsers();
-        }
-    }
-
-    function nextPage() {
-        currentPage++;
-        loadUsers();
-    }
-
-    function filterByStatus(status) {
-        currentStatus = status;
-        currentPage = 0;
-        
-        // Update active chip
-        document.querySelectorAll('.filter-group .chip').forEach(chip => {
-            chip.classList.remove('is-active');
-        });
-        event.target.classList.add('is-active');
-        
-        loadUsers();
-    }
-
-    let searchTimeout;
-    function handleSearch() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            currentKeyword = document.getElementById('searchInput').value;
-            currentPage = 0;
-            loadUsers();
-        }, 500);
-    }
-
-    function openAddModal() {
-        document.getElementById('modalTitle').textContent = 'Thêm người dùng';
-        document.getElementById('userForm').reset();
-        document.getElementById('userId').value = '';
-        document.getElementById('status').value = 'HOAT_DONG';
-        document.getElementById('userModal').style.display = 'block';
-    }
-
-    function editUser(id) {
-        fetch(`/api/admin/users/${id}`)
-            .then(response => response.json())
-            .then(user => {
-                document.getElementById('modalTitle').textContent = 'Sửa người dùng';
-                document.getElementById('userId').value = user.id;
-                document.getElementById('fullName').value = user.fullName || '';
-                document.getElementById('email').value = user.email || '';
-                document.getElementById('phone').value = user.phone || '';
-                document.getElementById('address').value = user.address || '';
-                document.getElementById('status').value = user.status || 'HOAT_DONG';
-                document.getElementById('userModal').style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Error loading user:', error);
-                alert('Lỗi khi tải thông tin người dùng');
-            });
-    }
-
-    function closeModal() {
-        document.getElementById('userModal').style.display = 'none';
-    }
-
-    function saveUser(event) {
-        event.preventDefault();
-        
-        const userId = document.getElementById('userId').value;
-        const userData = {
-            fullName: document.getElementById('fullName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
-            status: document.getElementById('status').value
-        };
-
-        const url = userId ? `/api/admin/users/${userId}` : '/api/admin/users';
-        const method = userId ? 'PUT' : 'POST';
-
-        fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                closeModal();
-                loadUsers();
-            } else {
-                alert('Lỗi: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error saving user:', error);
-            alert('Lỗi khi lưu người dùng');
-        });
-    }
-
-    function deleteUser(id) {
-        if (!confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-            return;
-        }
-
-        fetch(`/api/admin/users/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                loadUsers();
-            } else {
-                alert('Lỗi: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting user:', error);
-            alert('Lỗi khi xóa người dùng');
-        });
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('userModal');
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
-</script>
 </body>
 </html>
-
-

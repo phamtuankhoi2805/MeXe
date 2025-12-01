@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,33 +16,33 @@
             padding: 60px 20px 90px;
             min-height: calc(100vh - 200px);
         }
-        
+
         .account-container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         .account-header {
             margin-bottom: 40px;
         }
-        
+
         .account-header h1 {
             font-size: 2.5rem;
             color: var(--signup-dark);
             margin-bottom: 8px;
         }
-        
+
         .account-header p {
             color: var(--signup-gray);
             font-size: 1.1rem;
         }
-        
+
         .account-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 32px;
         }
-        
+
         .account-card {
             background: white;
             border-radius: 24px;
@@ -49,7 +50,7 @@
             border: 1px solid rgba(0, 86, 255, 0.2);
             box-shadow: 0 24px 60px rgba(3, 16, 44, 0.1);
         }
-        
+
         .account-card h2 {
             font-size: 1.5rem;
             color: var(--signup-dark);
@@ -57,7 +58,7 @@
             padding-bottom: 16px;
             border-bottom: 2px solid rgba(0, 86, 255, 0.1);
         }
-        
+
         .account-info-item {
             display: flex;
             justify-content: space-between;
@@ -65,50 +66,50 @@
             padding: 16px 0;
             border-bottom: 1px solid rgba(0, 86, 255, 0.1);
         }
-        
+
         .account-info-item:last-child {
             border-bottom: none;
         }
-        
+
         .account-info-label {
             font-weight: 600;
             color: var(--signup-gray);
         }
-        
+
         .account-info-value {
             font-weight: 500;
             color: var(--signup-dark);
         }
-        
+
         .alert {
             padding: 16px;
             border-radius: 12px;
             margin-bottom: 24px;
         }
-        
+
         .alert-success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        
+
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--signup-dark);
         }
-        
+
         .form-group input {
             width: 100%;
             padding: 12px 16px;
@@ -117,13 +118,13 @@
             font-size: 1rem;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
         .form-group input:focus {
             outline: none;
             border-color: var(--signup-blue);
             box-shadow: 0 0 0 4px rgba(0, 86, 255, 0.12);
         }
-        
+
         .btn-submit {
             background: var(--signup-blue);
             color: white;
@@ -136,48 +137,48 @@
             transition: background 0.2s ease, transform 0.2s ease;
             width: 100%;
         }
-        
+
         .btn-submit:hover {
             background: #0046cc;
             transform: translateY(-2px);
         }
-        
+
         .address-list {
             display: grid;
             gap: 16px;
             margin-top: 24px;
         }
-        
+
         .address-item {
             padding: 20px;
             border: 2px solid var(--signup-border);
             border-radius: 12px;
             background: #f6f8ff;
         }
-        
+
         .address-item.is-default {
             border-color: var(--signup-blue);
             background: #e8f0ff;
         }
-        
+
         .address-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
         }
-        
+
         .address-item-title {
             font-weight: 600;
             color: var(--signup-dark);
         }
-        
+
         .address-item-actions {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .address-badge {
             background: var(--signup-blue);
             color: white;
@@ -186,7 +187,7 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
+
         .btn-set-default {
             background: white;
             color: var(--signup-blue);
@@ -198,22 +199,22 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
+
         .btn-set-default:hover {
             background: var(--signup-blue);
             color: white;
             transform: translateY(-1px);
         }
-        
+
         .btn-set-default:active {
             transform: translateY(0);
         }
-        
+
         .address-details {
             color: var(--signup-gray);
             line-height: 1.6;
         }
-        
+
         .new-user-notice {
             background: #fff3cd;
             border: 2px solid #ffc107;
@@ -221,23 +222,23 @@
             padding: 24px;
             margin-bottom: 32px;
         }
-        
+
         .new-user-notice h3 {
             color: #856404;
             margin-bottom: 12px;
         }
-        
+
         .new-user-notice p {
             color: #856404;
             margin: 0;
         }
-        
+
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
-        
+
         .form-group select {
             width: 100%;
             padding: 12px 16px;
@@ -249,50 +250,51 @@
             cursor: pointer;
             font-family: inherit;
         }
-        
+
         .form-group select:focus {
             outline: none;
             border-color: var(--signup-blue);
             box-shadow: 0 0 0 4px rgba(0, 86, 255, 0.12);
         }
-        
+
         .form-group select:disabled {
             background: #f5f5f5;
             cursor: not-allowed;
             opacity: 0.6;
         }
-        
+
         .form-group select option {
             padding: 8px;
         }
-        
+
         .loading-text {
             color: var(--signup-gray);
             font-size: 0.9rem;
             font-style: italic;
         }
-        
+
         @media (max-width: 768px) {
             .account-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .grid-2 {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
-    
+
     <main class="account-page">
         <div class="account-container">
             <div class="account-header">
                 <h1>Thông tin tài khoản</h1>
                 <p>Quản lý thông tin cá nhân và địa chỉ giao hàng</p>
             </div>
-            
+
             <!-- Thông báo -->
             <div th:if="${success}" class="alert alert-success" style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 1.2rem;">✓</span>
@@ -302,105 +304,127 @@
                 <span style="font-size: 1.2rem;">✗</span>
                 <span th:text="${error}"></span>
             </div>
-            
+
             <!-- Thông báo cho user mới -->
             <div th:if="${isNewUser}" class="new-user-notice">
                 <h3>⚠️ Vui lòng cập nhật thông tin</h3>
                 <p>Để tiếp tục sử dụng dịch vụ, vui lòng cập nhật số điện thoại và địa chỉ của bạn.</p>
             </div>
-            
+
             <div class="account-grid" th:if="${user != null}">
                 <!-- Thông tin cá nhân -->
                 <div class="account-card">
                     <h2>Thông tin cá nhân</h2>
-                    
+
                     <div class="account-info-item">
                         <span class="account-info-label">Email:</span>
                         <span class="account-info-value" th:text="${user.email}"></span>
                     </div>
-                    
+
                     <div class="account-info-item">
                         <span class="account-info-label">Họ tên:</span>
                         <span class="account-info-value" th:text="${user.fullName}"></span>
                     </div>
-                    
+
                     <div class="account-info-item">
                         <span class="account-info-label">Số điện thoại:</span>
-                        <span class="account-info-value" th:text="${user.phone != null ? user.phone : 'Chưa cập nhật'}"></span>
+                        <span class="account-info-value"
+                            th:text="${user.phone != null ? user.phone : 'Chưa cập nhật'}"></span>
                     </div>
-                    
+
                     <div class="account-info-item">
                         <span class="account-info-label">Đăng nhập bằng:</span>
-                        <span class="account-info-value" th:text="${isGoogleLogin ? 'Google' : 'Email/Password'}"></span>
+                        <span class="account-info-value"
+                            th:text="${isGoogleLogin ? 'Google' : 'Email/Password'}"></span>
                     </div>
-                    
-                    <form th:action="@{/tai-khoan/cap-nhat}" method="post" id="updateInfoForm" style="margin-top: 24px;">
+
+                    <form th:action="@{/tai-khoan/cap-nhat}" method="post" id="updateInfoForm"
+                        style="margin-top: 24px;">
                         <div class="form-group">
                             <label for="fullName">Họ tên *</label>
-                            <input type="text" id="fullName" name="fullName" th:value="${user.fullName}" required minlength="2" maxlength="100">
-                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                            <input type="text" id="fullName" name="fullName" th:value="${user.fullName}" required
+                                minlength="2" maxlength="100">
+                            <span class="field-error"
+                                style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="phone">Số điện thoại *</label>
-                            <input type="tel" id="phone" name="phone" th:value="${user.phone}" placeholder="0123456789" required>
-                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                            <input type="tel" id="phone" name="phone" th:value="${user.phone}" placeholder="0123456789"
+                                required>
+                            <span class="field-error"
+                                style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
-                        
+
                         <button type="submit" class="btn-submit">Cập nhật thông tin</button>
                     </form>
                 </div>
-                
+
                 <!-- Đổi mật khẩu (chỉ cho user không đăng nhập bằng Google) -->
                 <div class="account-card" th:unless="${isGoogleLogin}">
                     <h2>Đổi mật khẩu</h2>
-                    
+
                     <form th:action="@{/tai-khoan/doi-mat-khau}" method="post" id="changePasswordForm">
                         <div class="form-group">
                             <label for="currentPassword">Mật khẩu hiện tại *</label>
                             <input type="password" id="currentPassword" name="currentPassword" required>
-                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                            <span class="field-error"
+                                style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="newPassword">Mật khẩu mới *</label>
-                            <input type="password" id="newPassword" name="newPassword" minlength="6" maxlength="50" required>
-                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                            <input type="password" id="newPassword" name="newPassword" minlength="6" maxlength="50"
+                                required>
+                            <span class="field-error"
+                                style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="confirmPassword">Xác nhận mật khẩu mới *</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="6" maxlength="50" required>
-                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="6"
+                                maxlength="50" required>
+                            <span class="field-error"
+                                style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
-                        
+
                         <button type="submit" class="btn-submit">Đổi mật khẩu</button>
                     </form>
                 </div>
-                
+
                 <!-- Thông báo cho Google login -->
                 <div class="account-card" th:if="${isGoogleLogin}">
                     <h2>Đổi mật khẩu</h2>
-                    <p style="color: var(--signup-gray);">Tài khoản đăng nhập bằng Google không thể đổi mật khẩu. Vui lòng quản lý mật khẩu trên tài khoản Google của bạn.</p>
+                    <p style="color: var(--signup-gray);">Tài khoản đăng nhập bằng Google không thể đổi mật khẩu. Vui
+                        lòng quản lý mật khẩu trên tài khoản Google của bạn.</p>
+                </div>
+
+                <!-- Lịch sử đơn hàng -->
+                <div class="account-card">
+                    <h2>Lịch sử đơn hàng</h2>
+                    <p style="color: var(--signup-gray); margin-bottom: 24px;">Xem lại danh sách đơn hàng đã đặt và theo
+                        dõi trạng thái vận chuyển.</p>
+                    <a th:href="@{/tai-khoan/don-hang}" class="btn-submit"
+                        style="display: inline-block; text-align: center; text-decoration: none;">Xem đơn hàng của
+                        tôi</a>
                 </div>
             </div>
-            
+
             <!-- Quản lý địa chỉ -->
             <div class="account-card" style="margin-top: 32px;" th:if="${user != null}">
                 <h2>Địa chỉ giao hàng</h2>
-                
+
                 <!-- Danh sách địa chỉ -->
                 <div class="address-list" th:if="${addresses != null && !addresses.isEmpty()}">
-                    <div class="address-item" th:each="address : ${addresses}" th:classappend="${address.isDefault} ? 'is-default' : ''">
+                    <div class="address-item" th:each="address : ${addresses}"
+                        th:classappend="${address.isDefault} ? 'is-default' : ''">
                         <div class="address-item-header">
                             <span class="address-item-title" th:text="${address.fullName}"></span>
                             <div class="address-item-actions">
                                 <span class="address-badge" th:if="${address.isDefault}">Mặc định</span>
-                                <button type="button" 
-                                        class="btn-set-default" 
-                                        th:if="${!address.isDefault}"
-                                        th:data-address-id="${address.id}"
-                                        onclick="setDefaultAddress(this.dataset.addressId)">
+                                <button type="button" class="btn-set-default" th:if="${!address.isDefault}"
+                                    th:data-address-id="${address.id}"
+                                    onclick="setDefaultAddress(this.dataset.addressId)">
                                     Đặt làm mặc định
                                 </button>
                             </div>
@@ -411,27 +435,33 @@
                         </div>
                     </div>
                 </div>
-                
-                <p th:if="${addresses == null || addresses.isEmpty()}" style="color: var(--signup-gray); margin-bottom: 24px;">
+
+                <p th:if="${addresses == null || addresses.isEmpty()}"
+                    style="color: var(--signup-gray); margin-bottom: 24px;">
                     Bạn chưa có địa chỉ nào. Vui lòng thêm địa chỉ mới.
                 </p>
-                
+
                 <!-- Form thêm địa chỉ mới -->
-                <form th:action="@{/tai-khoan/dia-chi/them}" method="post" id="addAddressForm" style="margin-top: 24px;">
+                <form th:action="@{/tai-khoan/dia-chi/them}" method="post" id="addAddressForm"
+                    style="margin-top: 24px;">
                     <h3 style="font-size: 1.2rem; margin-bottom: 20px; color: var(--signup-dark);">Thêm địa chỉ mới</h3>
-                    
+
                     <div class="form-group">
                         <label for="addressFullName">Họ tên người nhận *</label>
-                        <input type="text" id="addressFullName" name="fullName" th:value="${user.fullName}" required minlength="2" maxlength="100">
-                        <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                        <input type="text" id="addressFullName" name="fullName" th:value="${user.fullName}" required
+                            minlength="2" maxlength="100">
+                        <span class="field-error"
+                            style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="addressPhone">Số điện thoại *</label>
-                        <input type="tel" id="addressPhone" name="phone" th:value="${user.phone}" placeholder="0123456789" required>
-                        <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                        <input type="tel" id="addressPhone" name="phone" th:value="${user.phone}"
+                            placeholder="0123456789" required>
+                        <span class="field-error"
+                            style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                     </div>
-                    
+
                     <div class="grid-2">
                         <div class="form-group">
                             <label for="province">Tỉnh/Thành phố *</label>
@@ -440,7 +470,7 @@
                             </select>
                             <input type="hidden" id="provinceCodeTMS" name="provinceCodeTMS">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="district">Quận/Huyện *</label>
                             <select id="district" name="district" required disabled>
@@ -449,7 +479,7 @@
                             <input type="hidden" id="districtCode" name="districtCode">
                         </div>
                     </div>
-                    
+
                     <div class="grid-2">
                         <div class="form-group">
                             <label for="ward">Phường/Xã *</label>
@@ -458,52 +488,54 @@
                             </select>
                             <input type="hidden" id="wardCode" name="wardCode">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="street">Địa chỉ cụ thể *</label>
-                            <input type="text" id="street" name="street" placeholder="Ví dụ: Số 123, Đường ABC" required minlength="5" maxlength="200">
-                            <span class="field-error" style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
+                            <input type="text" id="street" name="street" placeholder="Ví dụ: Số 123, Đường ABC" required
+                                minlength="5" maxlength="200">
+                            <span class="field-error"
+                                style="display: none; color: #c33; font-size: 0.875rem; margin-top: 4px;"></span>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                             <input type="checkbox" name="isDefault" value="true" style="width: auto;">
                             <span>Đặt làm địa chỉ mặc định</span>
                         </label>
                     </div>
-                    
+
                     <button type="submit" class="btn-submit">Thêm địa chỉ</button>
                 </form>
             </div>
         </div>
     </main>
-    
+
     <div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
-    
+
     <script th:src="@{/js/dieu-huong.js}"></script>
     <script>
         // Location API integration
-        (function() {
+        (function () {
             const provinceSelect = document.getElementById('province');
             const districtSelect = document.getElementById('district');
             const wardSelect = document.getElementById('ward');
             const provinceCodeInput = document.getElementById('provinceCodeTMS');
             const districtCodeInput = document.getElementById('districtCode');
             const wardCodeInput = document.getElementById('wardCode');
-            
+
             let provinces = [];
             let districts = [];
             let wards = [];
-            
+
             // Load provinces on page load
             async function loadProvinces() {
                 try {
                     const response = await fetch('/api/locations/provinces');
                     if (!response.ok) throw new Error('Failed to load provinces');
-                    
+
                     provinces = await response.json();
-                    
+
                     // Clear and populate province select
                     provinceSelect.innerHTML = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
                     provinces.forEach(province => {
@@ -518,20 +550,20 @@
                     provinceSelect.innerHTML = '<option value="">Lỗi khi tải danh sách tỉnh/thành phố</option>';
                 }
             }
-            
+
             // Load districts when province is selected
             async function loadDistricts(provinceCodeTMS) {
                 districtSelect.disabled = true;
                 districtSelect.innerHTML = '<option value="">Đang tải...</option>';
                 wardSelect.disabled = true;
                 wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-                
+
                 try {
                     const response = await fetch(`/api/locations/provinces/${provinceCodeTMS}/districts`);
                     if (!response.ok) throw new Error('Failed to load districts');
-                    
+
                     districts = await response.json();
-                    
+
                     // Clear and populate district select
                     districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
                     districts.forEach(district => {
@@ -540,25 +572,25 @@
                         option.textContent = district.name;
                         districtSelect.appendChild(option);
                     });
-                    
+
                     districtSelect.disabled = false;
                 } catch (error) {
                     console.error('Error loading districts:', error);
                     districtSelect.innerHTML = '<option value="">Lỗi khi tải danh sách quận/huyện</option>';
                 }
             }
-            
+
             // Load wards when district is selected
             async function loadWards(districtCode) {
                 wardSelect.disabled = true;
                 wardSelect.innerHTML = '<option value="">Đang tải...</option>';
-                
+
                 try {
                     const response = await fetch(`/api/locations/districts/${districtCode}/wards`);
                     if (!response.ok) throw new Error('Failed to load wards');
-                    
+
                     wards = await response.json();
-                    
+
                     // Clear and populate ward select
                     wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
                     wards.forEach(ward => {
@@ -568,25 +600,25 @@
                         option.dataset.code = ward.code;
                         wardSelect.appendChild(option);
                     });
-                    
+
                     wardSelect.disabled = false;
                 } catch (error) {
                     console.error('Error loading wards:', error);
                     wardSelect.innerHTML = '<option value="">Lỗi khi tải danh sách phường/xã</option>';
                 }
             }
-            
+
             // Province change handler
-            provinceSelect.addEventListener('change', function() {
+            provinceSelect.addEventListener('change', function () {
                 const selectedCode = this.value;
                 provinceCodeInput.value = selectedCode;
-                
+
                 // Reset district and ward
                 districtSelect.value = '';
                 districtCodeInput.value = '';
                 wardSelect.value = '';
                 wardCodeInput.value = '';
-                
+
                 if (selectedCode) {
                     loadDistricts(selectedCode);
                 } else {
@@ -596,16 +628,16 @@
                     wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
                 }
             });
-            
+
             // District change handler
-            districtSelect.addEventListener('change', function() {
+            districtSelect.addEventListener('change', function () {
                 const selectedCode = this.value;
                 districtCodeInput.value = selectedCode;
-                
+
                 // Reset ward
                 wardSelect.value = '';
                 wardCodeInput.value = '';
-                
+
                 if (selectedCode) {
                     loadWards(selectedCode);
                 } else {
@@ -613,9 +645,9 @@
                     wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
                 }
             });
-            
+
             // Ward change handler
-            wardSelect.addEventListener('change', function() {
+            wardSelect.addEventListener('change', function () {
                 const selectedOption = this.options[this.selectedIndex];
                 if (selectedOption && selectedOption.dataset.code) {
                     wardCodeInput.value = selectedOption.dataset.code;
@@ -623,30 +655,30 @@
                     wardCodeInput.value = '';
                 }
             });
-            
+
             // Update form submission to use selected values
             const addressForm = document.querySelector('form[action*="/tai-khoan/dia-chi/them"]');
             if (addressForm) {
-                addressForm.addEventListener('submit', function(e) {
+                addressForm.addEventListener('submit', function (e) {
                     // Validate selections
                     if (!provinceSelect.value) {
                         e.preventDefault();
                         alert('Vui lòng chọn Tỉnh/Thành phố');
                         return false;
                     }
-                    
+
                     if (!districtSelect.value) {
                         e.preventDefault();
                         alert('Vui lòng chọn Quận/Huyện');
                         return false;
                     }
-                    
+
                     if (!wardSelect.value) {
                         e.preventDefault();
                         alert('Vui lòng chọn Phường/Xã');
                         return false;
                     }
-                    
+
                     // Set province name from selected option
                     const provinceOption = provinceSelect.options[provinceSelect.selectedIndex];
                     if (provinceOption && provinceOption.textContent) {
@@ -661,7 +693,7 @@
                         }
                         provinceNameInput.value = provinceOption.textContent;
                     }
-                    
+
                     // Set district name from selected option
                     const districtOption = districtSelect.options[districtSelect.selectedIndex];
                     if (districtOption && districtOption.textContent) {
@@ -675,18 +707,18 @@
                         }
                         districtNameInput.value = districtOption.textContent;
                     }
-                    
+
                     // Ward name is already set in the select value (wardSelect.value)
                     // The name attribute of wardSelect is "ward", so it will be submitted automatically
                 });
             }
-            
+
             // Initialize
             loadProvinces();
         })();
-        
+
         // Form validation functions
-        (function() {
+        (function () {
             // Helper function to show field error
             function showFieldError(fieldId, message) {
                 const field = document.getElementById(fieldId);
@@ -697,27 +729,27 @@
                         existingError.style.display = 'block';
                     }
                     field.style.borderColor = '#c33';
-                    field.addEventListener('input', function() {
+                    field.addEventListener('input', function () {
                         field.style.borderColor = '';
                         const error = field.parentElement.querySelector('.field-error');
                         if (error) error.style.display = 'none';
                     }, { once: true });
                 }
             }
-            
+
             // Validate update info form
             const updateInfoForm = document.getElementById('updateInfoForm');
             if (updateInfoForm) {
-                updateInfoForm.addEventListener('submit', function(e) {
+                updateInfoForm.addEventListener('submit', function (e) {
                     const fullName = document.getElementById('fullName').value.trim();
                     const phone = document.getElementById('phone').value.trim();
                     let hasError = false;
-                    
+
                     // Clear previous errors
                     document.querySelectorAll('#updateInfoForm .field-error').forEach(el => {
                         el.style.display = 'none';
                     });
-                    
+
                     if (!fullName) {
                         showFieldError('fullName', 'Họ và tên không được để trống.');
                         hasError = true;
@@ -725,7 +757,7 @@
                         showFieldError('fullName', 'Họ và tên phải có ít nhất 2 ký tự.');
                         hasError = true;
                     }
-                    
+
                     if (!phone) {
                         showFieldError('phone', 'Số điện thoại không được để trống.');
                         hasError = true;
@@ -736,33 +768,33 @@
                             hasError = true;
                         }
                     }
-                    
+
                     if (hasError) {
                         e.preventDefault();
                         return false;
                     }
                 });
             }
-            
+
             // Validate change password form
             const changePasswordForm = document.getElementById('changePasswordForm');
             if (changePasswordForm) {
-                changePasswordForm.addEventListener('submit', function(e) {
+                changePasswordForm.addEventListener('submit', function (e) {
                     const currentPassword = document.getElementById('currentPassword').value;
                     const newPassword = document.getElementById('newPassword').value;
                     const confirmPassword = document.getElementById('confirmPassword').value;
                     let hasError = false;
-                    
+
                     // Clear previous errors
                     document.querySelectorAll('#changePasswordForm .field-error').forEach(el => {
                         el.style.display = 'none';
                     });
-                    
+
                     if (!currentPassword) {
                         showFieldError('currentPassword', 'Vui lòng nhập mật khẩu hiện tại.');
                         hasError = true;
                     }
-                    
+
                     if (!newPassword) {
                         showFieldError('newPassword', 'Vui lòng nhập mật khẩu mới.');
                         hasError = true;
@@ -773,7 +805,7 @@
                         showFieldError('newPassword', 'Mật khẩu mới không được vượt quá 50 ký tự.');
                         hasError = true;
                     }
-                    
+
                     if (!confirmPassword) {
                         showFieldError('confirmPassword', 'Vui lòng xác nhận mật khẩu mới.');
                         hasError = true;
@@ -781,18 +813,18 @@
                         showFieldError('confirmPassword', 'Mật khẩu xác nhận không khớp.');
                         hasError = true;
                     }
-                    
+
                     if (hasError) {
                         e.preventDefault();
                         return false;
                     }
                 });
             }
-            
+
             // Validate add address form
             const addAddressForm = document.getElementById('addAddressForm');
             if (addAddressForm) {
-                addAddressForm.addEventListener('submit', function(e) {
+                addAddressForm.addEventListener('submit', function (e) {
                     const fullName = document.getElementById('addressFullName').value.trim();
                     const phone = document.getElementById('addressPhone').value.trim();
                     const province = document.getElementById('province').value;
@@ -800,12 +832,12 @@
                     const ward = document.getElementById('ward').value;
                     const street = document.getElementById('street').value.trim();
                     let hasError = false;
-                    
+
                     // Clear previous errors
                     document.querySelectorAll('#addAddressForm .field-error').forEach(el => {
                         el.style.display = 'none';
                     });
-                    
+
                     if (!fullName) {
                         showFieldError('addressFullName', 'Họ tên người nhận không được để trống.');
                         hasError = true;
@@ -813,7 +845,7 @@
                         showFieldError('addressFullName', 'Họ tên người nhận phải có ít nhất 2 ký tự.');
                         hasError = true;
                     }
-                    
+
                     if (!phone) {
                         showFieldError('addressPhone', 'Số điện thoại không được để trống.');
                         hasError = true;
@@ -824,22 +856,22 @@
                             hasError = true;
                         }
                     }
-                    
+
                     if (!province) {
                         alert('Vui lòng chọn Tỉnh/Thành phố.');
                         hasError = true;
                     }
-                    
+
                     if (!district) {
                         alert('Vui lòng chọn Quận/Huyện.');
                         hasError = true;
                     }
-                    
+
                     if (!ward) {
                         alert('Vui lòng chọn Phường/Xã.');
                         hasError = true;
                     }
-                    
+
                     if (!street) {
                         showFieldError('street', 'Địa chỉ cụ thể không được để trống.');
                         hasError = true;
@@ -847,7 +879,7 @@
                         showFieldError('street', 'Địa chỉ cụ thể phải có ít nhất 5 ký tự.');
                         hasError = true;
                     }
-                    
+
                     if (hasError) {
                         e.preventDefault();
                         return false;
@@ -855,29 +887,29 @@
                 });
             }
         })();
-        
+
         // Set default address
         function setDefaultAddress(addressId) {
             if (!confirm('Bạn có chắc muốn đặt địa chỉ này làm mặc định?')) {
                 return;
             }
-            
+
             // Create form and submit
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = '/tai-khoan/dia-chi/mac-dinh';
-            
+
             // Add address ID
             const addressInput = document.createElement('input');
             addressInput.type = 'hidden';
             addressInput.name = 'addressId';
             addressInput.value = addressId;
             form.appendChild(addressInput);
-            
+
             document.body.appendChild(form);
             form.submit();
         }
     </script>
 </body>
-</html>
 
+</html>

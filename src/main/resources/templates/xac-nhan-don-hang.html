@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Xác nhận đơn hàng - VinFast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/trang-chu.css}" href="/css/trang-chu.css">
+    <style>
+        .confirmation-page {
+            padding: 40px 0;
+            background: linear-gradient(180deg, #f7f9ff 0%, #ffffff 60%, #f1f4fb 100%);
+            min-height: calc(100vh - 200px);
+        }
+        
+        .confirmation-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .confirmation-card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: #00a86b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+        
+        .confirmation-card h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        
+        .confirmation-card p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+        
+        .order-code {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0048ff;
+            padding: 16px 32px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 32px;
+        }
+        
+        .order-details-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        .order-details-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #1a1a1a;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 12px;
+        }
+        
+        .detail-section {
+            margin-bottom: 32px;
+        }
+        
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            color: #1a1a1a;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: right;
+        }
+        
+        .order-items {
+            margin-top: 16px;
+        }
+        
+        .order-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .order-item-info {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .order-item-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+        
+        .order-item-info p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .order-item-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0048ff;
+            min-width: 120px;
+            text-align: right;
+        }
+        
+        .summary-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 2px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0048ff;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #0048ff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0038cc;
+        }
+        
+        .btn-outline {
+            background: white;
+            color: #0048ff;
+            border: 2px solid #0048ff;
+        }
+        
+        .btn-outline:hover {
+            background: #f0f7ff;
+        }
+        
+        .payment-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            text-align: left;
+        }
+        
+        .payment-note h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #856404;
+        }
+        
+        .payment-note p {
+            font-size: 14px;
+            color: #856404;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .confirmation-card {
+                padding: 32px 24px;
+            }
+            
+            .order-details-card {
+                padding: 24px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/dieu-huong :: thanhDieuHuong}"></div>
+
+<main class="confirmation-page">
+    <div class="confirmation-container">
+        <!-- Thông báo thành công -->
+        <div class="confirmation-card" th:if="${order != null}">
+            <div class="success-icon">✓</div>
+            <h1>Đặt hàng thành công!</h1>
+            <p>Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đã được xác nhận.</p>
+            <div class="order-code" th:text="${order.orderCode}">VF1234567890</div>
+            <p style="font-size: 14px; color: #888;">
+                Chúng tôi đã gửi email xác nhận đến địa chỉ email của bạn.
+            </p>
+        </div>
+        
+        <!-- Chi tiết đơn hàng -->
+        <div class="order-details-card" th:if="${order != null}">
+            <h2>Thông tin đơn hàng</h2>
+            
+            <!-- Thông tin giao hàng -->
+            <div class="detail-section">
+                <h3>Thông tin giao hàng</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Người nhận</span>
+                    <span class="detail-value" th:text="${order.address.fullName}">Nguyễn Văn A</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Số điện thoại</span>
+                    <span class="detail-value" th:text="${order.address.phone}">0901234567</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Địa chỉ giao hàng</span>
+                    <span class="detail-value" th:text="${order.address.fullAddress}">Địa chỉ</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phương thức vận chuyển</span>
+                    <span class="detail-value" 
+                          th:text="${order.deliveryMethod == T(com.example.asmproject.model.Order.DeliveryMethod).FAST} ? 'Giao nhanh hỏa tốc (24h)' : 'Tiêu chuẩn (3-5 ngày)'">
+                        Tiêu chuẩn
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Sản phẩm -->
+            <div class="detail-section">
+                <h3>Sản phẩm đã đặt</h3>
+                <div class="order-items">
+                    <div class="order-item" th:each="item : ${order.orderItems}">
+                        <img th:src="${item.productImage != null and !item.productImage.isEmpty()} ? 
+                                   (${item.productImage.startsWith('/')} ? @{${item.productImage}} : @{/image/{img}(img=${item.productImage})}) 
+                                   : @{/image/evo200.jpg}" 
+                             src="/image/evo200.jpg" 
+                             th:alt="${item.productName}"
+                             class="order-item-image">
+                        <div class="order-item-info">
+                            <h4 th:text="${item.productName}">Tên sản phẩm</h4>
+                            <p th:if="${item.colorName != null}" th:text="'Màu: ' + ${item.colorName}">Màu</p>
+                            <p th:text="'Số lượng: ' + ${item.quantity}">Số lượng: 1</p>
+                        </div>
+                        <div class="order-item-price" 
+                             th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
+                            0 ₫
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tổng tiền -->
+            <div class="summary-section">
+                <div class="summary-row">
+                    <span>Tạm tính</span>
+                    <strong th:text="${#numbers.formatDecimal(order.subtotal, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</strong>
+                </div>
+                <div class="summary-row" th:if="${order.shippingFee != null and order.shippingFee > 0}">
+                    <span>Phí vận chuyển</span>
+                    <strong th:text="${#numbers.formatDecimal(order.shippingFee, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</strong>
+                </div>
+                <div class="summary-row" th:if="${order.discount != null and order.discount > 0}">
+                    <span>Giảm giá</span>
+                    <strong th:text="'- ' + ${#numbers.formatDecimal(order.discount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">- 0 ₫</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Tổng cộng</span>
+                    <strong th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</strong>
+                </div>
+            </div>
+            
+            <!-- Ghi chú thanh toán -->
+            <div class="payment-note" th:if="${order.paymentMethod == 'SHOWROOM'}">
+                <h4>💳 Thanh toán tại showroom</h4>
+                <p>Bạn sẽ thanh toán trực tiếp tại showroom khi nhận hàng. Vui lòng mang theo CMND/CCCD để đối chiếu.</p>
+            </div>
+            <div class="payment-note" th:if="${order.paymentMethod == 'BANK_TRANSFER'}">
+                <h4>🏦 Chuyển khoản ngân hàng</h4>
+                <p>Vui lòng chuyển khoản số tiền <strong th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></strong> vào tài khoản ngân hàng của chúng tôi. Thông tin chuyển khoản đã được gửi qua email.</p>
+            </div>
+            <div class="payment-note" th:if="${order.paymentMethod == 'CREDIT_CARD'}">
+                <h4>💳 Thẻ tín dụng / Ghi nợ</h4>
+                <p>Thanh toán sẽ được xử lý trong vòng 24 giờ. Bạn sẽ nhận được email xác nhận khi thanh toán thành công.</p>
+            </div>
+            
+            <!-- Thông tin đơn hàng khác -->
+            <div class="detail-section" style="margin-top: 24px;">
+                <div class="detail-row">
+                    <span class="detail-label">Trạng thái đơn hàng</span>
+                    <span class="detail-value" 
+                          th:switch="${order.orderStatus}">
+                        <span th:case="'PENDING'">Đang chờ xác nhận</span>
+                        <span th:case="'CONFIRMED'">Đã xác nhận</span>
+                        <span th:case="'PROCESSING'">Đang xử lý</span>
+                        <span th:case="'SHIPPING'">Đang giao hàng</span>
+                        <span th:case="'DELIVERED'">Đã giao hàng</span>
+                        <span th:case="'CANCELLED'">Đã hủy</span>
+                        <span th:case="'RETURNED'">Đã trả hàng</span>
+                        <span th:case="*" th:text="${order.orderStatus}">Trạng thái</span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Ngày đặt hàng</span>
+                    <span class="detail-value" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2024 10:00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Thông báo lỗi nếu không tìm thấy đơn hàng -->
+        <div class="confirmation-card" th:if="${order == null}">
+            <div style="font-size: 48px; margin-bottom: 24px;">⚠️</div>
+            <h1>Không tìm thấy đơn hàng</h1>
+            <p>Đơn hàng bạn đang tìm không tồn tại hoặc bạn không có quyền xem đơn hàng này.</p>
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary">Về trang chủ</a>
+                <a href="/tai-khoan" class="btn btn-outline">Tài khoản của tôi</a>
+            </div>
+        </div>
+        
+        <!-- Nút hành động -->
+        <div class="action-buttons" th:if="${order != null}">
+            <a href="/" class="btn btn-primary">Tiếp tục mua sắm</a>
+            <a th:href="@{'/tai-khoan?tab=orders'}" class="btn btn-outline">Xem đơn hàng của tôi</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
+
+<script th:src="@{/js/dieu-huong.js}" src="/js/dieu-huong.js"></script>
+</body>
+</html>
+

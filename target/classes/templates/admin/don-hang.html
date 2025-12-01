@@ -1,153 +1,169 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VinFast Admin | Đơn hàng</title>
+    <title>VinFast Admin | Quản lý đơn hàng</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
 </head>
+
 <body class="admin-body">
-<div class="admin-shell">
-    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+    <div class="admin-shell">
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
 
-    <div class="admin-main">
-        <header class="admin-topbar">
-            <div>
-                <p class="eyebrow">Đơn hàng</p>
-                <h1>Giám sát chuỗi xử lý khách hàng</h1>
-            </div>
-            <div class="admin-topbar__actions">
-                <button class="adm-btn adm-btn--ghost">Xuất CSV</button>
-                <button class="adm-btn adm-btn--primary">Tạo đơn thủ công</button>
-            </div>
-        </header>
-
-        <section class="admin-content">
-            <div class="pipeline">
-                <article>
-                    <small>Chờ xác nhận</small>
-                    <strong>58</strong>
-                    <span>45 online • 13 showroom</span>
-                </article>
-                <article>
-                    <small>Đang sản xuất / gắn pin</small>
-                    <strong>32</strong>
-                    <span>Ưu tiên Vero X</span>
-                </article>
-                <article>
-                    <small>Đang vận chuyển</small>
-                    <strong>21</strong>
-                    <span>ETD trung bình 2.5 ngày</span>
-                </article>
-                <article>
-                    <small>Hoàn tất</small>
-                    <strong>942</strong>
-                    <span>7 ngày gần nhất</span>
-                </article>
-            </div>
-
-            <div class="admin-grid">
-                <article class="admin-card">
-                    <header>
-                        <h2>Lịch giao xe hôm nay</h2>
-                    </header>
-                    <ul class="timeline">
-                        <li>
-                            <div>
-                                <strong>09:00</strong>
-                                <span>VF-21080 • Feliz 2025</span>
-                            </div>
-                            <p>Showroom Phạm Văn Đồng - Hà Nội</p>
-                        </li>
-                        <li>
-                            <div>
-                                <strong>11:30</strong>
-                                <span>VF-21078 • Vero X</span>
-                            </div>
-                            <p>Giao tại nhà - Quận 7, TP.HCM</p>
-                        </li>
-                        <li>
-                            <div>
-                                <strong>15:00</strong>
-                                <span>VF-21075 • Evo Grand Lite</span>
-                            </div>
-                            <p>Showroom Đà Nẵng</p>
-                        </li>
-                    </ul>
-                </article>
-
-                <article class="admin-card">
-                    <header>
-                        <h2>Thông báo vận hành</h2>
-                    </header>
-                    <ul class="status-list">
-                        <li>
-                            <strong>12</strong>
-                            <span>Đơn hàng thiếu chứng từ đăng ký</span>
-                        </li>
-                        <li>
-                            <strong>5</strong>
-                            <span>Khách xin gia hạn thanh toán</span>
-                        </li>
-                        <li>
-                            <strong>8</strong>
-                            <span>Đơn cần kiểm tra lại địa chỉ giao</span>
-                        </li>
-                    </ul>
-                </article>
-            </div>
-
-            <div class="admin-card">
-                <header>
-                    <h2>Bảng đơn hàng</h2>
-                </header>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Mã đơn</th>
-                            <th>Khách hàng</th>
-                            <th>Loại xe</th>
-                            <th>Gói pin</th>
-                            <th>Thanh toán</th>
-                            <th>Trạng thái</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>VF-21088</td>
-                            <td>Lê Hồng Phúc</td>
-                            <td>Feliz Lite</td>
-                            <td>Linh hoạt</td>
-                            <td>Trả góp (Techcom)</td>
-                            <td><span class="tag">Chờ xét duyệt</span></td>
-                        </tr>
-                        <tr>
-                            <td>VF-21073</td>
-                            <td>Hồ Bảo Châu</td>
-                            <td>Klara Neo</td>
-                            <td>Không giới hạn</td>
-                            <td>Chuyển khoản</td>
-                            <td><span class="tag tag--success">Đang giao</span></td>
-                        </tr>
-                        <tr>
-                            <td>VF-21060</td>
-                            <td>Ngô Đăng Khoa</td>
-                            <td>Vero X</td>
-                            <td>Không giới hạn</td>
-                            <td>COD tại showroom</td>
-                            <td><span class="tag tag--warning">Chờ thanh toán</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <p class="eyebrow">Kinh doanh</p>
+                    <h1>Đơn hàng</h1>
                 </div>
-            </div>
-        </section>
-    </div>
-</div>
-</body>
-</html>
+                <div class="admin-topbar__actions">
+                    <button class="adm-btn adm-btn--ghost">Xuất báo cáo</button>
+                </div>
+            </header>
 
+            <section class="admin-content">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <span>Trạng thái:</span>
+                        <a th:href="@{/admin/don-hang(keyword=${keyword})}" class="chip"
+                            th:classappend="${currentStatus == null} ? 'is-active'">Tất cả</a>
+
+                        <form th:action="@{/admin/don-hang}" method="get" class="search-form">
+                            <input type="hidden" name="status" th:if="${currentStatus != null}" <!DOCTYPE html>
+                            <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+                            <head>
+                                <meta charset="UTF-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1">
+                                <title>VinFast Admin | Quản lý đơn hàng</title>
+                                <link rel="preconnect" href="https://fonts.googleapis.com">
+                                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                                <link
+                                    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+                                    rel="stylesheet">
+                                <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+                            </head>
+
+                            <body class="admin-body">
+                                <div class="admin-shell">
+                                    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+
+                                    <div class="admin-main">
+                                        <header class="admin-topbar">
+                                            <div>
+                                                <p class="eyebrow">Kinh doanh</p>
+                                                <h1>Đơn hàng</h1>
+                                            </div>
+                                            <div class="admin-topbar__actions">
+                                                <button class="adm-btn adm-btn--ghost">Xuất báo cáo</button>
+                                            </div>
+                                        </header>
+
+                                        <section class="admin-content">
+                                            <div class="filter-bar">
+                                                <div class="filter-group">
+                                                    <span>Trạng thái:</span>
+                                                    <a th:href="@{/admin/don-hang(keyword=${keyword})}" class="chip"
+                                                        th:classappend="${currentStatus == null} ? 'is-active'">Tất
+                                                        cả</a>
+
+                                                    <form th:action="@{/admin/don-hang}" method="get"
+                                                        class="search-form">
+                                                        <input type="hidden" name="status"
+                                                            th:if="${currentStatus != null}"
+                                                            th:value="${currentStatus}">
+                                                        <input type="search" name="keyword" th:value="${keyword}"
+                                                            placeholder="Tìm theo mã đơn hàng, SĐT...">
+                                                    </form>
+                                                </div>
+
+                                                <div class="admin-card">
+                                                    <header>
+                                                        <h2>Danh sách đơn hàng</h2>
+                                                    </header>
+                                                    <div class="table-scroll">
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Mã Đơn</th>
+                                                                    <th>Khách hàng</th>
+                                                                    <th>Ngày đặt</th>
+                                                                    <th>Tổng tiền</th>
+                                                                    <th>Thanh toán</th>
+                                                                    <th>Trạng thái ĐH</th>
+                                                                    <th>Thao tác</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr th:each="order : ${orders.content}">
+                                                                    <td><strong
+                                                                            th:text="${order.orderCode}">#ORD-001</strong>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div th:text="${order.address.fullName}">Nguyễn
+                                                                            Văn A</div>
+                                                                        <small style="color: #6b748b;"
+                                                                            th:text="${order.address.phone}">0901234567</small>
+                                                                    </td>
+                                                                    <td
+                                                                        th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                                                        01/01/2024</td>
+                                                                    <td style="font-weight: 600; color: #0056ff;"
+                                                                        th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
+                                                                        10.000.000 ₫</td>
+                                                                    <td>
+                                                                        <span class="badge"
+                                                                            th:classappend="${order.paymentStatus == T(com.example.asmproject.model.Order.PaymentStatus).PAID ? 'badge--success' : 'badge--warning'}"
+                                                                            th:text="${order.paymentStatus}">PAID</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="badge"
+                                                                            th:classappend="${order.orderStatus == T(com.example.asmproject.model.Order.OrderStatus).DELIVERED ? 'badge--success' : 
+                                                                (order.orderStatus == T(com.example.asmproject.model.Order.OrderStatus).CANCELLED ? 'badge--danger' : 'badge--info')}"
+                                                                            th:text="${order.orderStatus}">PENDING</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a th:href="@{/admin/don-hang/{id}(id=${order.id})}"
+                                                                            class="adm-btn adm-btn--sm">Chi tiết</a>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr th:if="${orders.empty}">
+                                                                    <td colspan="7"
+                                                                        style="text-align: center; padding: 20px;">Không
+                                                                        tìm thấy đơn hàng nào</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <!-- Pagination -->
+                                                    <div class="pagination" th:if="${orders.totalPages > 1}"
+                                                        style="padding: 16px; display: flex; justify-content: center; gap: 8px;">
+                                                        <a th:if="${orders.hasPrevious()}"
+                                                            th:href="@{/admin/don-hang(page=${orders.number - 1}, keyword=${keyword}, status=${currentStatus})}"
+                                                            class="adm-btn adm-btn--ghost">&laquo; Trước</a>
+
+                                                        <span style="display: flex; align-items: center;">
+                                                            Trang <span th:text="${orders.number + 1}"
+                                                                style="margin: 0 4px; font-weight: bold;">1</span> /
+                                                            <span th:text="${orders.totalPages}"
+                                                                style="margin-left: 4px;">5</span>
+                                                        </span>
+
+                                                        <a th:if="${orders.hasNext()}"
+                                                            th:href="@{/admin/don-hang(page=${orders.number + 1}, keyword=${keyword}, status=${currentStatus})}"
+                                                            class="adm-btn adm-btn--ghost">Sau &raquo;</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </body>
+
+                            </html>

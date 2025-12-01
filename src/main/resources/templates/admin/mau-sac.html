@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VinFast Admin | Quản lý màu sắc</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <div>
+                <p class="eyebrow">Quản lý</p>
+                <h1>Màu sắc sản phẩm</h1>
+            </div>
+            <div class="admin-topbar__actions">
+                <button class="adm-btn adm-btn--primary">Thêm màu mới</button>
+            </div>
+        </header>
+
+        <section class="admin-content">
+            <div class="admin-card">
+                <header>
+                    <h2>Danh sách màu sắc</h2>
+                </header>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên màu</th>
+                            <th>Mã màu (Hex)</th>
+                            <th>Hiển thị</th>
+                            <th>Ảnh đại diện</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Trắng Ngọc Trai</td>
+                            <td>#FFFFFF</td>
+                            <td>
+                                <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #FFFFFF; border: 1px solid #ddd;"></div>
+                            </td>
+                            <td><img src="/image/25-1.jpg" alt="White" width="40" height="40" style="object-fit: cover; border-radius: 4px;"></td>
+                            <td>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Xóa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Đen Nhám</td>
+                            <td>#000000</td>
+                            <td>
+                                <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #000000; border: 1px solid #ddd;"></div>
+                            </td>
+                            <td><img src="/image/evo200.jpg" alt="Black" width="40" height="40" style="object-fit: cover; border-radius: 4px;"></td>
+                            <td>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Xóa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Xanh Oliu</td>
+                            <td>#4CAF50</td>
+                            <td>
+                                <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #4CAF50; border: 1px solid #ddd;"></div>
+                            </td>
+                            <td><img src="/image/27-1.jpg" alt="Green" width="40" height="40" style="object-fit: cover; border-radius: 4px;"></td>
+                            <td>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
+                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Xóa</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
+

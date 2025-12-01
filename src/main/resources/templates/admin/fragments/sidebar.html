@@ -15,9 +15,25 @@
             <span>Sản phẩm</span>
             <small>Xe & phụ kiện</small>
         </a>
+        <a th:href="@{/admin/danh-muc}" th:classappend="${activePage} == 'danh-muc' ? ' is-active'">
+            <span>Danh mục</span>
+            <small>Phân loại xe</small>
+        </a>
+        <a th:href="@{/admin/thuong-hieu}" th:classappend="${activePage} == 'thuong-hieu' ? ' is-active'">
+            <span>Thương hiệu</span>
+            <small>Hãng sản xuất</small>
+        </a>
+        <a th:href="@{/admin/mau-sac}" th:classappend="${activePage} == 'mau-sac' ? ' is-active'">
+            <span>Màu sắc</span>
+            <small>Quản lý màu</small>
+        </a>
         <a th:href="@{/admin/don-hang}" th:classappend="${activePage} == 'don-hang' ? ' is-active'">
             <span>Đơn hàng</span>
             <small>Trạng thái xử lý</small>
+        </a>
+        <a th:href="@{/admin/voucher}" th:classappend="${activePage} == 'voucher' ? ' is-active'">
+            <span>Mã giảm giá</span>
+            <small>Khuyến mãi</small>
         </a>
         <a th:href="@{/admin/nguoi-dung}" th:classappend="${activePage} == 'nguoi-dung' ? ' is-active'">
             <span>Người dùng</span>

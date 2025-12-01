@@ -131,6 +131,7 @@ body.admin-body {
     font-weight: 600;
     cursor: pointer;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
 }
 
 .adm-btn--ghost {

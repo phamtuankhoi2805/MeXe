@@ -390,6 +390,136 @@
     transform: translateY(0);
 }
 
+/* Stations Section - Danh sách trạm sạc pin */
+.stations-section {
+    margin-top: 80px;
+}
+
+.stations-grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.station-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid var(--pin-border);
+    box-shadow: 0 12px 30px rgba(8, 24, 60, 0.08);
+    display: grid;
+    gap: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.station-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(8, 24, 60, 0.12);
+}
+
+.station-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.station-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--pin-dark);
+    flex: 1;
+}
+
+.station-status {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.status-active {
+    background: rgba(0, 200, 83, 0.1);
+    color: #00c853;
+    border: 1px solid rgba(0, 200, 83, 0.3);
+}
+
+.status-inactive {
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.station-info {
+    display: grid;
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--pin-gray);
+    font-size: 0.9rem;
+}
+
+.info-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    stroke-width: 2;
+}
+
+.info-item span {
+    line-height: 1.5;
+}
+
+.station-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background: var(--pin-muted);
+    border-radius: 12px;
+    margin-top: 8px;
+}
+
+.stat-item {
+    display: grid;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--pin-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--pin-blue);
+}
+
+.station-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.vf-btn--small {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
 @media (max-width: 768px) {
     .page-hero {
         padding: 24px;
@@ -402,5 +532,13 @@
     .cta-section {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .stations-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .station-actions {
+        flex-direction: column;
     }
 }

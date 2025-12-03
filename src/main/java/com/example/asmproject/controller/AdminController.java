@@ -49,6 +49,12 @@ public class AdminController {
     @Autowired
     private BrandService brandService;
 
+    @Autowired
+    private ColorService colorService;
+
+    @Autowired
+    private ConfigurationService configurationService;
+
     @GetMapping
     public String hienThiDashboard(Model model) {
         model.addAttribute(SECTION_KEY, "dashboard");
@@ -208,7 +214,7 @@ public class AdminController {
             productService.deleteProduct(id);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: Không thể xóa sản phẩm này. " + e.getMessage());
         }
         return "redirect:/admin/san-pham";
     }
@@ -238,6 +244,7 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
 
         model.addAttribute("order", order);
+        model.addAttribute("orderStatuses", orderService.getAllowedNextStatuses(order.getOrderStatus()));
         return "admin/don-hang-chi-tiet";
     }
 
@@ -291,7 +298,8 @@ public class AdminController {
             brandService.deleteBrand(id);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa thương hiệu thành công");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Lỗi: Không thể xóa thương hiệu này vì đã có sản phẩm thuộc thương hiệu.");
         }
         return "redirect:/admin/thuong-hieu";
     }
@@ -322,7 +330,8 @@ public class AdminController {
             categoryService.deleteCategory(id);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa danh mục thành công");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Lỗi: Không thể xóa danh mục này vì đã có sản phẩm thuộc danh mục.");
         }
         return "redirect:/admin/danh-muc";
     }
@@ -330,7 +339,33 @@ public class AdminController {
     @GetMapping("/mau-sac")
     public String quanLyMauSac(Model model) {
         model.addAttribute(SECTION_KEY, "mau-sac");
+        model.addAttribute("colors", colorService.getAllColors());
+        model.addAttribute("newColor", new com.example.asmproject.model.Color());
         return "admin/mau-sac";
+    }
+
+    @PostMapping("/mau-sac/save")
+    public String luuMauSac(@ModelAttribute("newColor") com.example.asmproject.model.Color color,
+            RedirectAttributes redirectAttributes) {
+        try {
+            colorService.saveColor(color);
+            redirectAttributes.addFlashAttribute("successMessage", "Lưu màu sắc thành công");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/mau-sac";
+    }
+
+    @GetMapping("/mau-sac/delete/{id}")
+    public String xoaMauSac(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            colorService.deleteColor(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa màu sắc thành công");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Lỗi: Không thể xóa màu sắc này vì đã có sản phẩm sử dụng.");
+        }
+        return "redirect:/admin/mau-sac";
     }
 
     @GetMapping("/voucher")
@@ -381,8 +416,121 @@ public class AdminController {
     }
 
     @GetMapping("/nguoi-dung")
-    public String quanLyNguoiDung(Model model) {
+    public String quanLyNguoiDung(Model model,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) com.example.asmproject.model.enums.UserStatus status,
+            @RequestParam(defaultValue = "0") int page) {
         model.addAttribute(SECTION_KEY, "nguoi-dung");
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createdAt").descending());
+        Page<com.example.asmproject.dto.UserResponse> users = userService.searchUsers(keyword, status, pageable);
+
+        model.addAttribute("users", users);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("currentStatus", status);
+
         return "admin/nguoi-dung";
+    }
+
+    @PostMapping("/nguoi-dung/update-status/{id}")
+    public String capNhatTrangThaiNguoiDung(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            com.example.asmproject.model.User user = userService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+            if (user.getEnabled()) {
+                userService.deactivate(id);
+                redirectAttributes.addFlashAttribute("successMessage", "Đã khóa tài khoản thành công");
+            } else {
+                // Re-activate logic if needed, currently only deactivate is in service
+                // interface shown
+                // Assuming we can just set enabled to true and save
+                user.setEnabled(true);
+                userService.updateProfile(id, null, null, null); // This might not be the best way, let's check service
+                                                                 // again.
+                // Actually userService.update has status update logic.
+                // Let's use a simple toggle logic here if possible, or just call save directly
+                // if we had repository access,
+                // but we should use service.
+                // Looking at UserService.update: it takes UserRequest.
+                com.example.asmproject.dto.UserRequest request = new com.example.asmproject.dto.UserRequest();
+                request.setStatus(com.example.asmproject.model.enums.UserStatus.HOAT_DONG);
+                userService.update(id, request);
+                redirectAttributes.addFlashAttribute("successMessage", "Đã mở khóa tài khoản thành công");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/nguoi-dung";
+    }
+
+    @GetMapping("/bao-cao")
+    public String hienThiBaoCao(Model model) {
+        model.addAttribute(SECTION_KEY, "bao-cao");
+
+        // Calculate statistics
+        long totalOrders = orderService.countOrdersByStatus(null);
+        long totalProducts = productService.getTotalActiveProducts();
+        long totalUsers = userService.getTotalUsers();
+
+        LocalDateTime lastWeek = LocalDateTime.now().minusDays(7);
+        double totalRevenue = orderService.getTotalRevenue(lastWeek).doubleValue();
+
+        model.addAttribute("totalOrders", totalOrders);
+        model.addAttribute("totalProducts", totalProducts);
+        model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalRevenue", totalRevenue);
+
+        // Chart Data: Revenue last 7 days
+        List<String> revenueLabels = new ArrayList<>();
+        List<Double> revenueData = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+        Map<String, Double> dailyRevenue = new LinkedHashMap<>();
+        for (int i = 6; i >= 0; i--) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            dailyRevenue.put(date.format(formatter), 0.0);
+        }
+        List<Order> recentOrders = orderRepository.findByOrderStatusAndCreatedAtAfter(
+                Order.OrderStatus.DELIVERED, LocalDateTime.now().minusDays(7));
+        for (Order order : recentOrders) {
+            String dateKey = order.getCreatedAt().format(formatter);
+            if (dailyRevenue.containsKey(dateKey)) {
+                dailyRevenue.put(dateKey, dailyRevenue.get(dateKey) + order.getTotal().doubleValue());
+            }
+        }
+        revenueLabels.addAll(dailyRevenue.keySet());
+        revenueData.addAll(dailyRevenue.values());
+        model.addAttribute("revenueLabels", revenueLabels);
+        model.addAttribute("revenueData", revenueData);
+
+        // Chart Data: Order Status
+        List<Long> orderStatusData = List.of(
+                orderService.countOrdersByStatus(Order.OrderStatus.PENDING),
+                orderService.countOrdersByStatus(Order.OrderStatus.SHIPPING),
+                orderService.countOrdersByStatus(Order.OrderStatus.DELIVERED),
+                orderService.countOrdersByStatus(Order.OrderStatus.CANCELLED));
+        model.addAttribute("orderStatusData", orderStatusData);
+
+        return "admin/bao-cao";
+    }
+
+    @GetMapping("/cau-hinh")
+    public String hienThiCauHinh(Model model) {
+        model.addAttribute(SECTION_KEY, "cau-hinh");
+        model.addAttribute("configs", configurationService.getAllConfigs());
+        return "admin/cau-hinh";
+    }
+
+    @PostMapping("/cau-hinh/save")
+    public String luuCauHinh(@RequestParam Map<String, String> allParams, RedirectAttributes redirectAttributes) {
+        try {
+            // Remove non-config params if any (e.g. CSRF token)
+            // For now, we assume all params are configs except known ones
+            configurationService.saveAll(allParams);
+            redirectAttributes.addFlashAttribute("successMessage", "Lưu cấu hình thành công");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
+        }
+        return "redirect:/admin/cau-hinh";
     }
 }

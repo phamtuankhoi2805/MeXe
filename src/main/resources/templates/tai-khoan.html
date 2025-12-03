@@ -427,6 +427,11 @@
                                     onclick="setDefaultAddress(this.dataset.addressId)">
                                     Đặt làm mặc định
                                 </button>
+                                <button type="button" class="btn-set-default"
+                                    style="color: #dc3545; border-color: #dc3545;" th:data-address-id="${address.id}"
+                                    onclick="deleteAddress(this.dataset.addressId)">
+                                    Xóa
+                                </button>
                             </div>
                         </div>
                         <div class="address-details">
@@ -465,17 +470,19 @@
                     <div class="grid-2">
                         <div class="form-group">
                             <label for="province">Tỉnh/Thành phố *</label>
-                            <select id="province" name="province" required>
+                            <select id="province" name="provinceCode" required>
                                 <option value="">-- Chọn Tỉnh/Thành phố --</option>
                             </select>
+                            <input type="hidden" id="provinceName" name="province">
                             <input type="hidden" id="provinceCodeTMS" name="provinceCodeTMS">
                         </div>
 
                         <div class="form-group">
                             <label for="district">Quận/Huyện *</label>
-                            <select id="district" name="district" required disabled>
+                            <select id="district" name="districtCode" required disabled>
                                 <option value="">-- Chọn Quận/Huyện --</option>
                             </select>
+                            <input type="hidden" id="districtName" name="district">
                             <input type="hidden" id="districtCode" name="districtCode">
                         </div>
                     </div>
@@ -483,9 +490,10 @@
                     <div class="grid-2">
                         <div class="form-group">
                             <label for="ward">Phường/Xã *</label>
-                            <select id="ward" name="ward" required disabled>
+                            <select id="ward" name="wardCode" required disabled>
                                 <option value="">-- Chọn Phường/Xã --</option>
                             </select>
+                            <input type="hidden" id="wardName" name="ward">
                             <input type="hidden" id="wardCode" name="wardCode">
                         </div>
 
@@ -509,407 +517,402 @@
                 </form>
             </div>
         </div>
-    </main>
+        <div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
 
-    <div th:replace="~{fragments/chan-trang :: chanTrang}"></div>
-
-    <script th:src="@{/js/dieu-huong.js}"></script>
-    <script>
-        // Location API integration
-        (function () {
-            const provinceSelect = document.getElementById('province');
-            const districtSelect = document.getElementById('district');
-            const wardSelect = document.getElementById('ward');
-            const provinceCodeInput = document.getElementById('provinceCodeTMS');
-            const districtCodeInput = document.getElementById('districtCode');
-            const wardCodeInput = document.getElementById('wardCode');
-
-            let provinces = [];
-            let districts = [];
-            let wards = [];
-
-            // Load provinces on page load
-            async function loadProvinces() {
-                try {
-                    const response = await fetch('/api/locations/provinces');
-                    if (!response.ok) throw new Error('Failed to load provinces');
-
-                    provinces = await response.json();
-
-                    // Clear and populate province select
-                    provinceSelect.innerHTML = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
-                    provinces.forEach(province => {
-                        const option = document.createElement('option');
-                        option.value = province.codeTMS;
-                        option.textContent = province.name;
-                        option.dataset.codeBnv = province.codeBNV;
-                        provinceSelect.appendChild(option);
-                    });
-                } catch (error) {
-                    console.error('Error loading provinces:', error);
-                    provinceSelect.innerHTML = '<option value="">Lỗi khi tải danh sách tỉnh/thành phố</option>';
-                }
-            }
-
-            // Load districts when province is selected
-            async function loadDistricts(provinceCodeTMS) {
-                districtSelect.disabled = true;
-                districtSelect.innerHTML = '<option value="">Đang tải...</option>';
-                wardSelect.disabled = true;
-                wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-
-                try {
-                    const response = await fetch(`/api/locations/provinces/${provinceCodeTMS}/districts`);
-                    if (!response.ok) throw new Error('Failed to load districts');
-
-                    districts = await response.json();
-
-                    // Clear and populate district select
-                    districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
-                    districts.forEach(district => {
-                        const option = document.createElement('option');
-                        option.value = district.code;
-                        option.textContent = district.name;
-                        districtSelect.appendChild(option);
-                    });
-
-                    districtSelect.disabled = false;
-                } catch (error) {
-                    console.error('Error loading districts:', error);
-                    districtSelect.innerHTML = '<option value="">Lỗi khi tải danh sách quận/huyện</option>';
-                }
-            }
-
-            // Load wards when district is selected
-            async function loadWards(districtCode) {
-                wardSelect.disabled = true;
-                wardSelect.innerHTML = '<option value="">Đang tải...</option>';
-
-                try {
-                    const response = await fetch(`/api/locations/districts/${districtCode}/wards`);
-                    if (!response.ok) throw new Error('Failed to load wards');
-
-                    wards = await response.json();
-
-                    // Clear and populate ward select
-                    wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-                    wards.forEach(ward => {
-                        const option = document.createElement('option');
-                        option.value = ward.name;
-                        option.textContent = ward.name;
-                        option.dataset.code = ward.code;
-                        wardSelect.appendChild(option);
-                    });
-
-                    wardSelect.disabled = false;
-                } catch (error) {
-                    console.error('Error loading wards:', error);
-                    wardSelect.innerHTML = '<option value="">Lỗi khi tải danh sách phường/xã</option>';
-                }
-            }
-
-            // Province change handler
-            provinceSelect.addEventListener('change', function () {
-                const selectedCode = this.value;
-                provinceCodeInput.value = selectedCode;
-
-                // Reset district and ward
-                districtSelect.value = '';
-                districtCodeInput.value = '';
-                wardSelect.value = '';
-                wardCodeInput.value = '';
-
-                if (selectedCode) {
-                    loadDistricts(selectedCode);
-                } else {
-                    districtSelect.disabled = true;
-                    districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
-                    wardSelect.disabled = true;
-                    wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-                }
-            });
-
-            // District change handler
-            districtSelect.addEventListener('change', function () {
-                const selectedCode = this.value;
-                districtCodeInput.value = selectedCode;
-
-                // Reset ward
-                wardSelect.value = '';
-                wardCodeInput.value = '';
-
-                if (selectedCode) {
-                    loadWards(selectedCode);
-                } else {
-                    wardSelect.disabled = true;
-                    wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
-                }
-            });
-
-            // Ward change handler
-            wardSelect.addEventListener('change', function () {
-                const selectedOption = this.options[this.selectedIndex];
-                if (selectedOption && selectedOption.dataset.code) {
-                    wardCodeInput.value = selectedOption.dataset.code;
-                } else {
-                    wardCodeInput.value = '';
-                }
-            });
-
-            // Update form submission to use selected values
-            const addressForm = document.querySelector('form[action*="/tai-khoan/dia-chi/them"]');
-            if (addressForm) {
-                addressForm.addEventListener('submit', function (e) {
-                    // Validate selections
-                    if (!provinceSelect.value) {
-                        e.preventDefault();
-                        alert('Vui lòng chọn Tỉnh/Thành phố');
-                        return false;
-                    }
-
-                    if (!districtSelect.value) {
-                        e.preventDefault();
-                        alert('Vui lòng chọn Quận/Huyện');
-                        return false;
-                    }
-
-                    if (!wardSelect.value) {
-                        e.preventDefault();
-                        alert('Vui lòng chọn Phường/Xã');
-                        return false;
-                    }
-
-                    // Set province name from selected option
-                    const provinceOption = provinceSelect.options[provinceSelect.selectedIndex];
-                    if (provinceOption && provinceOption.textContent) {
-                        // Update the hidden input or create one
-                        let provinceNameInput = document.getElementById('provinceName');
-                        if (!provinceNameInput) {
-                            provinceNameInput = document.createElement('input');
-                            provinceNameInput.type = 'hidden';
-                            provinceNameInput.id = 'provinceName';
-                            provinceNameInput.name = 'province';
-                            addressForm.appendChild(provinceNameInput);
-                        }
-                        provinceNameInput.value = provinceOption.textContent;
-                    }
-
-                    // Set district name from selected option
-                    const districtOption = districtSelect.options[districtSelect.selectedIndex];
-                    if (districtOption && districtOption.textContent) {
-                        let districtNameInput = document.getElementById('districtName');
-                        if (!districtNameInput) {
-                            districtNameInput = document.createElement('input');
-                            districtNameInput.type = 'hidden';
-                            districtNameInput.id = 'districtName';
-                            districtNameInput.name = 'district';
-                            addressForm.appendChild(districtNameInput);
-                        }
-                        districtNameInput.value = districtOption.textContent;
-                    }
-
-                    // Ward name is already set in the select value (wardSelect.value)
-                    // The name attribute of wardSelect is "ward", so it will be submitted automatically
-                });
-            }
-
-            // Initialize
-            loadProvinces();
-        })();
-
-        // Form validation functions
-        (function () {
-            // Helper function to show field error
+        <script th:src="@{/js/dieu-huong.js}"></script>
+        <script>
+            // Helper function to show field errors
             function showFieldError(fieldId, message) {
                 const field = document.getElementById(fieldId);
                 if (field) {
-                    const existingError = field.parentElement.querySelector('.field-error');
-                    if (existingError) {
-                        existingError.textContent = message;
-                        existingError.style.display = 'block';
+                    const errorSpan = field.parentElement.querySelector('.field-error');
+                    if (errorSpan) {
+                        errorSpan.textContent = message;
+                        errorSpan.style.display = 'block';
                     }
-                    field.style.borderColor = '#c33';
+                    field.style.borderColor = '#dc3545';
+
+                    // Clear error on input
                     field.addEventListener('input', function () {
                         field.style.borderColor = '';
-                        const error = field.parentElement.querySelector('.field-error');
-                        if (error) error.style.display = 'none';
+                        if (errorSpan) errorSpan.style.display = 'none';
                     }, { once: true });
                 }
             }
 
-            // Validate update info form
-            const updateInfoForm = document.getElementById('updateInfoForm');
-            if (updateInfoForm) {
-                updateInfoForm.addEventListener('submit', function (e) {
-                    const fullName = document.getElementById('fullName').value.trim();
-                    const phone = document.getElementById('phone').value.trim();
-                    let hasError = false;
+            // Location API integration
+            (function () {
+                const provinceSelect = document.getElementById('province');
+                const districtSelect = document.getElementById('district');
+                const wardSelect = document.getElementById('ward');
+                const provinceCodeInput = document.getElementById('provinceCodeTMS');
+                const districtCodeInput = document.getElementById('districtCode');
+                const wardCodeInput = document.getElementById('wardCode');
 
-                    // Clear previous errors
-                    document.querySelectorAll('#updateInfoForm .field-error').forEach(el => {
-                        el.style.display = 'none';
-                    });
+                // Load provinces on page load
+                async function loadProvinces() {
+                    try {
+                        const response = await fetch('/api/locations/provinces');
+                        if (!response.ok) throw new Error('Failed to load provinces');
 
-                    if (!fullName) {
-                        showFieldError('fullName', 'Họ và tên không được để trống.');
-                        hasError = true;
-                    } else if (fullName.length < 2) {
-                        showFieldError('fullName', 'Họ và tên phải có ít nhất 2 ký tự.');
-                        hasError = true;
+                        const provinces = await response.json();
+
+                        // Clear and populate province select
+                        provinceSelect.innerHTML = '<option value="">-- Chọn Tỉnh/Thành phố --</option>';
+                        provinces.forEach(province => {
+                            const option = document.createElement('option');
+                            option.value = province.codeTMS;
+                            option.textContent = province.name;
+                            option.dataset.codeBnv = province.codeBNV;
+                            provinceSelect.appendChild(option);
+                        });
+                    } catch (error) {
+                        console.error('Error loading provinces:', error);
+                        provinceSelect.innerHTML = '<option value="">Lỗi khi tải danh sách tỉnh/thành phố</option>';
                     }
+                }
 
-                    if (!phone) {
-                        showFieldError('phone', 'Số điện thoại không được để trống.');
-                        hasError = true;
-                    } else {
-                        const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
-                        if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-                            showFieldError('phone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                // Load districts when province is selected
+                async function loadDistricts(provinceCodeTMS) {
+                    districtSelect.disabled = true;
+                    districtSelect.innerHTML = '<option value="">Đang tải...</option>';
+                    wardSelect.disabled = true;
+                    wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+
+                    try {
+                        const response = await fetch(`/api/locations/provinces/${provinceCodeTMS}/districts`);
+                        if (!response.ok) throw new Error('Failed to load districts');
+
+                        const districts = await response.json();
+
+                        // Clear and populate district select
+                        districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+                        districts.forEach(district => {
+                            const option = document.createElement('option');
+                            option.value = district.code;
+                            option.textContent = district.name;
+                            districtSelect.appendChild(option);
+                        });
+
+                        districtSelect.disabled = false;
+                    } catch (error) {
+                        console.error('Error loading districts:', error);
+                        districtSelect.innerHTML = '<option value="">Lỗi khi tải danh sách quận/huyện</option>';
+                    }
+                }
+
+                // Load wards when district is selected
+                async function loadWards(districtCode) {
+                    wardSelect.disabled = true;
+                    wardSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+                    try {
+                        const response = await fetch(`/api/locations/districts/${districtCode}/wards`);
+                        if (!response.ok) throw new Error('Failed to load wards');
+
+                        const wards = await response.json();
+
+                        // Clear and populate ward select
+                        wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                        wards.forEach(ward => {
+                            const option = document.createElement('option');
+                            option.value = ward.name;
+                            option.textContent = ward.name;
+                            option.dataset.code = ward.code;
+                            wardSelect.appendChild(option);
+                        });
+
+                        wardSelect.disabled = false;
+                    } catch (error) {
+                        console.error('Error loading wards:', error);
+                        wardSelect.innerHTML = '<option value="">Lỗi khi tải danh sách phường/xã</option>';
+                    }
+                }
+
+                // Province change handler
+                if (provinceSelect) {
+                    provinceSelect.addEventListener('change', function () {
+                        const selectedCode = this.value;
+                        if (provinceCodeInput) provinceCodeInput.value = selectedCode;
+
+                        // Reset district and ward
+                        districtSelect.value = '';
+                        if (districtCodeInput) districtCodeInput.value = '';
+                        wardSelect.value = '';
+                        if (wardCodeInput) wardCodeInput.value = '';
+
+                        if (selectedCode) {
+                            loadDistricts(selectedCode);
+                        } else {
+                            districtSelect.disabled = true;
+                            districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+                            wardSelect.disabled = true;
+                            wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                        }
+                    });
+                    // Initial load
+                    loadProvinces();
+                }
+
+                // District change handler
+                if (districtSelect) {
+                    districtSelect.addEventListener('change', function () {
+                        const selectedCode = this.value;
+                        if (districtCodeInput) districtCodeInput.value = selectedCode;
+
+                        // Reset ward
+                        wardSelect.value = '';
+                        if (wardCodeInput) wardCodeInput.value = '';
+
+                        if (selectedCode) {
+                            loadWards(selectedCode);
+                        } else {
+                            wardSelect.disabled = true;
+                            wardSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                        }
+                    });
+                }
+
+                // Ward change handler
+                if (wardSelect) {
+                    wardSelect.addEventListener('change', function () {
+                        const selectedOption = this.options[this.selectedIndex];
+                        if (selectedOption && selectedOption.dataset.code) {
+                            if (wardCodeInput) wardCodeInput.value = selectedOption.dataset.code;
+                        } else {
+                            if (wardCodeInput) wardCodeInput.value = '';
+                        }
+                    });
+                }
+
+                // Validate update info form
+                const updateInfoForm = document.getElementById('updateInfoForm');
+                if (updateInfoForm) {
+                    updateInfoForm.addEventListener('submit', function (e) {
+                        const fullName = document.getElementById('fullName').value.trim();
+                        const phone = document.getElementById('phone').value.trim();
+                        let hasError = false;
+
+                        // Clear previous errors
+                        document.querySelectorAll('#updateInfoForm .field-error').forEach(el => {
+                            el.style.display = 'none';
+                        });
+
+                        if (!fullName) {
+                            showFieldError('fullName', 'Họ và tên không được để trống.');
+                            hasError = true;
+                        } else if (fullName.length < 2) {
+                            showFieldError('fullName', 'Họ và tên phải có ít nhất 2 ký tự.');
                             hasError = true;
                         }
-                    }
 
-                    if (hasError) {
-                        e.preventDefault();
-                        return false;
-                    }
-                });
-            }
+                        if (!phone) {
+                            showFieldError('phone', 'Số điện thoại không được để trống.');
+                            hasError = true;
+                        } else {
+                            const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
+                            if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                                showFieldError('phone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                                hasError = true;
+                            }
+                        }
 
-            // Validate change password form
-            const changePasswordForm = document.getElementById('changePasswordForm');
-            if (changePasswordForm) {
-                changePasswordForm.addEventListener('submit', function (e) {
-                    const currentPassword = document.getElementById('currentPassword').value;
-                    const newPassword = document.getElementById('newPassword').value;
-                    const confirmPassword = document.getElementById('confirmPassword').value;
-                    let hasError = false;
-
-                    // Clear previous errors
-                    document.querySelectorAll('#changePasswordForm .field-error').forEach(el => {
-                        el.style.display = 'none';
+                        if (hasError) {
+                            e.preventDefault();
+                            return false;
+                        }
                     });
+                }
 
-                    if (!currentPassword) {
-                        showFieldError('currentPassword', 'Vui lòng nhập mật khẩu hiện tại.');
-                        hasError = true;
-                    }
+                // Validate change password form
+                const changePasswordForm = document.getElementById('changePasswordForm');
+                if (changePasswordForm) {
+                    changePasswordForm.addEventListener('submit', function (e) {
+                        const currentPassword = document.getElementById('currentPassword').value;
+                        const newPassword = document.getElementById('newPassword').value;
+                        const confirmPassword = document.getElementById('confirmPassword').value;
+                        let hasError = false;
 
-                    if (!newPassword) {
-                        showFieldError('newPassword', 'Vui lòng nhập mật khẩu mới.');
-                        hasError = true;
-                    } else if (newPassword.length < 6) {
-                        showFieldError('newPassword', 'Mật khẩu mới phải có ít nhất 6 ký tự.');
-                        hasError = true;
-                    } else if (newPassword.length > 50) {
-                        showFieldError('newPassword', 'Mật khẩu mới không được vượt quá 50 ký tự.');
-                        hasError = true;
-                    }
+                        // Clear previous errors
+                        document.querySelectorAll('#changePasswordForm .field-error').forEach(el => {
+                            el.style.display = 'none';
+                        });
 
-                    if (!confirmPassword) {
-                        showFieldError('confirmPassword', 'Vui lòng xác nhận mật khẩu mới.');
-                        hasError = true;
-                    } else if (newPassword && newPassword !== confirmPassword) {
-                        showFieldError('confirmPassword', 'Mật khẩu xác nhận không khớp.');
-                        hasError = true;
-                    }
-
-                    if (hasError) {
-                        e.preventDefault();
-                        return false;
-                    }
-                });
-            }
-
-            // Validate add address form
-            const addAddressForm = document.getElementById('addAddressForm');
-            if (addAddressForm) {
-                addAddressForm.addEventListener('submit', function (e) {
-                    const fullName = document.getElementById('addressFullName').value.trim();
-                    const phone = document.getElementById('addressPhone').value.trim();
-                    const province = document.getElementById('province').value;
-                    const district = document.getElementById('district').value;
-                    const ward = document.getElementById('ward').value;
-                    const street = document.getElementById('street').value.trim();
-                    let hasError = false;
-
-                    // Clear previous errors
-                    document.querySelectorAll('#addAddressForm .field-error').forEach(el => {
-                        el.style.display = 'none';
-                    });
-
-                    if (!fullName) {
-                        showFieldError('addressFullName', 'Họ tên người nhận không được để trống.');
-                        hasError = true;
-                    } else if (fullName.length < 2) {
-                        showFieldError('addressFullName', 'Họ tên người nhận phải có ít nhất 2 ký tự.');
-                        hasError = true;
-                    }
-
-                    if (!phone) {
-                        showFieldError('addressPhone', 'Số điện thoại không được để trống.');
-                        hasError = true;
-                    } else {
-                        const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
-                        if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-                            showFieldError('addressPhone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                        if (!currentPassword) {
+                            showFieldError('currentPassword', 'Vui lòng nhập mật khẩu hiện tại.');
                             hasError = true;
                         }
-                    }
 
-                    if (!province) {
-                        alert('Vui lòng chọn Tỉnh/Thành phố.');
-                        hasError = true;
-                    }
+                        if (!newPassword) {
+                            showFieldError('newPassword', 'Vui lòng nhập mật khẩu mới.');
+                            hasError = true;
+                        } else if (newPassword.length < 6) {
+                            showFieldError('newPassword', 'Mật khẩu mới phải có ít nhất 6 ký tự.');
+                            hasError = true;
+                        } else if (newPassword.length > 50) {
+                            showFieldError('newPassword', 'Mật khẩu mới không được vượt quá 50 ký tự.');
+                            hasError = true;
+                        }
 
-                    if (!district) {
-                        alert('Vui lòng chọn Quận/Huyện.');
-                        hasError = true;
-                    }
+                        if (!confirmPassword) {
+                            showFieldError('confirmPassword', 'Vui lòng xác nhận mật khẩu mới.');
+                            hasError = true;
+                        } else if (newPassword && newPassword !== confirmPassword) {
+                            showFieldError('confirmPassword', 'Mật khẩu xác nhận không khớp.');
+                            hasError = true;
+                        }
 
-                    if (!ward) {
-                        alert('Vui lòng chọn Phường/Xã.');
-                        hasError = true;
-                    }
+                        if (hasError) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                }
 
-                    if (!street) {
-                        showFieldError('street', 'Địa chỉ cụ thể không được để trống.');
-                        hasError = true;
-                    } else if (street.length < 5) {
-                        showFieldError('street', 'Địa chỉ cụ thể phải có ít nhất 5 ký tự.');
-                        hasError = true;
-                    }
+                // Validate add address form
+                const addAddressForm = document.getElementById('addAddressForm');
+                if (addAddressForm) {
+                    addAddressForm.addEventListener('submit', function (e) {
+                        const fullName = document.getElementById('addressFullName').value.trim();
+                        const phone = document.getElementById('addressPhone').value.trim();
+                        const province = document.getElementById('province').value;
+                        const district = document.getElementById('district').value;
+                        const ward = document.getElementById('ward').value;
+                        const street = document.getElementById('street').value.trim();
+                        let hasError = false;
 
-                    if (hasError) {
-                        e.preventDefault();
-                        return false;
-                    }
-                });
+                        // Clear previous errors
+                        document.querySelectorAll('#addAddressForm .field-error').forEach(el => {
+                            el.style.display = 'none';
+                        });
+
+                        if (!fullName) {
+                            showFieldError('addressFullName', 'Họ tên người nhận không được để trống.');
+                            hasError = true;
+                        } else if (fullName.length < 2) {
+                            showFieldError('addressFullName', 'Họ tên người nhận phải có ít nhất 2 ký tự.');
+                            hasError = true;
+                        }
+
+                        if (!phone) {
+                            showFieldError('phone', 'Số điện thoại không được để trống.');
+                            hasError = true;
+                        } else {
+                            const phoneDigits = phone.replaceAll(/[^0-9]/g, '');
+                            if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                                showFieldError('addressPhone', 'Số điện thoại không hợp lệ. Vui lòng nhập từ 10-11 chữ số.');
+                                hasError = true;
+                            }
+                        }
+
+                        if (!province) {
+                            alert('Vui lòng chọn Tỉnh/Thành phố.');
+                            hasError = true;
+                        }
+
+                        if (!district) {
+                            alert('Vui lòng chọn Quận/Huyện.');
+                            hasError = true;
+                        }
+
+                        if (!ward) {
+                            alert('Vui lòng chọn Phường/Xã.');
+                            hasError = true;
+                        }
+
+                        if (!street) {
+                            showFieldError('street', 'Địa chỉ cụ thể không được để trống.');
+                            hasError = true;
+                        } else if (street.length < 5) {
+                            showFieldError('street', 'Địa chỉ cụ thể phải có ít nhất 5 ký tự.');
+                            hasError = true;
+                        }
+
+                        if (hasError) {
+                            e.preventDefault();
+                            return false;
+                        }
+
+                        // Set province name from selected option
+                        const provinceOption = provinceSelect.options[provinceSelect.selectedIndex];
+                        if (provinceOption && provinceOption.textContent) {
+                            let provinceNameInput = document.getElementById('provinceName');
+                            if (!provinceNameInput) {
+                                provinceNameInput = document.createElement('input');
+                                provinceNameInput.type = 'hidden';
+                                provinceNameInput.id = 'provinceName';
+                                provinceNameInput.name = 'province';
+                                addAddressForm.appendChild(provinceNameInput);
+                            }
+                            provinceNameInput.value = provinceOption.textContent;
+                        }
+
+                        // Set district name from selected option
+                        const districtOption = districtSelect.options[districtSelect.selectedIndex];
+                        if (districtOption && districtOption.textContent) {
+                            let districtNameInput = document.getElementById('districtName');
+                            if (!districtNameInput) {
+                                districtNameInput = document.createElement('input');
+                                districtNameInput.type = 'hidden';
+                                districtNameInput.id = 'districtName';
+                                districtNameInput.name = 'district';
+                                addAddressForm.appendChild(districtNameInput);
+                            }
+                            districtNameInput.value = districtOption.textContent;
+                        }
+
+                        // Set ward name from selected option
+                        const wardOption = wardSelect.options[wardSelect.selectedIndex];
+                        if (wardOption && wardOption.textContent) {
+                            let wardNameInput = document.getElementById('wardName');
+                            if (!wardNameInput) {
+                                wardNameInput = document.createElement('input');
+                                wardNameInput.type = 'hidden';
+                                wardNameInput.id = 'wardName';
+                                wardNameInput.name = 'ward';
+                                addAddressForm.appendChild(wardNameInput);
+                            }
+                            wardNameInput.value = wardOption.textContent;
+                        }
+                    });
+                }
+            })();
+
+            // Set default address function
+            function setDefaultAddress(addressId) {
+                if (!confirm('Bạn có chắc muốn đặt địa chỉ này làm mặc định?')) {
+                    return;
+                }
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/tai-khoan/dia-chi/mac-dinh';
+                const addressInput = document.createElement('input');
+                addressInput.type = 'hidden';
+                addressInput.name = 'addressId';
+                addressInput.value = addressId;
+                form.appendChild(addressInput);
+                document.body.appendChild(form);
+                form.submit();
             }
-        })();
 
-        // Set default address
-        function setDefaultAddress(addressId) {
-            if (!confirm('Bạn có chắc muốn đặt địa chỉ này làm mặc định?')) {
-                return;
+            // Delete address function
+            function deleteAddress(addressId) {
+                if (!confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
+                    return;
+                }
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/tai-khoan/dia-chi/xoa';
+                const addressInput = document.createElement('input');
+                addressInput.type = 'hidden';
+                addressInput.name = 'addressId';
+                addressInput.value = addressId;
+                form.appendChild(addressInput);
+                document.body.appendChild(form);
+                form.submit();
             }
-
-            // Create form and submit
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/tai-khoan/dia-chi/mac-dinh';
-
-            // Add address ID
-            const addressInput = document.createElement('input');
-            addressInput.type = 'hidden';
-            addressInput.name = 'addressId';
-            addressInput.value = addressId;
-            form.appendChild(addressInput);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-    </script>
+        </script>
+    </main>
 </body>
 
 </html>

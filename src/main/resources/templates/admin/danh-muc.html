@@ -98,8 +98,10 @@
                                             style="height: 40px; border-radius: 4px;">
                                     </td>
                                     <td>
-                                        <button class="adm-btn adm-btn--sm adm-btn--ghost"
-                                            th:onclick="'editCategory(' + ${category.id} + ', \'' + ${category.name} + '\', \'' + ${category.description} + '\', \'' + ${category.image} + '\')'">Sửa</button>
+                                        <button class="adm-btn adm-btn--sm adm-btn--ghost" th:data-id="${category.id}"
+                                            th:data-name="${category.name}"
+                                            th:data-description="${category.description}"
+                                            th:data-image="${category.image}" onclick="editCategory(this)">Sửa</button>
                                         <a th:href="@{/admin/danh-muc/delete/{id}(id=${category.id})}"
                                             class="adm-btn adm-btn--sm adm-btn--danger"
                                             onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
@@ -163,7 +165,12 @@
             modal.style.display = 'none';
         }
 
-        function editCategory(id, name, description, image) {
+        function editCategory(btn) {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const description = btn.getAttribute('data-description');
+            const image = btn.getAttribute('data-image');
+
             modal.style.display = 'block';
             modalTitle.innerText = 'Cập nhật danh mục';
             categoryId.value = id;

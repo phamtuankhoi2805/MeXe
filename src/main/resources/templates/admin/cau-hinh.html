@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VinFast Admin | Cấu hình hệ thống</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div class="admin-shell">
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <p class="eyebrow">Quản lý</p>
+                    <h1>Cấu hình hệ thống</h1>
+                </div>
+            </header>
+
+            <section class="admin-content">
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                <div class="admin-card">
+                    <form th:action="@{/admin/cau-hinh/save}" method="post">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Tên Website</label>
+                            <input type="text" name="site_name" th:value="${configs['site_name']}"
+                                placeholder="Nhập tên website" class="form-control"
+                                style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Email liên hệ</label>
+                            <input type="email" name="contact_email" th:value="${configs['contact_email']}"
+                                placeholder="admin@example.com" class="form-control"
+                                style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Số điện thoại</label>
+                            <input type="text" name="contact_phone" th:value="${configs['contact_phone']}"
+                                placeholder="0123456789" class="form-control"
+                                style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Địa chỉ</label>
+                            <textarea name="contact_address" rows="3" class="form-control"
+                                style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;"
+                                th:text="${configs['contact_address']}"></textarea>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <button type="submit" class="adm-btn adm-btn--primary">Lưu cấu hình</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+
+</html>

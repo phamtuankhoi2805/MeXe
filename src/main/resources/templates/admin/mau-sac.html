@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,86 +9,200 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 24px;
+            border-radius: 12px;
+            width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
 </head>
+
 <body class="admin-body">
-<div class="admin-shell">
-    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+    <div class="admin-shell">
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
 
-    <div class="admin-main">
-        <header class="admin-topbar">
-            <div>
-                <p class="eyebrow">Quản lý</p>
-                <h1>Màu sắc sản phẩm</h1>
-            </div>
-            <div class="admin-topbar__actions">
-                <button class="adm-btn adm-btn--primary">Thêm màu mới</button>
-            </div>
-        </header>
-
-        <section class="admin-content">
-            <div class="admin-card">
-                <header>
-                    <h2>Danh sách màu sắc</h2>
-                </header>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên màu</th>
-                            <th>Mã màu (Hex)</th>
-                            <th>Hiển thị</th>
-                            <th>Ảnh đại diện</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Trắng Ngọc Trai</td>
-                            <td>#FFFFFF</td>
-                            <td>
-                                <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #FFFFFF; border: 1px solid #ddd;"></div>
-                            </td>
-                            <td><img src="/image/25-1.jpg" alt="White" width="40" height="40" style="object-fit: cover; border-radius: 4px;"></td>
-                            <td>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Xóa</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Đen Nhám</td>
-                            <td>#000000</td>
-                            <td>
-                                <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #000000; border: 1px solid #ddd;"></div>
-                            </td>
-                            <td><img src="/image/evo200.jpg" alt="Black" width="40" height="40" style="object-fit: cover; border-radius: 4px;"></td>
-                            <td>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Xóa</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Xanh Oliu</td>
-                            <td>#4CAF50</td>
-                            <td>
-                                <div style="width: 24px; height: 24px; border-radius: 50%; background-color: #4CAF50; border: 1px solid #ddd;"></div>
-                            </td>
-                            <td><img src="/image/27-1.jpg" alt="Green" width="40" height="40" style="object-fit: cover; border-radius: 4px;"></td>
-                            <td>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Xóa</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <p class="eyebrow">Quản lý</p>
+                    <h1>Màu sắc sản phẩm</h1>
                 </div>
-            </div>
-        </section>
-    </div>
-</div>
-</body>
-</html>
+                <div class="admin-topbar__actions">
+                    <button onclick="openModal()" class="adm-btn adm-btn--primary">Thêm màu mới</button>
+                </div>
+            </header>
 
+            <section class="admin-content">
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                <div class="admin-card">
+                    <header>
+                        <h2>Danh sách màu sắc</h2>
+                    </header>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên màu</th>
+                                    <th>Mã màu (Hex)</th>
+                                    <th>Hiển thị</th>
+                                    <th>Ảnh đại diện</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="color : ${colors}">
+                                    <td th:text="${color.id}">1</td>
+                                    <td th:text="${color.name}">Trắng Ngọc Trai</td>
+                                    <td th:text="${color.hexCode}">#FFFFFF</td>
+                                    <td>
+                                        <div class="color-preview" th:style="'background-color: ' + ${color.hexCode}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <img th:if="${color.image}" th:src="${color.image}" alt="Color Image" width="40"
+                                            height="40" style="object-fit: cover; border-radius: 4px;">
+                                    </td>
+                                    <td>
+                                        <button class="adm-btn adm-btn--ghost"
+                                            style="padding: 4px 8px; font-size: 0.8rem;" th:data-id="${color.id}"
+                                            th:data-name="${color.name}" th:data-hex="${color.hexCode}"
+                                            th:data-image="${color.image}" onclick="editColor(this)">Sửa</button>
+                                        <a th:href="@{/admin/mau-sac/delete/{id}(id=${color.id})}"
+                                            class="adm-btn adm-btn--ghost"
+                                            style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa màu này?')">Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${colors.empty}">
+                                    <td colspan="6" style="text-align: center;">Chưa có màu sắc nào</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="colorModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin-bottom: 20px;">Thêm màu mới</h2>
+            <form th:action="@{/admin/mau-sac/save}" method="post" th:object="${newColor}">
+                <input type="hidden" id="colorId" th:field="*{id}">
+                <div class="form-group">
+                    <label>Tên màu</label>
+                    <input type="text" id="colorName" th:field="*{name}" required>
+                </div>
+                <div class="form-group">
+                    <label>Mã màu (Hex)</label>
+                    <input type="text" id="colorHex" th:field="*{hexCode}" placeholder="#FFFFFF" required>
+                </div>
+                <div class="form-group">
+                    <label>Link ảnh đại diện (Optional)</label>
+                    <input type="text" id="colorImage" th:field="*{image}">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="adm-btn adm-btn--ghost">Hủy</button>
+                    <button type="submit" class="adm-btn adm-btn--primary">Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('colorModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const colorId = document.getElementById('colorId');
+        const colorName = document.getElementById('colorName');
+        const colorHex = document.getElementById('colorHex');
+        const colorImage = document.getElementById('colorImage');
+
+        function openModal() {
+            modal.style.display = 'block';
+            modalTitle.innerText = 'Thêm màu mới';
+            colorId.value = '';
+            colorName.value = '';
+            colorHex.value = '';
+            colorImage.value = '';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function editColor(btn) {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const hex = btn.getAttribute('data-hex');
+            const image = btn.getAttribute('data-image');
+
+            modal.style.display = 'block';
+            modalTitle.innerText = 'Cập nhật màu sắc';
+            colorId.value = id;
+            colorName.value = name;
+            colorHex.value = hex;
+            colorImage.value = image !== 'null' ? image : '';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

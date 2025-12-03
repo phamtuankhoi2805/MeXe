@@ -361,4 +361,40 @@ public class AccountController {
 
         return "redirect:/tai-khoan";
     }
+
+    /**
+     * Xóa địa chỉ
+     */
+    @PostMapping("/tai-khoan/dia-chi/xoa")
+    public String xoaDiaChi(@RequestParam(required = false) Long addressId,
+            RedirectAttributes redirectAttributes) {
+        Optional<User> userOpt = securityUtil.getCurrentUser();
+
+        if (!userOpt.isPresent()) {
+            redirectAttributes.addFlashAttribute("error", "Bạn cần đăng nhập để thực hiện thao tác này.");
+            return "redirect:/login";
+        }
+
+        User user = userOpt.get();
+
+        if (addressId == null) {
+            redirectAttributes.addFlashAttribute("error", "Địa chỉ không hợp lệ.");
+            return "redirect:/tai-khoan";
+        }
+
+        try {
+            addressService.deleteAddress(user.getId(), addressId);
+            redirectAttributes.addFlashAttribute("success", "Xóa địa chỉ thành công!");
+        } catch (RuntimeException e) {
+            String errorMsg = e.getMessage();
+            if (errorMsg == null || errorMsg.isEmpty()) {
+                errorMsg = "Có lỗi xảy ra khi xóa địa chỉ. Vui lòng thử lại.";
+            }
+            redirectAttributes.addFlashAttribute("error", errorMsg);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra khi xóa địa chỉ. Vui lòng thử lại.");
+        }
+
+        return "redirect:/tai-khoan";
+    }
 }

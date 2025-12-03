@@ -1,5 +1,5 @@
-<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,82 +9,121 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/admin.css}" href="/css/admin.css">
 </head>
+
 <body class="admin-body">
-<div class="admin-shell">
-    <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
+    <div class="admin-shell">
+        <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}"></div>
 
-    <div class="admin-main">
-        <header class="admin-topbar">
-            <div>
-                <p class="eyebrow">Hệ thống</p>
-                <h1>Người dùng</h1>
-            </div>
-            <div class="admin-topbar__actions">
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div>
+                    <p class="eyebrow">Hệ thống</p>
+                    <h1>Người dùng</h1>
+                </div>
+                <!-- <div class="admin-topbar__actions">
                 <button class="adm-btn adm-btn--primary">Thêm quản trị viên</button>
-            </div>
-        </header>
+            </div> -->
+            </header>
 
-        <section class="admin-content">
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <span>Vai trò:</span>
-                    <button class="chip is-active">Tất cả</button>
-                    <button class="chip">Admin</button>
-                    <button class="chip">User</button>
-                </div>
-                <input type="search" placeholder="Tìm theo email, tên...">
-            </div>
+            <section class="admin-content">
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-            <div class="admin-card">
-                <header>
-                    <h2>Danh sách tài khoản</h2>
-                </header>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Họ và tên</th>
-                            <th>Email</th>
-                            <th>Số điện thoại</th>
-                            <th>Vai trò</th>
-                            <th>Nguồn</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Administrator</td>
-                            <td>admin@vinfast.com</td>
-                            <td>0123456789</td>
-                            <td><span class="tag tag--warning">ADMIN</span></td>
-                            <td>Local</td>
-                            <td><span class="tag tag--success">Enabled</span></td>
-                            <td>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>nguyenvana@gmail.com</td>
-                            <td>0912345678</td>
-                            <td><span class="tag">USER</span></td>
-                            <td>Google</td>
-                            <td><span class="tag tag--success">Enabled</span></td>
-                            <td>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem;">Sửa</button>
-                                <button class="adm-btn adm-btn--ghost" style="padding: 4px 8px; font-size: 0.8rem; color: #e74c3c;">Khóa</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <form th:action="@{/admin/nguoi-dung}" method="get" class="filter-bar">
+                    <div class="filter-group">
+                        <span>Trạng thái:</span>
+                        <select name="status" class="form-select" onchange="this.form.submit()"
+                            style="padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                            <option value="" th:selected="${currentStatus == null}">Tất cả</option>
+                            <option value="HOAT_DONG"
+                                th:selected="${currentStatus != null && currentStatus.name() == 'HOAT_DONG'}">Hoạt động
+                            </option>
+                            <option value="TAM_KHOA"
+                                th:selected="${currentStatus != null && currentStatus.name() == 'TAM_KHOA'}">Tạm khóa
+                            </option>
+                            <option value="NGUNG_HOAT_DONG"
+                                th:selected="${currentStatus != null && currentStatus.name() == 'NGUNG_HOAT_DONG'}">
+                                Ngừng hoạt động</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="search" name="keyword" th:value="${keyword}" placeholder="Tìm theo email, tên..."
+                            style="padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; width: 300px;">
+                        <button type="submit" class="adm-btn adm-btn--primary">Tìm kiếm</button>
+                    </div>
+                </form>
+
+                <div class="admin-card">
+                    <header>
+                        <h2>Danh sách tài khoản</h2>
+                    </header>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ và tên</th>
+                                    <th>Email</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}">1</td>
+                                    <td th:text="${user.fullName}">Nguyễn Văn A</td>
+                                    <td th:text="${user.email}">email@example.com</td>
+                                    <td th:text="${user.phone}">0123456789</td>
+                                    <td>
+                                        <span th:if="${user.status.name() == 'HOAT_DONG'}" class="tag tag--success">Hoạt
+                                            động</span>
+                                        <span th:if="${user.status.name() == 'TAM_KHOA'}" class="tag tag--warning">Tạm
+                                            khóa</span>
+                                        <span th:if="${user.status.name() == 'NGUNG_HOAT_DONG'}"
+                                            class="tag tag--danger">Ngừng hoạt động</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2024
+                                    </td>
+                                    <td>
+                                        <form th:action="@{/admin/nguoi-dung/update-status/{id}(id=${user.id})}"
+                                            method="post" style="display: inline;">
+                                            <button type="submit" class="adm-btn adm-btn--ghost"
+                                                th:style="${user.status.name() == 'HOAT_DONG'} ? 'color: #e74c3c;' : 'color: #2ecc71;'"
+                                                th:text="${user.status.name() == 'HOAT_DONG'} ? 'Khóa' : 'Mở khóa'"
+                                                onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái người dùng này?')">
+                                                Khóa
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr th:if="${users.empty}">
+                                    <td colspan="7" style="text-align: center;">Không tìm thấy người dùng nào</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" th:if="${users.totalPages > 1}"
+                        style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+                        <a th:if="${users.hasPrevious()}"
+                            th:href="@{/admin/nguoi-dung(page=${users.number - 1}, keyword=${keyword}, status=${currentStatus})}"
+                            class="adm-btn adm-btn--ghost">&laquo; Trước</a>
+
+                        <span style="display: flex; align-items: center;">Trang <span
+                                th:text="${users.number + 1}">1</span> / <span
+                                th:text="${users.totalPages}">1</span></span>
+
+                        <a th:if="${users.hasNext()}"
+                            th:href="@{/admin/nguoi-dung(page=${users.number + 1}, keyword=${keyword}, status=${currentStatus})}"
+                            class="adm-btn adm-btn--ghost">Sau &raquo;</a>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
-</div>
 </body>
+
 </html>

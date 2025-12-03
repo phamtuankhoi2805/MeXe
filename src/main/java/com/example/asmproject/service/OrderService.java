@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -199,12 +200,64 @@ public class OrderService {
         return orderRepository.searchOrders(keyword, orderStatus, paymentStatus, deliveryMethod, pageable);
     }
 
-    public OrderResponse updateOrderStatus(Long orderId, Order.OrderStatus status) {
+    public OrderResponse updateOrderStatus(Long orderId, Order.OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Đơn hàng không tồn tại"));
-        order.setOrderStatus(status);
+
+        if (!isValidTransition(order.getOrderStatus(), newStatus)) {
+            throw new RuntimeException("Không thể chuyển trạng thái từ " + order.getOrderStatus().getDisplayName() +
+                    " sang " + newStatus.getDisplayName());
+        }
+
+        order.setOrderStatus(newStatus);
+
+        // Tự động cập nhật trạng thái thanh toán thành PAID khi đơn hàng được giao
+        if (newStatus == Order.OrderStatus.DELIVERED) {
+            order.setPaymentStatus(Order.PaymentStatus.PAID);
+        }
+
         order = orderRepository.save(order);
         return orderMapper.toResponse(order);
+    }
+
+    private boolean isValidTransition(Order.OrderStatus currentStatus, Order.OrderStatus newStatus) {
+        // Nếu trạng thái không đổi thì hợp lệ
+        if (currentStatus == newStatus) {
+            return true;
+        }
+
+        switch (currentStatus) {
+            case PENDING:
+                // Chờ xử lý -> Đã xác nhận hoặc Đã hủy
+                return newStatus == Order.OrderStatus.CONFIRMED ||
+                        newStatus == Order.OrderStatus.CANCELLED;
+
+            case CONFIRMED:
+                // Đã xác nhận -> Đang xử lý hoặc Đã hủy
+                return newStatus == Order.OrderStatus.PROCESSING ||
+                        newStatus == Order.OrderStatus.CANCELLED;
+
+            case PROCESSING:
+                // Đang xử lý -> Đang giao hàng hoặc Đã hủy
+                return newStatus == Order.OrderStatus.SHIPPING ||
+                        newStatus == Order.OrderStatus.CANCELLED;
+
+            case SHIPPING:
+                // Đang giao hàng -> Đã giao hàng (Không được hủy khi đang giao)
+                return newStatus == Order.OrderStatus.DELIVERED;
+
+            case DELIVERED:
+                // Đã giao hàng -> Đã trả hàng (Chỉ được trả hàng sau khi đã giao)
+                return newStatus == Order.OrderStatus.RETURNED;
+
+            case CANCELLED:
+            case RETURNED:
+                // Trạng thái cuối cùng, không thể chuyển tiếp
+                return false;
+
+            default:
+                return false;
+        }
     }
 
     public OrderResponse updatePaymentStatus(Long orderId, Order.PaymentStatus status) {
@@ -238,6 +291,40 @@ public class OrderService {
         return orderRepository.findFastDeliveryOrders().stream()
                 .map(orderMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<Order.OrderStatus> getAllowedNextStatuses(Order.OrderStatus currentStatus) {
+        List<Order.OrderStatus> allowed = new ArrayList<>();
+        if (currentStatus == null)
+            return allowed;
+
+        // Luôn cho phép giữ nguyên trạng thái hiện tại (để hiển thị trong dropdown nếu
+        // cần)
+        allowed.add(currentStatus);
+
+        switch (currentStatus) {
+            case PENDING:
+                allowed.add(Order.OrderStatus.CONFIRMED);
+                allowed.add(Order.OrderStatus.CANCELLED);
+                break;
+            case CONFIRMED:
+                allowed.add(Order.OrderStatus.PROCESSING);
+                allowed.add(Order.OrderStatus.CANCELLED);
+                break;
+            case PROCESSING:
+                allowed.add(Order.OrderStatus.SHIPPING);
+                allowed.add(Order.OrderStatus.CANCELLED);
+                break;
+            case SHIPPING:
+                allowed.add(Order.OrderStatus.DELIVERED);
+                break;
+            case DELIVERED:
+                allowed.add(Order.OrderStatus.RETURNED);
+                break;
+            default:
+                break;
+        }
+        return allowed;
     }
 
     public long countOrdersByStatus(Order.OrderStatus status) {

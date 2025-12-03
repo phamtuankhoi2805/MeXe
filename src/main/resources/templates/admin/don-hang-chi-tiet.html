@@ -20,14 +20,6 @@
             margin-bottom: 24px;
         }
 
-        .detail-section h3 {
-            font-size: 1.1rem;
-            margin-bottom: 16px;
-            color: #1e293b;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 8px;
-        }
-
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -204,321 +196,79 @@
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Phương thức vận chuyển:</span>
-                                    <span class="info-value" th:text="${order.deliveryMethod}">STANDARD</span>
+                                    <span class="info-value"
+                                        th:text="${order.deliveryMethod != null ? order.deliveryMethod.displayName : 'N/A'}">STANDARD</span>
                                 </div>
                                 <div class="info-row" th:if="${order.notes}">
                                     <span class="info-label">Ghi chú:</span>
                                     <span class="info-value" th:text="${order.notes}">...</span>
-                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                    .detail-section {
-                                    margin-bottom: 24px;
-                                    }
+                    <!-- Right Column: Status & Actions -->
+                    <div class="right-col">
+                        <div class="admin-card detail-section">
+                            <header>
+                                <h2>Trạng thái đơn hàng</h2>
+                            </header>
+                            <div style="padding: 0 24px 24px;">
+                                <div class="status-form">
+                                    <div style="margin-bottom: 16px;">
+                                        <label style="display: block; margin-bottom: 8px; color: #64748b;">Trạng thái
+                                            hiện tại:</label>
+                                        <span class="badge"
+                                            th:classappend="${order.orderStatus != null ? (order.orderStatus.name() == 'DELIVERED' ? 'badge--success' : (order.orderStatus.name() == 'CANCELLED' ? 'badge--danger' : 'badge--info')) : 'badge--secondary'}"
+                                            th:text="${order.orderStatus != null ? order.orderStatus.displayName : 'N/A'}">PENDING</span>
+                                    </div>
 
-                                    .detail-section h3 {
-                                    font-size: 1.1rem;
-                                    margin-bottom: 16px;
-                                    color: #1e293b;
-                                    border-bottom: 1px solid #e2e8f0;
-                                    padding-bottom: 8px;
-                                    }
-
-                                    .info-row {
-                                    display: flex;
-                                    justify-content: space-between;
-                                    margin-bottom: 12px;
-                                    }
-
-                                    .info-label {
-                                    color: #64748b;
-                                    }
-
-                                    .info-value {
-                                    font-weight: 500;
-                                    color: #1e293b;
-                                    }
-
-                                    .product-item {
-                                    display: flex;
-                                    gap: 16px;
-                                    padding: 16px 0;
-                                    border-bottom: 1px solid #e2e8f0;
-                                    }
-
-                                    .product-item:last-child {
-                                    border-bottom: none;
-                                    }
-
-                                    .product-image {
-                                    width: 64px;
-                                    height: 64px;
-                                    object-fit: cover;
-                                    border-radius: 8px;
-                                    border: 1px solid #e2e8f0;
-                                    }
-
-                                    .product-info {
-                                    flex: 1;
-                                    }
-
-                                    .product-name {
-                                    font-weight: 600;
-                                    margin-bottom: 4px;
-                                    display: block;
-                                    }
-
-                                    .product-meta {
-                                    font-size: 0.9rem;
-                                    color: #64748b;
-                                    }
-
-                                    .status-form {
-                                    background: #f8fafc;
-                                    padding: 16px;
-                                    border-radius: 8px;
-                                    border: 1px solid #e2e8f0;
-                                    }
-
-                                    .alert {
-                                    padding: 12px;
-                                    border-radius: 6px;
-                                    margin-bottom: 16px;
-                                    }
-
-                                    .alert-success {
-                                    background: #dcfce7;
-                                    color: #166534;
-                                    border: 1px solid #bbf7d0;
-                                    }
-
-                                    .alert-danger {
-                                    background: #fee2e2;
-                                    color: #991b1b;
-                                    border: 1px solid #fecaca;
-                                    }
-                                    </style>
-                                    </head>
-
-                                    <body class="admin-body">
-                                        <div class="admin-shell">
-                                            <div th:replace="~{admin/fragments/sidebar :: sidebar(${adminSection})}">
-                                            </div>
-
-                                            <div class="admin-main">
-                                                <header class="admin-topbar">
-                                                    <div>
-                                                        <a th:href="@{/admin/don-hang}" class="back-link"
-                                                            style="display: inline-flex; align-items: center; gap: 8px; color: #64748b; text-decoration: none; margin-bottom: 8px;">
-                                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
-                                                                stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M19 12H5M12 19l-7-7 7-7" />
-                                                            </svg>
-                                                            Quay lại danh sách
-                                                        </a>
-                                                        <h1>Chi tiết đơn hàng <span
-                                                                th:text="${order.orderCode}">#ORD-001</span></h1>
-                                                    </div>
-                                                    <div class="admin-topbar__actions">
-                                                        <button class="adm-btn adm-btn--ghost"
-                                                            onclick="window.print()">In đơn hàng</button>
-                                                    </div>
-                                                </header>
-
-                                                <section class="admin-content">
-                                                    <div th:if="${successMessage}" class="alert alert-success"
-                                                        th:text="${successMessage}"></div>
-                                                    <div th:if="${errorMessage}" class="alert alert-danger"
-                                                        th:text="${errorMessage}"></div>
-
-                                                    <div class="order-detail-grid">
-                                                        <!-- Left Column: Products & Info -->
-                                                        <div class="left-col">
-                                                            <div class="admin-card detail-section">
-                                                                <header>
-                                                                    <h2>Sản phẩm</h2>
-                                                                </header>
-                                                                <div style="padding: 0 24px 24px;">
-                                                                    <div class="product-item"
-                                                                        th:each="item : ${order.orderItems}">
-                                                                        <img th:src="${item.productImage}" alt="Product"
-                                                                            class="product-image"
-                                                                            onerror="this.src='/image/placeholder.png'">
-                                                                        <div class="product-info">
-                                                                            <span class="product-name"
-                                                                                th:text="${item.productName}">Tên sản
-                                                                                phẩm</span>
-                                                                            <div class="product-meta">
-                                                                                <span th:if="${item.colorName}"
-                                                                                    th:text="'Màu: ' + ${item.colorName} + ' | '">Màu:
-                                                                                    Đỏ | </span>
-                                                                                <span
-                                                                                    th:text="'SL: ' + ${item.quantity}">SL:
-                                                                                    1</span>
-                                                                                <span
-                                                                                    style="float: right; font-weight: 500; color: #0056ff;"
-                                                                                    th:text="${#numbers.formatDecimal(item.subtotal, 0, 'COMMA', 0, 'POINT')} + ' ₫'">10.000.000
-                                                                                    ₫</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div
-                                                                        style="margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
-                                                                        <div class="info-row">
-                                                                            <span class="info-label">Tạm tính:</span>
-                                                                            <span class="info-value"
-                                                                                th:text="${#numbers.formatDecimal(order.subtotal, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0
-                                                                                ₫</span>
-                                                                        </div>
-                                                                        <div class="info-row">
-                                                                            <span class="info-label">Phí vận
-                                                                                chuyển:</span>
-                                                                            <span class="info-value"
-                                                                                th:text="${#numbers.formatDecimal(order.shippingFee, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0
-                                                                                ₫</span>
-                                                                        </div>
-                                                                        <div class="info-row"
-                                                                            th:if="${order.discount > 0}">
-                                                                            <span class="info-label">Giảm giá:</span>
-                                                                            <span class="info-value"
-                                                                                style="color: #ef4444;"
-                                                                                th:text="'- ' + ${#numbers.formatDecimal(order.discount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">-
-                                                                                0 ₫</span>
-                                                                        </div>
-                                                                        <div class="info-row"
-                                                                            style="font-size: 1.1rem; margin-top: 12px;">
-                                                                            <span class="info-label"
-                                                                                style="color: #1e293b; font-weight: 600;">Tổng
-                                                                                cộng:</span>
-                                                                            <span class="info-value"
-                                                                                style="color: #0056ff; font-weight: 700;"
-                                                                                th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0
-                                                                                ₫</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="admin-card detail-section">
-                                                                <header>
-                                                                    <h2>Thông tin giao hàng</h2>
-                                                                </header>
-                                                                <div style="padding: 0 24px 24px;">
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Người nhận:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${order.address.fullName}">Nguyễn
-                                                                            Văn A</span>
-                                                                    </div>
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Số điện thoại:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${order.address.phone}">0912345678</span>
-                                                                    </div>
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Địa chỉ:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${order.address.getFullAddress()}">123
-                                                                            Đường
-                                                                            ABC...</span>
-                                                                    </div>
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Phương thức vận
-                                                                            chuyển:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${order.deliveryMethod}">STANDARD</span>
-                                                                    </div>
-                                                                    <div class="info-row" th:if="${order.notes}">
-                                                                        <span class="info-label">Ghi chú:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${order.notes}">...</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Right Column: Status & Actions -->
-                                                        <div class="right-col">
-                                                            <div class="admin-card detail-section">
-                                                                <header>
-                                                                    <h2>Trạng thái đơn hàng</h2>
-                                                                </header>
-                                                                <div style="padding: 0 24px 24px;">
-                                                                    <div class="status-form">
-                                                                        <div style="margin-bottom: 16px;">
-                                                                            <label
-                                                                                style="display: block; margin-bottom: 8px; color: #64748b;">Trạng
-                                                                                thái hiện tại:</label>
-                                                                            <span class="badge"
-                                                                                th:classappend="${order.orderStatus == T(com.example.asmproject.model.Order.OrderStatus).DELIVERED ? 'badge--success' : 
-                                                            (order.orderStatus == T(com.example.asmproject.model.Order.OrderStatus).CANCELLED ? 'badge--danger' : 'badge--info')}"
-                                                                                th:text="${order.orderStatus}">PENDING</span>
-                                                                        </div>
-
-                                                                        <form
-                                                                            th:action="@{/admin/don-hang/{id}/update-status(id=${order.id})}"
-                                                                            method="post">
-                                                                            <div class="form-group">
-                                                                                <label for="status">Cập nhật trạng
-                                                                                    thái:</label>
-                                                                                <select name="status" id="status"
-                                                                                    class="form-control">
-                                                                                    <option
-                                                                                        th:each="status : ${T(com.example.asmproject.model.Order.OrderStatus).values()}"
-                                                                                        th:value="${status}"
-                                                                                        th:text="${status}"
-                                                                                        th:selected="${status == order.orderStatus}">
-                                                                                    </option>
-                                                                                </select>
-                                                                            </div>
-                                                                            <button type="submit"
-                                                                                class="adm-btn adm-btn--primary"
-                                                                                style="width: 100%;">Cập nhật</button>
-                                                                        </form>
-                                                                    </div>
-
-                                                                    <div style="margin-top: 16px;"
-                                                                        th:if="${order.orderStatus == T(com.example.asmproject.model.Order.OrderStatus).PENDING}">
-                                                                        <form
-                                                                            th:action="@{/admin/don-hang/{id}/confirm(id=${order.id})}"
-                                                                            method="post">
-                                                                            <button type="submit"
-                                                                                class="adm-btn adm-btn--success"
-                                                                                style="width: 100%;">Xác nhận đơn
-                                                                                hàng</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="admin-card detail-section">
-                                                                <header>
-                                                                    <h2>Thông tin khác</h2>
-                                                                </header>
-                                                                <div style="padding: 0 24px 24px;">
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Ngày đặt:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">...</span>
-                                                                    </div>
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Cập nhật cuối:</span>
-                                                                        <span class="info-value"
-                                                                            th:text="${#temporals.format(order.updatedAt, 'dd/MM/yyyy HH:mm')}">...</span>
-                                                                    </div>
-                                                                    <div class="info-row">
-                                                                        <span class="info-label">Thanh toán:</span>
-                                                                        <span class="badge"
-                                                                            th:classappend="${order.paymentStatus == T(com.example.asmproject.model.Order.PaymentStatus).PAID ? 'badge--success' : 'badge--warning'}"
-                                                                            th:text="${order.paymentStatus}">PENDING</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                </section>
-                                            </div>
+                                    <form th:action="@{/admin/don-hang/{id}/update-status(id=${order.id})}"
+                                        method="post">
+                                        <div class="form-group">
+                                            <label for="status">Cập nhật trạng thái:</label>
+                                            <select name="status" id="status" class="form-control">
+                                                <option th:each="status : ${orderStatuses}" th:value="${status}"
+                                                    th:text="${status.displayName}"
+                                                    th:selected="${status == order.orderStatus}">
+                                                </option>
+                                            </select>
                                         </div>
-                                    </body>
+                                        <button type="submit" class="adm-btn adm-btn--primary" style="width: 100%;">Cập
+                                            nhật</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card detail-section">
+                            <header>
+                                <h2>Thông tin khác</h2>
+                            </header>
+                            <div style="padding: 0 24px 24px;">
+                                <div class="info-row">
+                                    <span class="info-label">Ngày đặt:</span>
+                                    <span class="info-value"
+                                        th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">...</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Cập nhật cuối:</span>
+                                    <span class="info-value"
+                                        th:text="${#temporals.format(order.updatedAt, 'dd/MM/yyyy HH:mm')}">...</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Thanh toán:</span>
+                                    <span class="badge"
+                                        th:classappend="${order.paymentStatus != null and order.paymentStatus.name() == 'PAID' ? 'badge--success' : 'badge--warning'}"
+                                        th:text="${order.paymentStatus != null ? order.paymentStatus.displayName : 'N/A'}">PENDING</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
 
 </html>

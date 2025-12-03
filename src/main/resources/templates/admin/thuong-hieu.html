@@ -98,8 +98,9 @@
                                             style="height: 40px; border-radius: 4px;">
                                     </td>
                                     <td>
-                                        <button class="adm-btn adm-btn--sm adm-btn--ghost"
-                                            th:onclick="'editBrand(' + ${brand.id} + ', \'' + ${brand.name} + '\', \'' + ${brand.description} + '\', \'' + ${brand.logo} + '\')'">Sửa</button>
+                                        <button class="adm-btn adm-btn--sm adm-btn--ghost" th:data-id="${brand.id}"
+                                            th:data-name="${brand.name}" th:data-description="${brand.description}"
+                                            th:data-logo="${brand.logo}" onclick="editBrand(this)">Sửa</button>
                                         <a th:href="@{/admin/thuong-hieu/delete/{id}(id=${brand.id})}"
                                             class="adm-btn adm-btn--sm adm-btn--danger"
                                             onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
@@ -163,7 +164,12 @@
             modal.style.display = 'none';
         }
 
-        function editBrand(id, name, description, logo) {
+        function editBrand(btn) {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const description = btn.getAttribute('data-description');
+            const logo = btn.getAttribute('data-logo');
+
             modal.style.display = 'block';
             modalTitle.innerText = 'Cập nhật thương hiệu';
             brandId.value = id;

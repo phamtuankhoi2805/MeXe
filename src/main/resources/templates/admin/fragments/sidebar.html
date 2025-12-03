@@ -1,58 +1,55 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<body>
-<aside class="admin-sidebar" th:fragment="sidebar(activePage)">
-    <div class="admin-sidebar__logo">
-        <img src="/image/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
-        <span>Admin Center</span>
-    </div>
-    <nav class="admin-sidebar__nav">
-        <a th:href="@{/admin}" th:classappend="${activePage} == 'dashboard' ? ' is-active'">
-            <span>Dashboard</span>
-            <small>Tổng quan</small>
-        </a>
-        <a th:href="@{/admin/san-pham}" th:classappend="${activePage} == 'san-pham' ? ' is-active'">
-            <span>Sản phẩm</span>
-            <small>Xe & phụ kiện</small>
-        </a>
-        <a th:href="@{/admin/danh-muc}" th:classappend="${activePage} == 'danh-muc' ? ' is-active'">
-            <span>Danh mục</span>
-            <small>Phân loại xe</small>
-        </a>
-        <a th:href="@{/admin/thuong-hieu}" th:classappend="${activePage} == 'thuong-hieu' ? ' is-active'">
-            <span>Thương hiệu</span>
-            <small>Hãng sản xuất</small>
-        </a>
-        <a th:href="@{/admin/mau-sac}" th:classappend="${activePage} == 'mau-sac' ? ' is-active'">
-            <span>Màu sắc</span>
-            <small>Quản lý màu</small>
-        </a>
-        <a th:href="@{/admin/don-hang}" th:classappend="${activePage} == 'don-hang' ? ' is-active'">
-            <span>Đơn hàng</span>
-            <small>Trạng thái xử lý</small>
-        </a>
-        <a th:href="@{/admin/voucher}" th:classappend="${activePage} == 'voucher' ? ' is-active'">
-            <span>Mã giảm giá</span>
-            <small>Khuyến mãi</small>
-        </a>
-        <a th:href="@{/admin/nguoi-dung}" th:classappend="${activePage} == 'nguoi-dung' ? ' is-active'">
-            <span>Người dùng</span>
-            <small>Quản lý tài khoản</small>
-        </a>
-        <a href="#">
-            <span>Báo cáo</span>
-            <small>Doanh thu, pin</small>
-        </a>
-        <a href="#">
-            <span>Cấu hình</span>
-            <small>Người dùng & phân quyền</small>
-        </a>
-    </nav>
-    <div class="admin-sidebar__footer">
-        <p>Hotline hỗ trợ</p>
-        <strong>1900 23 23 89</strong>
-    </div>
-</aside>
-</body>
-</html>
 
+<body>
+    <aside class="admin-sidebar" th:fragment="sidebar(activePage)">
+        <div class="admin-sidebar__logo">
+            <img src="/image/VinFast-logo.svg" alt="VinFast logo" width="120" height="32">
+            <span>Admin Center</span>
+        </div>
+        <nav class="admin-sidebar__nav">
+            <a th:href="@{/admin}" th:classappend="${activePage} == 'dashboard' ? ' is-active'">
+                <span>Dashboard</span>
+                <small>Tổng quan</small>
+            </a>
+            <a th:href="@{/admin/san-pham}" th:classappend="${activePage} == 'san-pham' ? ' is-active'">
+                <span>Sản phẩm</span>
+                <small>Xe & phụ kiện</small>
+            </a>
+            <a th:href="@{/admin/danh-muc}" th:classappend="${activePage} == 'danh-muc' ? ' is-active'">
+                <span>Danh mục</span>
+                <small>Phân loại xe</small>
+            </a>
+            <a th:href="@{/admin/mau-sac}" th:classappend="${activePage} == 'mau-sac' ? ' is-active'">
+                <span>Màu sắc</span>
+                <small>Quản lý màu</small>
+            </a>
+            <a th:href="@{/admin/don-hang}" th:classappend="${activePage} == 'don-hang' ? ' is-active'">
+                <span>Đơn hàng</span>
+                <small>Trạng thái xử lý</small>
+            </a>
+            <a th:href="@{/admin/voucher}" th:classappend="${activePage} == 'voucher' ? ' is-active'">
+                <span>Mã giảm giá</span>
+                <small>Khuyến mãi</small>
+            </a>
+            <a th:href="@{/admin/nguoi-dung}" th:classappend="${activePage} == 'nguoi-dung' ? ' is-active'">
+                <span>Người dùng</span>
+                <small>Quản lý tài khoản</small>
+            </a>
+            <a th:href="@{/admin/bao-cao}" th:classappend="${activePage} == 'bao-cao' ? ' is-active'">
+                <span>Báo cáo</span>
+                <small>Doanh thu, pin</small>
+            </a>
+            <a th:href="@{/admin/cau-hinh}" th:classappend="${activePage} == 'cau-hinh' ? ' is-active'">
+                <span>Cấu hình</span>
+                <small>Hệ thống & cài đặt</small>
+            </a>
+        </nav>
+        <div class="admin-sidebar__footer">
+            <p>Hotline hỗ trợ</p>
+            <strong>1900 23 23 89</strong>
+        </div>
+    </aside>
+</body>
+
+</html>
